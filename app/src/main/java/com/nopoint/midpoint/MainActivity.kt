@@ -1,4 +1,4 @@
-package com.onpoint.midpoint
+package com.nopoint.midpoint
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle

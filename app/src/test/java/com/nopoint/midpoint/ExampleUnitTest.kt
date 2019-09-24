@@ -1,4 +1,4 @@
-package com.onpoint.midpoint
+package com.nopoint.midpoint
 
 import org.junit.Test
 

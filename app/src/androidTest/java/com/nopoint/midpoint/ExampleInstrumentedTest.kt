@@ -1,4 +1,4 @@
-package com.onpoint.midpoint
+package com.nopoint.midpoint
 
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.ext.junit.runners.AndroidJUnit4
