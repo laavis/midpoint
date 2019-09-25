@@ -34,8 +34,17 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
         val mapFragment = supportFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
         mapFragment.getMapAsync(this)
         directions_btn.setOnClickListener {
+            if (mRouteMarkerList.isNotEmpty()) clearMarkersAndRoute()
+            
             if (destination_txt.text.isNotBlank()) {
-                getDirections(destination_txt.text.toString())
+                getDirections(destination = destination_txt.text.toString())
+            } else {
+                //Test coordinates for helsinki
+                //TODO actually get friend's coordinates from API
+                val dest = Location("")
+                dest.latitude = 60.1696327
+                dest.longitude = 24.9369516
+                getDirections(destinationCoord = dest)
             }
         }
     }
@@ -88,25 +97,34 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
         }
     }
 
-    private fun getDirections(destination: String) {
-        fusedLocationClient?.lastLocation
-            ?.addOnSuccessListener { loc: Location? ->
-                val url = Directions.buildUrl(loc, destination)
-                apiController.get(Endpoint.DIRECTIONS, url) { response ->
-                    if (response != null) {
-                        val route = Directions.buildRoute(response)
-                        setMarkersAndRoute(route)
-                    }
+    private fun getDirections(
+        destination: String = "Helsinki",
+        destinationCoord: Location? = null
+    ) {
+        fusedLocationClient?.lastLocation?.addOnSuccessListener { loc: Location? ->
+            val url = if (destinationCoord != null)
+                Directions.buildUrl(loc, Directions.getMiddlePoint(loc!!, destinationCoord))
+            else
+                Directions.buildUrl(loc, destination)
+            apiController.get(Endpoint.DIRECTIONS, url) { response ->
+                if (response != null) {
+                    val route = Directions.buildRoute(response)
+                    setMarkersAndRoute(route)
                 }
             }
+        }
     }
 
     private fun setMarkersAndRoute(route: Route) {
         val startLatLng = LatLng(route.startLat!!, route.startLng!!)
-        val startMarkerOptions: MarkerOptions = MarkerOptions().position(startLatLng).title(route.startName).icon(BitmapDescriptorFactory.fromBitmap(MapsFactory.drawMarker(this, "S")))
+        val startMarkerOptions: MarkerOptions =
+            MarkerOptions().position(startLatLng).title(route.startName)
+                .icon(BitmapDescriptorFactory.fromBitmap(MapsFactory.drawMarker(this, "")))
         val endLatLng = LatLng(route.endLat!!, route.endLng!!)
-        val endMarkerOptions: MarkerOptions = MarkerOptions().position(endLatLng).title(route.endName).icon(
-            BitmapDescriptorFactory.fromBitmap(MapsFactory.drawMarker(this, "E")))
+        val endMarkerOptions: MarkerOptions =
+            MarkerOptions().position(endLatLng).title(route.endName).icon(
+                BitmapDescriptorFactory.fromBitmap(MapsFactory.drawMarker(this, ""))
+            )
         val startMarker = mMap.addMarker(startMarkerOptions)
         val endMarker = mMap.addMarker(endMarkerOptions)
         mRouteMarkerList.add(startMarker)
