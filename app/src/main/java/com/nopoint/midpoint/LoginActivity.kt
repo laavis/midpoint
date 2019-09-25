@@ -5,6 +5,7 @@ import android.content.pm.PackageManager
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import com.nopoint.midpoint.map.MapActivity
 import com.nopoint.midpoint.networking.APIController
 import com.nopoint.midpoint.networking.Endpoint
 import com.nopoint.midpoint.networking.ServiceVolley

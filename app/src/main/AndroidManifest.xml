@@ -16,7 +16,7 @@
         android:theme="@style/AppTheme"
         android:name=".networking.BackendVolley"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".MapActivity" />
+        <activity android:name=".map.MapActivity" />
         <activity android:name=".LoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
