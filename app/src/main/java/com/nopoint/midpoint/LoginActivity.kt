@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import com.nopoint.midpoint.networking.APIController
+import com.nopoint.midpoint.networking.Endpoint
 import com.nopoint.midpoint.networking.ServiceVolley
 import kotlinx.android.synthetic.main.activity_main.*
 import org.json.JSONObject
@@ -35,7 +36,7 @@ class LoginActivity : AppCompatActivity() {
         val params = JSONObject()
         params.put("email", "foo@email.com")
         params.put("password", "test")
-        apiController.post(path, params) { response ->
+        apiController.post(Endpoint.TEST, path, params) { response ->
             Log.d("server response", response?.get("data").toString())
         }
     }
