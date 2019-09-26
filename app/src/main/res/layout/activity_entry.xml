@@ -26,7 +26,7 @@
         <ImageView
             android:layout_width="36dp"
             android:layout_height="36dp"
-            android:tint="@color/colorAccent"
+            android:tint="@color/color_accent"
             app:srcCompat="@drawable/ic_midpoint_logo"/>
 
         <TextView
@@ -61,7 +61,7 @@
             android:layout_alignStart="@+id/textbutton_show_login"
             android:layout_alignEnd="@id/textbutton_show_login"
             android:layout_alignParentBottom="true"
-            android:background="@color/colorAccent"/>
+            android:background="@color/color_accent"/>
 
 
     </RelativeLayout>

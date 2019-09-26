@@ -8,9 +8,9 @@ import android.widget.RelativeLayout
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
 import kotlinx.android.synthetic.main.activity_entry.*
-import android.R.attr.button
-import android.util.Log
 import android.widget.TextView
+import com.nopoint.midpoint.fragments.LoginFragment
+import com.nopoint.midpoint.fragments.SignUpFragment
 
 
 class EntryActivity : AppCompatActivity() {
@@ -19,6 +19,7 @@ class EntryActivity : AppCompatActivity() {
     private lateinit var fTransaction: FragmentTransaction
     private lateinit var fManager: FragmentManager
     private lateinit var loginFragment: LoginFragment
+    private lateinit var signUpFragment: SignUpFragment
 
     private  var isLogin = false
 
@@ -40,6 +41,7 @@ class EntryActivity : AppCompatActivity() {
         fTransaction = fManager.beginTransaction()
 
         loginFragment = LoginFragment()
+        signUpFragment = SignUpFragment()
 
         getLoginFragment()
         isLogin = true
@@ -47,6 +49,9 @@ class EntryActivity : AppCompatActivity() {
 
         textbutton_show_login.setOnClickListener {
             isLogin = true
+
+            getLoginFragment()
+
             toggleTextStyle(textbutton_show_login, textbutton_show_sign_up)
             strokeParams.addRule(RelativeLayout.ALIGN_START, R.id.textbutton_show_login)
             strokeParams.addRule(RelativeLayout.ALIGN_END, R.id.textbutton_show_login)
@@ -54,12 +59,12 @@ class EntryActivity : AppCompatActivity() {
 
         textbutton_show_sign_up.setOnClickListener {
             isLogin = false
-            toggleTextStyle(textbutton_show_sign_up,
 
-                textbutton_show_login)
+            getSignUpFragment()
+
+            toggleTextStyle(textbutton_show_sign_up, textbutton_show_login)
             strokeParams.addRule(RelativeLayout.ALIGN_START, R.id.textbutton_show_sign_up)
             strokeParams.addRule(RelativeLayout.ALIGN_END, R.id.textbutton_show_sign_up)
-
             entry_stroke.layoutParams = strokeParams
         }
     }
@@ -72,6 +77,12 @@ class EntryActivity : AppCompatActivity() {
     private fun getLoginFragment() {
         fTransaction = fManager.beginTransaction()
         fTransaction.replace(R.id.entry_fragment_container, loginFragment)
+        fTransaction.commit()
+    }
+
+    private fun getSignUpFragment() {
+        fTransaction = fManager.beginTransaction()
+        fTransaction.replace(R.id.entry_fragment_container, signUpFragment)
         fTransaction.commit()
     }
 

@@ -5,7 +5,10 @@
     <string name="entry_log_in">Log In</string>
     <string name="entry_sign_up">Sign Up</string>
 
-    // Login
+    // Hints
     <string name="hint_email">Email</string>
+    <string name="hint_username">Username</string>
     <string name="hint_password">Password</string>
+    <string name="hint_confirm_password">Confirm Password</string>
+
 </resources>

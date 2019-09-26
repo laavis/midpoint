@@ -1,8 +1,10 @@
 package com.nopoint.midpoint.map
 
+import android.content.Context
 import android.location.Location
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import com.google.android.gms.location.*
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -32,6 +34,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_map)
         val mapFragment = supportFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
+        getToken()
         mapFragment.getMapAsync(this)
         directions_btn.setOnClickListener {
             if (mRouteMarkerList.isNotEmpty()) clearMarkersAndRoute()
@@ -64,6 +67,15 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
         super.onResume()
         if (requestingLocationUpdates) startLocationUpdates()
     }
+
+    private fun getToken() {
+        Log.d("GET TOKEN", "start")
+        val prefs = this.getSharedPreferences("userPrefs", Context.MODE_PRIVATE)
+        val token = prefs.getString("token", "")
+
+        Log.d("TOKEN", token)
+    }
+
 
     private fun createLocationCallback(): LocationCallback {
         return object : LocationCallback() {

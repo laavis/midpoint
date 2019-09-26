@@ -5,7 +5,7 @@
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
+        <item name="colorAccent">@color/color_accent</item>
     </style>
 
     <style name="MidpointFullscreen" parent="AppTheme">
@@ -19,13 +19,21 @@
         <item name="android:layout_height">80dp</item>
         <item name="android:insetTop">0dp</item>
         <item name="android:insetBottom">0dp</item>
-        <item name="android:backgroundTint">@color/colorAccent</item>
+        <item name="android:backgroundTint">@color/color_accent</item>
     </style>
 
-    // Input
-    <style name="Input" parent="AppTheme">
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:background">#FFFFFF</item>
+    // Input Layout
+    <style name="InputLayout" parent="AppTheme">
+        <item name="android:layout_marginStart">48dp</item>
+        <item name="android:layout_marginEnd">48dp</item>
+        <item name="colorAccent">@color/colorPrimaryDark</item>
+        <item name="colorControlNormal">@color/colorPrimaryDark</item>
+        <item name="colorControlActivated">@color/colorPrimaryDark</item>
+    </style>
+
+    // Input EditText
+    <style name="InputEditText" parent="AppTheme">
+        <item name="android:paddingBottom">24dp</item>
     </style>
 
 </resources>

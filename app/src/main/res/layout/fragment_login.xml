@@ -5,7 +5,7 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".LoginFragment">
+    tools:context=".fragments.LoginFragment">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -16,38 +16,36 @@
         >
 
         <com.google.android.material.textfield.TextInputLayout
+            style="@style/InputLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="48dp"
-            android:layout_marginEnd="48dp"
             android:hint="@string/hint_email"
-            app:boxBackgroundColor="@color/barely_white"
+            app:boxBackgroundColor="@android:color/transparent"
             app:boxBackgroundMode="filled">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/login_input_email"
+                style="@style/InputEditText"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="a@a.com"/>
+                android:layout_height="wrap_content"/>
 
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
+            style="@style/InputLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="36dp"
-            android:layout_marginStart="48dp"
-            android:layout_marginEnd="48dp"
-            android:inputType="textPassword"
             android:hint="@string/hint_password"
-            app:boxBackgroundColor="@color/barely_white"
+            app:boxBackgroundColor="@android:color/transparent"
             app:boxBackgroundMode="filled">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/login_input_password"
+                style="@style/InputEditText"
+                android:inputType="textPassword"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="password1"/>
+                android:layout_height="wrap_content" />
 
         </com.google.android.material.textfield.TextInputLayout>
     </LinearLayout>
