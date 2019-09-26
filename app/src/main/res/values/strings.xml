@@ -1,3 +1,11 @@
 <resources>
     <string name="app_name">Midpoint</string>
+    
+    // Entry
+    <string name="entry_log_in">Log In</string>
+    <string name="entry_sign_up">Sign Up</string>
+
+    // Login
+    <string name="hint_email">Email</string>
+    <string name="hint_password">Password</string>
 </resources>

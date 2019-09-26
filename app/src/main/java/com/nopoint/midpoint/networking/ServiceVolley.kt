@@ -15,11 +15,11 @@ class ServiceVolley : ServiceInterface {
         Log.d("URL", url)
         val jsonObjReq = object : JsonObjectRequest(Method.POST, url, params,
             Response.Listener<JSONObject> { response ->
-                Log.d(TAG, "/post request OK! Response: $response")
+                Log.d(TAG, "$response")
                 completionHandler(response)
             },
             Response.ErrorListener { error ->
-                VolleyLog.e(TAG, "/post request fail! Error: ${error.message}")
+                VolleyLog.e(TAG, " ${error.message}")
                 completionHandler(null)
             }) {
             @Throws(AuthFailureError::class)
