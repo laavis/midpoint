@@ -5,28 +5,33 @@
 
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <application
-        android:usesCleartextTraffic="true"
+        android:name=".networking.BackendVolley"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
-        android:name=".networking.BackendVolley"
+        android:usesCleartextTraffic="true"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".map.MapActivity" />
+        <activity android:name=".MainActivity"></activity>
+        <activity android:name=".SettingsActivity" />
+        <activity android:name=".FriendsActivity" />
+        <activity android:name=".map.HomeActivity" />
         <activity
             android:name=".EntryActivity"
             android:label="@string/app_name"
             android:theme="@style/MidpointFullscreen">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/api_key" />

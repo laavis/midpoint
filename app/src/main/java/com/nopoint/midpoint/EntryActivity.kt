@@ -28,7 +28,7 @@ class EntryActivity : AppCompatActivity() {
         setContentView(R.layout.activity_entry)
         hasPermissions()
         /*start_map_btn.setOnClickListener {
-            val intent = Intent(this, MapActivity::class.java)
+            val intent = Intent(this, HomeActivity::class.java)
             //Sets the map activity as the new root
             intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
             startActivity(intent)

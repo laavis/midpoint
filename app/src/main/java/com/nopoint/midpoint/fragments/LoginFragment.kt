@@ -10,8 +10,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.google.android.material.textfield.TextInputEditText
+import com.nopoint.midpoint.MainActivity
 import com.nopoint.midpoint.R
-import com.nopoint.midpoint.map.MapActivity
 
 
 import com.nopoint.midpoint.networking.APIController
@@ -66,7 +66,7 @@ class LoginFragment : Fragment() {
             if (success == "true") {
                 saveToken(response)
 
-                val intent = Intent(context!!.applicationContext, MapActivity::class.java)
+                val intent = Intent(context!!.applicationContext, MainActivity::class.java)
                 startActivity(intent)
             }
         }
