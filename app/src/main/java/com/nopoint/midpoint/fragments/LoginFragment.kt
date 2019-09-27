@@ -15,7 +15,7 @@ import com.nopoint.midpoint.map.MapActivity
 
 
 import com.nopoint.midpoint.networking.APIController
-import com.nopoint.midpoint.networking.Endpoint
+import com.nopoint.midpoint.networking.API
 
 import com.nopoint.midpoint.networking.ServiceVolley
 import kotlinx.android.synthetic.main.fragment_login.*
@@ -56,7 +56,7 @@ class LoginFragment : Fragment() {
         params.put("email", emailField.text.toString())
         params.put("password", passwordField.text.toString())
 
-        apiController.post(Endpoint.LOCAL_API, path, params) { response ->
+        apiController.post(API.LOCAL_API, path, params) { response ->
             Log.d("server response", "$response")
 
             val success = response!!.getString("success")

@@ -10,7 +10,7 @@ import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 import com.nopoint.midpoint.R
 import com.nopoint.midpoint.networking.APIController
-import com.nopoint.midpoint.networking.Endpoint
+import com.nopoint.midpoint.networking.API
 import com.nopoint.midpoint.networking.ServiceVolley
 import kotlinx.android.synthetic.main.fragment_sign_up.*
 import org.jetbrains.anko.doAsync
@@ -69,7 +69,7 @@ class SignUpFragment : Fragment() {
                 params.put("password", passwordField.text.toString())
                 params.put("confirm_password", confirmPasswordField.toString())
 
-                apiController.post(Endpoint.LOCAL_API, path, params) { response ->
+                apiController.post(API.LOCAL_API, path, params) { response ->
                     Log.d("RES", "$response")
                     validate(response)
 

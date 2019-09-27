@@ -16,7 +16,7 @@ import kotlinx.android.synthetic.main.activity_map.*
 import com.nopoint.midpoint.R
 import com.nopoint.midpoint.map.models.Route
 import com.nopoint.midpoint.networking.APIController
-import com.nopoint.midpoint.networking.Endpoint
+import com.nopoint.midpoint.networking.API
 import com.nopoint.midpoint.networking.ServiceVolley
 
 
@@ -118,7 +118,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
                 Directions.buildUrl(loc, Directions.getMiddlePoint(loc!!, destinationCoord))
             else
                 Directions.buildUrl(loc, destination)
-            apiController.get(Endpoint.DIRECTIONS, url) { response ->
+            apiController.get(API.DIRECTIONS, url) { response ->
                 if (response != null) {
                     val route = Directions.buildRoute(response)
                     setMarkersAndRoute(route)
