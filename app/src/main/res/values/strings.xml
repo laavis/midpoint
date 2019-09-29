@@ -1,8 +1,9 @@
 <resources>
-    <string name="app_name">midpoint</string>
-    
     /****** ENTRY ******/
     // Strings
+    <string name="app_name" translatable="false">Midpoint</string>
+
+    // Entry
     <string name="entry_log_in">Log In</string>
     <string name="entry_sign_up">Sign Up</string>
 
@@ -12,7 +13,17 @@
     <string name="hint_password">Password</string>
     <string name="hint_confirm_password">Confirm Password</string>
 
+
     // Accessibility
     <string name="access_logo">Logo</string>
+
+    // Bottom navigation bar
+    <string name="nav_home">Home</string>
+    <string name="nav_friends">Friends</string>
+    <string name="nav_settings">Settings</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
 
 </resources>

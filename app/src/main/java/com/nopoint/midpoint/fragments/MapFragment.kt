@@ -1,10 +1,13 @@
-package com.nopoint.midpoint.map
+package com.nopoint.midpoint.fragments
 
 import android.content.Context
 import android.location.Location
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import androidx.fragment.app.Fragment
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import com.google.android.gms.location.*
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -12,16 +15,21 @@ import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.*
 import com.google.maps.android.PolyUtil
-import kotlinx.android.synthetic.main.activity_map.*
 import com.nopoint.midpoint.R
+import com.nopoint.midpoint.map.Directions
+import com.nopoint.midpoint.map.MapsFactory
 import com.nopoint.midpoint.map.models.Route
+import com.nopoint.midpoint.networking.API
 import com.nopoint.midpoint.networking.APIController
-import com.nopoint.midpoint.networking.Endpoint
 import com.nopoint.midpoint.networking.ServiceVolley
+import kotlinx.android.synthetic.main.fragment_map.view.*
 
-
-class MapActivity : AppCompatActivity(), OnMapReadyCallback {
+/**
+ * A simple [Fragment] subclass.
+ */
+class MapFragment : Fragment(), OnMapReadyCallback {
     private lateinit var mMap: GoogleMap
+    private var mapFragment: SupportMapFragment? = null
     private var requestingLocationUpdates = false
     private var fusedLocationClient: FusedLocationProviderClient? = null
     private lateinit var locationCallback: LocationCallback
@@ -30,17 +38,23 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
     private val service = ServiceVolley()
     private val apiController = APIController(service)
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_map)
-        val mapFragment = supportFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        // Inflate the layout for this fragment
+        val view = inflater.inflate(R.layout.fragment_map, container, false)
+        if (mapFragment == null){
+            mapFragment = SupportMapFragment.newInstance()
+            mapFragment!!.getMapAsync(this)
+        }
+        childFragmentManager.beginTransaction().replace(R.id.google_map, mapFragment!!).commit()
         getToken()
-        mapFragment.getMapAsync(this)
-        directions_btn.setOnClickListener {
+        view.directions_btn.setOnClickListener {
             if (mRouteMarkerList.isNotEmpty()) clearMarkersAndRoute()
-            
-            if (destination_txt.text.isNotBlank()) {
-                getDirections(destination = destination_txt.text.toString())
+
+            if (view.destination_txt.text.isNotBlank()) {
+                getDirections(destination = view.destination_txt.text.toString())
             } else {
                 //Test coordinates for helsinki
                 //TODO actually get friend's coordinates from API
@@ -50,14 +64,14 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
                 getDirections(destinationCoord = dest)
             }
         }
+        return view
     }
-
 
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
         if (!requestingLocationUpdates) {
             mMap.isMyLocationEnabled = true
-            fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
+            fusedLocationClient = LocationServices.getFusedLocationProviderClient(activity!!)
             locationCallback = createLocationCallback()
             startLocationUpdates()
         }
@@ -70,8 +84,8 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private fun getToken() {
         Log.d("GET TOKEN", "start")
-        val prefs = this.getSharedPreferences("userPrefs", Context.MODE_PRIVATE)
-        val token = prefs.getString("token", "")
+        val prefs = this.activity!!.getSharedPreferences("userPrefs", Context.MODE_PRIVATE)
+        val token = prefs.getString("token", "") ?: ""
 
         Log.d("TOKEN", token)
     }
@@ -118,7 +132,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
                 Directions.buildUrl(loc, Directions.getMiddlePoint(loc!!, destinationCoord))
             else
                 Directions.buildUrl(loc, destination)
-            apiController.get(Endpoint.DIRECTIONS, url) { response ->
+            apiController.get(API.DIRECTIONS, url) { response ->
                 if (response != null) {
                     val route = Directions.buildRoute(response)
                     setMarkersAndRoute(route)
@@ -131,18 +145,18 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
         val startLatLng = LatLng(route.startLat!!, route.startLng!!)
         val startMarkerOptions: MarkerOptions =
             MarkerOptions().position(startLatLng).title(route.startName)
-                .icon(BitmapDescriptorFactory.fromBitmap(MapsFactory.drawMarker(this, "")))
+                .icon(BitmapDescriptorFactory.fromBitmap(MapsFactory.drawMarker(this.activity!!, "")))
         val endLatLng = LatLng(route.endLat!!, route.endLng!!)
         val endMarkerOptions: MarkerOptions =
             MarkerOptions().position(endLatLng).title(route.endName).icon(
-                BitmapDescriptorFactory.fromBitmap(MapsFactory.drawMarker(this, ""))
+                BitmapDescriptorFactory.fromBitmap(MapsFactory.drawMarker(this.activity!!, ""))
             )
         val startMarker = mMap.addMarker(startMarkerOptions)
         val endMarker = mMap.addMarker(endMarkerOptions)
         mRouteMarkerList.add(startMarker)
         mRouteMarkerList.add(endMarker)
 
-        val polylineOptions = MapsFactory.drawRoute(this)
+        val polylineOptions = MapsFactory.drawRoute(this.activity!!)
         val pointsList = PolyUtil.decode(route.overviewPolyline)
         for (point in pointsList) {
             polylineOptions.add(point)
@@ -163,4 +177,5 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
             mRoutePolyline.remove()
         }
     }
+
 }
