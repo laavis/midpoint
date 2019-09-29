@@ -1,7 +1,8 @@
 <resources>
-    <string name="app_name">Midpoint</string>
+    <string name="app_name">midpoint</string>
     
-    // Entry
+    /****** ENTRY ******/
+    // Strings
     <string name="entry_log_in">Log In</string>
     <string name="entry_sign_up">Sign Up</string>
 
@@ -10,5 +11,8 @@
     <string name="hint_username">Username</string>
     <string name="hint_password">Password</string>
     <string name="hint_confirm_password">Confirm Password</string>
+
+    // Accessibility
+    <string name="access_logo">Logo</string>
 
 </resources>

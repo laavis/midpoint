@@ -6,7 +6,7 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/barely_white">
+    android:background="@color/color_white">
 
     <ImageView
         android:id="@+id/imageView"
@@ -15,67 +15,81 @@
         android:layout_marginTop="-48dp"
         app:srcCompat="@drawable/ic_img_road_map" />
 
-    <RelativeLayout
-        android:id="@+id/entry_header"
+    <LinearLayout
+        android:id="@+id/entry_content"
         android:layout_width="match_parent"
-        android:layout_height="48dp"
-        android:layout_marginTop="32dp"
-        android:layout_marginStart="32dp"
-        android:layout_marginEnd="32dp">
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:layout_above="@id/entry_footer"
+        android:padding="48dp">
 
-        <ImageView
-            android:layout_width="36dp"
-            android:layout_height="36dp"
-            android:tint="@color/color_accent"
-            app:srcCompat="@drawable/ic_midpoint_logo"/>
-
-        <TextView
-            android:id="@+id/textbutton_show_login"
-            android:text="@string/entry_log_in"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="42dp"
-            android:clickable="true"
-            android:focusable="true"
-            android:layout_centerVertical="true"
-            android:textSize="16sp"
-            android:layout_toStartOf="@+id/textbutton_show_sign_up"
-            />
-
-        <TextView
-            android:id="@+id/textbutton_show_sign_up"
-            android:text="@string/entry_sign_up"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:clickable="true"
-            android:focusable="true"
-            android:textSize="16sp"
-            android:layout_centerVertical="true"
-            android:layout_alignParentEnd="true"
-            />
-
-        <ImageView
-            android:id="@+id/entry_stroke"
+        <RelativeLayout
+            android:id="@+id/entry_header"
             android:layout_width="match_parent"
-            android:layout_height="2dp"
-            android:layout_alignStart="@+id/textbutton_show_login"
-            android:layout_alignEnd="@id/textbutton_show_login"
-            android:layout_alignParentBottom="true"
-            android:background="@color/color_accent"/>
+            android:layout_height="36dp">
+            <ImageView
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:tint="@color/color_primary"
+                android:contentDescription="@string/access_logo"
+                app:srcCompat="@drawable/ic_logo"/>
+            <TextView
+                android:id="@+id/textbutton_show_login"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="42dp"
+                android:layout_toStartOf="@+id/textbutton_show_sign_up"
+                android:clickable="true"
+                android:focusable="true"
+                android:fontFamily="@font/pt_sans"
+                android:text="@string/entry_log_in"
+                android:textSize="16sp" />
 
+            <TextView
+                android:id="@+id/textbutton_show_sign_up"
+                android:text="@string/entry_sign_up"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:clickable="true"
+                android:focusable="true"
+                android:textSize="16sp"
+                android:layout_alignParentEnd="true"
+                />
 
-    </RelativeLayout>
+            <ImageView
+                android:id="@+id/entry_stroke"
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:layout_alignStart="@+id/textbutton_show_login"
+                android:layout_alignEnd="@id/textbutton_show_login"
+                android:layout_alignParentBottom="true"
+                android:background="@color/color_accent"/>
+        </RelativeLayout>
+
+        <LinearLayout
+            android:id="@+id/entry_fragment_container"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical" />
+
+    </LinearLayout>
+
 
     <LinearLayout
-        android:id="@+id/entry_fragment_container"
+        android:id="@+id/entry_footer"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/entry_header"
         android:layout_alignParentBottom="true"
-        android:foreground="@drawable/stroke"
-        android:orientation="vertical"></LinearLayout>
+        android:layout_height="57dp"
+        android:background="@color/color_white_accent">
 
-
-
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:fontFamily="@font/pt_sans_bold"
+            android:text="@string/app_name"
+            android:textColor="@color/color_dark"
+            android:textAlignment="center" />
+    </LinearLayout>
 
 </RelativeLayout>
