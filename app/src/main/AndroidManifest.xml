@@ -17,10 +17,11 @@
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".MainActivity"></activity>
-        <activity android:name=".SettingsActivity" />
-        <activity android:name=".FriendsActivity" />
-        <activity android:name=".map.HomeActivity" />
+        <activity
+            android:name=".MainActivity"
+            android:label="@string/app_name"
+            android:theme="@style/MidpointFullscreen">
+        </activity>
         <activity
             android:name=".EntryActivity"
             android:label="@string/app_name"
