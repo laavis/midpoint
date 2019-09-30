@@ -18,7 +18,9 @@ import com.nopoint.midpoint.networking.API
 import com.nopoint.midpoint.networking.ServiceVolley
 import kotlinx.android.synthetic.main.fragment_login.*
 import com.google.gson.Gson
-import com.google.gson.annotations.SerializedName
+import com.nopoint.midpoint.EntryActivity
+import com.nopoint.midpoint.models.LoginErrorResponse
+import com.nopoint.midpoint.models.LoginResponse
 import org.json.JSONException
 import org.json.JSONObject
 import java.io.IOException
@@ -33,25 +35,6 @@ class LoginFragment : Fragment() {
     private lateinit var emailLayout: TextInputLayout
     private lateinit var passwordField: TextInputEditText
     private lateinit var passwordLayout: TextInputLayout
-
-    data class LoginResponse(
-        @SerializedName("success")val success: Boolean,
-        @SerializedName("user")val user: UserLogin,
-        @SerializedName("token")val token: String
-    )
-
-    data class UserLogin (
-        @SerializedName("_id")val id: String,
-        @SerializedName("username")val username: String,
-        @SerializedName("email")val email: String,
-        @SerializedName("password")val password: String,
-        @SerializedName("friendsList")val friendsList: ArrayList<String>
-    )
-
-    data class LoginErrorResponse (
-        @SerializedName("email")val email: String,
-        @SerializedName("password")val password: String
-    )
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         v = inflater.inflate(R.layout.fragment_login, container,false)
@@ -72,7 +55,6 @@ class LoginFragment : Fragment() {
 
     private fun login() {
         val params = JSONObject()
-
         val path = "/user/login"
 
         params.put("email", emailField.text.toString())
@@ -86,12 +68,12 @@ class LoginFragment : Fragment() {
 
                 if (loginResponse.success) {
                     saveToken(loginResponse.token)
-
                         val intent = Intent(context!!.applicationContext, MainActivity::class.java)
                         startActivity(intent)
+                        (activity as EntryActivity).finish()
                 } else {
-                    val loginErrorResponse = Gson().fromJson(response.toString(), LoginErrorResponse::class.java)
-                    setErrors(loginErrorResponse)
+                    val authErrorResponse = Gson().fromJson(response.toString(), LoginErrorResponse::class.java)
+                    setErrors(authErrorResponse)
                 }
 
             } catch (e: IOException) {
@@ -100,9 +82,9 @@ class LoginFragment : Fragment() {
         }
     }
 
-    private fun setErrors(ler: LoginErrorResponse) {
-        emailLayout.error = ler.email
-        passwordLayout.error = ler.password
+    private fun setErrors(authErrRes: LoginErrorResponse) {
+        emailLayout.error = authErrRes.email
+        passwordLayout.error = authErrRes.password
     }
 
 

@@ -15,7 +15,6 @@ import com.nopoint.midpoint.fragments.SignUpFragment
 
 class EntryActivity : AppCompatActivity() {
 
-
     private lateinit var fTransaction: FragmentTransaction
     private lateinit var fManager: FragmentManager
     private lateinit var loginFragment: LoginFragment
@@ -27,13 +26,6 @@ class EntryActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_entry)
         hasPermissions()
-        /*start_map_btn.setOnClickListener {
-            val intent = Intent(this, HomeActivity::class.java)
-            //Sets the map activity as the new root
-            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-            startActivity(intent)
-        }
-        // network_btn.setOnClickListener {sendPostRequest()} */
 
         val strokeParams = entry_stroke.layoutParams as RelativeLayout.LayoutParams
 
@@ -44,6 +36,7 @@ class EntryActivity : AppCompatActivity() {
         signUpFragment = SignUpFragment()
 
         getLoginFragment()
+
         isLogin = true
         toggleTextStyle(textbutton_show_login, textbutton_show_sign_up)
 
@@ -74,7 +67,7 @@ class EntryActivity : AppCompatActivity() {
         inactive.typeface = Typeface.DEFAULT
     }
 
-    private fun getLoginFragment() {
+    fun getLoginFragment() {
         fTransaction = fManager.beginTransaction()
         fTransaction.replace(R.id.entry_fragment_container, loginFragment)
         fTransaction.commit()
@@ -91,6 +84,4 @@ class EntryActivity : AppCompatActivity() {
             requestPermissions(arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION), 1)
         }
     }
-
-
 }

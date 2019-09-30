@@ -8,12 +8,15 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
+import com.google.gson.Gson
+import com.nopoint.midpoint.EntryActivity
 import com.nopoint.midpoint.R
+import com.nopoint.midpoint.models.SignUpErrorResponse
+import com.nopoint.midpoint.models.SignUpResponse
 import com.nopoint.midpoint.networking.APIController
 import com.nopoint.midpoint.networking.API
 import com.nopoint.midpoint.networking.ServiceVolley
 import kotlinx.android.synthetic.main.fragment_sign_up.*
-import org.jetbrains.anko.doAsync
 import org.json.JSONObject
 import java.io.IOException
 
@@ -23,6 +26,7 @@ class SignUpFragment : Fragment() {
     private val apiController = APIController(service)
 
     private lateinit var v: View
+
     private lateinit var emailField: TextInputEditText
     private lateinit var emailLayout: TextInputLayout
     private lateinit var usernameField: TextInputEditText
@@ -31,6 +35,7 @@ class SignUpFragment : Fragment() {
     private lateinit var passwordLayout: TextInputLayout
     private lateinit var confirmPasswordField: TextInputEditText
     private lateinit var confirmPasswordLayout: TextInputLayout
+
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         v = inflater.inflate(R.layout.fragment_sign_up, container,false)
@@ -58,31 +63,38 @@ class SignUpFragment : Fragment() {
     }
 
     private fun signUp() {
-        doAsync {
+        val params = JSONObject()
+        val path = "/user/register"
+
+        params.put("username", usernameField.text.toString())
+        params.put("email", emailField.text.toString())
+        params.put("password", passwordField.text.toString())
+        params.put("confirm_password", confirmPasswordField.text.toString())
+
+
+        apiController.post(API.LOCAL_API, path, params) { response ->
             try {
-                val params = JSONObject()
+                val signUpRes = Gson().fromJson(response.toString(), SignUpResponse::class.java)
 
-                val path = "/user/register"
-
-                params.put("username", usernameField.text.toString())
-                params.put("email", emailField.text.toString())
-                params.put("password", passwordField.text.toString())
-                params.put("confirm_password", confirmPasswordField.toString())
-
-                apiController.post(API.LOCAL_API, path, params) { response ->
-                    Log.d("RES", "$response")
-                    validate(response)
-
-                    // todo start map activity or whatevs
+                if (signUpRes.success) {
+                    (activity as EntryActivity).getLoginFragment()
+                } else {
+                    val signUpErrorResponse = Gson().fromJson(response.toString(), SignUpErrorResponse::class.java)
+                    setErrors(signUpErrorResponse)
                 }
+
             } catch (e: IOException) {
-                Log.e("Login", "$e")
+                Log.e("SIGN UP", "$e")
             }
         }
-
     }
 
-    private fun validate(response: JSONObject?) {
-        // todo do properly
+    private fun setErrors(signUpErrRes: SignUpErrorResponse) {
+        emailLayout.error = signUpErrRes.email
+        usernameLayout.error = signUpErrRes.username
+        passwordLayout.error = signUpErrRes.password
+        confirmPasswordLayout.error = signUpErrRes.confirm_password
     }
 }
+
+
