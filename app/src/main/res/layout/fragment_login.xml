@@ -15,14 +15,17 @@
 
         <com.google.android.material.textfield.TextInputLayout
             style="@style/InputLayout"
+            android:id="@+id/login_input_layout_email"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/hint_email"
+            app:errorEnabled="true"
             app:boxBackgroundColor="@android:color/transparent">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/login_input_email"
                 style="@style/InputEditText"
+                android:text="a@a.com"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
 
@@ -30,16 +33,19 @@
 
         <com.google.android.material.textfield.TextInputLayout
             style="@style/InputLayout"
+            android:id="@+id/login_input_layout_password"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
             android:hint="@string/hint_password"
+            app:errorEnabled="true"
             app:boxBackgroundColor="@android:color/transparent">
 
             <com.google.android.material.textfield.TextInputEditText
                 style="@style/InputEditText"
                 android:id="@+id/login_input_password"
                 android:inputType="textPassword"
+                android:text="password1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
 

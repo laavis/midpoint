@@ -15,7 +15,6 @@ class ServiceVolley : ServiceInterface {
         Log.d("URL", url)
         val jsonObjReq = object : JsonObjectRequest(Method.POST, url, params,
             Response.Listener<JSONObject> { response ->
-                Log.d(TAG, "$response")
                 completionHandler(response)
             },
             Response.ErrorListener { error ->
