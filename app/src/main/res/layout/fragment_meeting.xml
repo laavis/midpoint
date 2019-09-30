@@ -1,0 +1,40 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.nopoint.midpoint.fragments.MeetingFragment">
+
+    <LinearLayout
+        android:id="@+id/peek_content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="24dp"
+            android:layout_height="4dp"
+            android:layout_gravity="center"
+            android:background="@drawable/pull_up_rectangle" />
+
+        <TextView
+            android:id="@+id/meet_txt"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/pt_sans"
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp"
+            android:text="@string/meet_a_friend"
+            android:textAlignment="center"
+            android:textSize="16sp" />
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/peek_content"
+        android:text="Some hidden content" />
+
+
+</RelativeLayout>
