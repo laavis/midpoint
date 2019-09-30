@@ -22,7 +22,10 @@ import com.nopoint.midpoint.map.models.Route
 import com.nopoint.midpoint.networking.API
 import com.nopoint.midpoint.networking.APIController
 import com.nopoint.midpoint.networking.ServiceVolley
-import kotlinx.android.synthetic.main.fragment_map.view.*
+import kotlinx.android.synthetic.main.map_content.view.*
+import android.widget.LinearLayout
+import com.google.android.material.bottomsheet.BottomSheetBehavior
+import kotlinx.android.synthetic.main.bottom_sheet.view.*
 
 /**
  * A simple [Fragment] subclass.
@@ -37,6 +40,9 @@ class MapFragment : Fragment(), OnMapReadyCallback {
     private lateinit var mRoutePolyline: Polyline
     private val service = ServiceVolley()
     private val apiController = APIController(service)
+    private var sheetBehavior: BottomSheetBehavior<*>? = null
+    private val bottom_sheet: LinearLayout? = null
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -64,6 +70,29 @@ class MapFragment : Fragment(), OnMapReadyCallback {
                 getDirections(destinationCoord = dest)
             }
         }
+        sheetBehavior = BottomSheetBehavior.from(view.bottom_sheet)
+        sheetBehavior!!.setBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
+            override fun onStateChanged(view: View, newState: Int) {
+                when (newState) {
+                    BottomSheetBehavior.STATE_HIDDEN -> {
+                    }
+                    BottomSheetBehavior.STATE_EXPANDED -> {
+                    }
+                    BottomSheetBehavior.STATE_COLLAPSED -> {
+                    }
+                    BottomSheetBehavior.STATE_DRAGGING -> {
+                    }
+                    BottomSheetBehavior.STATE_SETTLING -> {
+                    }
+                    BottomSheetBehavior.STATE_HALF_EXPANDED -> {
+                    }
+                }
+            }
+
+            override fun onSlide(view: View, v: Float) {
+
+            }
+        })
         return view
     }
 
