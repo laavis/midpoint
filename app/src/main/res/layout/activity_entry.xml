@@ -63,7 +63,7 @@
                 android:layout_alignStart="@+id/textbutton_show_login"
                 android:layout_alignEnd="@id/textbutton_show_login"
                 android:layout_alignParentBottom="true"
-                android:background="@color/color_accent"/>
+                android:background="@color/color_primary"/>
         </RelativeLayout>
 
         <LinearLayout

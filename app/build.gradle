@@ -60,5 +60,4 @@ dependencies {
     implementation 'com.google.code.gson:gson:2.8.5'
     implementation 'com.google.android.material:material:1.1.0-alpha10'
     implementation 'com.google.code.gson:gson:2.8.5'
-    implementation 'com.github.mac229.FragmentUtils:fragmentutils-kt:1.2.1'
 }

@@ -25,6 +25,7 @@ import com.nopoint.midpoint.networking.ServiceVolley
 import kotlinx.android.synthetic.main.map_content.view.*
 import android.widget.LinearLayout
 import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.nopoint.midpoint.MainActivity
 import kotlinx.android.synthetic.main.bottom_sheet.view.*
 
 /**
@@ -54,6 +55,9 @@ class MapFragment : Fragment(), OnMapReadyCallback {
             mapFragment = SupportMapFragment.newInstance()
             mapFragment!!.getMapAsync(this)
         }
+
+        (activity as MainActivity).supportActionBar?.title = "Map"
+
         childFragmentManager.beginTransaction().replace(R.id.google_map, mapFragment!!).commit()
         getToken()
         view.directions_btn.setOnClickListener {

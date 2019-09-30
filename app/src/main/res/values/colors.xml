@@ -1,9 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#364251</color>
-    <color name="colorPrimaryDark">#364251</color>
-    <color name="color_accent">#F17B0E</color>
-
     <color name="barely_white">#F3F8FD</color>
 
     <color name="trans">#00000000</color>
@@ -16,4 +12,8 @@
     <color name="color_white">#FFFFFF</color>
     <color name="color_white_accent">#F3F3F3</color>
     <color name="color_light_grey">#DCDCDC</color>
+
+    <color name="test">#FF0000</color>
+
+    <color name="orange">#F45905</color>
 </resources>

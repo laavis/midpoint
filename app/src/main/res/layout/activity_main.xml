@@ -15,6 +15,7 @@
         app:itemTextColor="@color/bottom_nav_color"
         app:layout_constraintBottom_toBottomOf="parent"
         app:menu="@menu/bottom_nav_menu"
+        app:labelVisibilityMode="selected"
         tools:layout_editor_absoluteX="0dp" />
 
     <FrameLayout

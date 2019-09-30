@@ -63,7 +63,7 @@ object MapsFactory {
         val polylineOptions = PolylineOptions()
         polylineOptions.width(px2dip(context, 72.toFloat()).toFloat())
         polylineOptions.geodesic(true)
-        polylineOptions.color(context.resources.getColor(R.color.color_accent, context.theme))
+        polylineOptions.color(context.resources.getColor(R.color.color_primary, context.theme))
         return polylineOptions
     }
 
