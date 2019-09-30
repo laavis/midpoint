@@ -42,8 +42,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
     private val service = ServiceVolley()
     private val apiController = APIController(service)
     private var sheetBehavior: BottomSheetBehavior<*>? = null
-    private val bottom_sheet: LinearLayout? = null
-
+    private var state = BottomSheetBehavior.STATE_COLLAPSED
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -75,28 +74,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
             }
         }
         sheetBehavior = BottomSheetBehavior.from(view.bottom_sheet)
-        sheetBehavior!!.setBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
-            override fun onStateChanged(view: View, newState: Int) {
-                when (newState) {
-                    BottomSheetBehavior.STATE_HIDDEN -> {
-                    }
-                    BottomSheetBehavior.STATE_EXPANDED -> {
-                    }
-                    BottomSheetBehavior.STATE_COLLAPSED -> {
-                    }
-                    BottomSheetBehavior.STATE_DRAGGING -> {
-                    }
-                    BottomSheetBehavior.STATE_SETTLING -> {
-                    }
-                    BottomSheetBehavior.STATE_HALF_EXPANDED -> {
-                    }
-                }
-            }
-
-            override fun onSlide(view: View, v: Float) {
-
-            }
-        })
+        sheetBehavior!!.bottomSheetCallback = createBottomSheetCb()
         return view
     }
 
@@ -123,6 +101,25 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         Log.d("TOKEN", token)
     }
 
+    private fun createBottomSheetCb(): BottomSheetBehavior.BottomSheetCallback{
+        return object : BottomSheetBehavior.BottomSheetCallback() {
+            override fun onStateChanged(view: View, newState: Int) {
+                when (newState) {
+                    BottomSheetBehavior.STATE_HIDDEN -> state = BottomSheetBehavior.STATE_HIDDEN
+                    BottomSheetBehavior.STATE_EXPANDED -> state = BottomSheetBehavior.STATE_EXPANDED
+                    BottomSheetBehavior.STATE_COLLAPSED -> state = BottomSheetBehavior.STATE_COLLAPSED
+                    BottomSheetBehavior.STATE_DRAGGING -> {
+                        if (state != BottomSheetBehavior.STATE_HALF_EXPANDED) {
+                            sheetBehavior!!.state = BottomSheetBehavior.STATE_HALF_EXPANDED
+                        }
+                    }
+                    BottomSheetBehavior.STATE_SETTLING -> state = BottomSheetBehavior.STATE_SETTLING
+                    BottomSheetBehavior.STATE_HALF_EXPANDED -> state = BottomSheetBehavior.STATE_HALF_EXPANDED
+                }
+            }
+            override fun onSlide(view: View, v: Float) {}
+        }
+    }
 
     private fun createLocationCallback(): LocationCallback {
         return object : LocationCallback() {
