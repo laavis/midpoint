@@ -3,9 +3,9 @@
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.MaterialComponents.Light.DarkActionBar">
         <!-- Customize your theme here. -->
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/color_accent</item>
+        <item name="colorPrimary">@color/color_primary</item>
+        <item name="colorPrimaryDark">@color/color_primary_dark</item>
+        <item name="colorAccent">@color/color_white_accent</item>
         <item name="android:textViewStyle">@font/pt_sans</item>
         <item name="android:textColor">@color/color_dark</item>
         <item name="buttonStyle">@font/pt_sans</item>
@@ -17,34 +17,44 @@
     </style>
 
     // Square icon button
-    <style name="ButtonSquareIcon" parent="AppTheme">
+    <style name="ButtonSquareIcon" parent="Widget.MaterialComponents.Button">
         <item name="android:layout_width">80dp</item>
         <item name="android:layout_height">80dp</item>
         <item name="android:insetTop">0dp</item>
         <item name="android:insetBottom">0dp</item>
-        <item name="android:backgroundTint">@color/color_accent</item>
     </style>
 
     // Primary Button
-    <style name="ButtonPrimary" parent="AppTheme">
+    <style name="ButtonPrimary" parent="Widget.MaterialComponents.Button">
         <item name="android:stateListAnimator">@null</item>
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">57dp</item>
         <item name="android:insetTop">0dp</item>
         <item name="android:insetBottom">0dp</item>
-        <item name="android:backgroundTint">@color/color_primary</item>
     </style>
 
     // Input Layout
-    <style name="InputLayout" parent="AppTheme">
+    <style name="InputLayout" parent="Widget.MaterialComponents.TextInputLayout.FilledBox">
         <item name="colorAccent">@color/colorPrimaryDark</item>
         <item name="colorControlNormal">@color/colorPrimaryDark</item>
         <item name="colorControlActivated">@color/colorPrimaryDark</item>
     </style>
 
     // Input EditText
-    <style name="InputEditText" parent="AppTheme">
+    <style name="InputEditText" parent="Widget.MaterialComponents.TextInputLayout.FilledBox">
         <item name="android:paddingBottom">24dp</item>
+        <item name="android:background">@android:color/transparent</item>
+    </style>
+
+    <!-- BottomSheet -->
+    <style name="RoundedBottomSheet" parent="Widget.MaterialComponents.BottomSheet">
+        <item name="shapeAppearanceOverlay">@style/CustomShapeAppearanceOverlay.MaterialComponents.BottomSheet</item>
+    </style>
+    <style name="CustomShapeAppearanceOverlay.MaterialComponents.BottomSheet" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">16dp</item>
+        <item name="cornerSizeBottomRight">0dp</item>
+        <item name="cornerSizeBottomLeft">0dp</item>
     </style>
 
 </resources>

@@ -19,8 +19,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/hint_email"
-            app:boxBackgroundColor="@android:color/transparent"
-            app:boxBackgroundMode="filled"
             app:errorEnabled="true">
 
             <com.google.android.material.textfield.TextInputEditText
@@ -37,8 +35,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/hint_username"
-            app:boxBackgroundColor="@android:color/transparent"
-            app:boxBackgroundMode="filled"
             app:errorEnabled="true">
 
             <com.google.android.material.textfield.TextInputEditText
@@ -53,15 +49,13 @@
             style="@style/InputLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="textPassword"
             android:hint="@string/hint_password"
-            app:boxBackgroundColor="@android:color/transparent"
-            app:boxBackgroundMode="filled"
             app:errorEnabled="true">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/sign_up_input_password"
                 style="@style/InputEditText"
+                android:inputType="textPassword"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
         </com.google.android.material.textfield.TextInputLayout>
@@ -71,15 +65,13 @@
             style="@style/InputLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="textPassword"
             android:hint="@string/hint_confirm_password"
-            app:boxBackgroundColor="@android:color/transparent"
-            app:boxBackgroundMode="filled"
             app:errorEnabled="true">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/sign_up_input_confirm_password"
                 style="@style/InputEditText"
+                android:inputType="textPassword"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
         </com.google.android.material.textfield.TextInputLayout>
