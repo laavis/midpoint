@@ -37,23 +37,23 @@ class MeetingRequestsAdapter(
         val request = requests[position]
         if (request.rowType == RowType.REQUEST) {
             when(request.type) {
-                MeetingType.REJECTED -> holder.userName!!.text = request.meetingRequest!!.receiverUsername + " rejected"
+                MeetingType.REJECTED -> holder.userName!!.text = context.getString(R.string.meeting_rejected, request.meetingRequest!!.receiverUsername)
                 MeetingType.ACTIVE -> {
-                    holder.userName!!.text = request.meetingRequest!!.receiverUsername + " accepted"
-                    holder.meetBtn!!.text = "Show route"
+                    holder.userName!!.text = context.getString(R.string.meeting_active, request.meetingRequest!!.receiverUsername)
+                    holder.meetBtn!!.text = context.getString(R.string.show_route)
                     holder.meetBtn.setOnClickListener { showOnMap(request.meetingRequest) }
                 }
                 MeetingType.INCOMING -> {
-                    holder.userName!!.text = request.meetingRequest!!.receiverUsername + " incoming"
+                    holder.userName!!.text = context.getString(R.string.meeting_incoming, request.meetingRequest!!.receiverUsername)
                     holder.meetBtn!!.setOnClickListener { respond(request.meetingRequest) }
                 }
                 MeetingType.OUTGOING -> {
-                    holder.userName!!.text = request.meetingRequest!!.receiverUsername + " sent"
+                    holder.userName!!.text = context.getString(R.string.meeting_outgoing, request.meetingRequest!!.receiverUsername)
                     holder.meetBtn!!.visibility = View.GONE
                 }
             }
         } else {
-            holder.headerTxt!!.text = request.type.toString()
+            holder.headerTxt!!.text = context.getString(R.string.meeting_heading, request.type.toString())
         }
     }
 

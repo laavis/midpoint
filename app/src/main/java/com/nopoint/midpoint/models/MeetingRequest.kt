@@ -2,6 +2,10 @@ package com.nopoint.midpoint.models
 
 import com.google.gson.annotations.SerializedName
 
+data class MeetingRequestResponse(
+    @SerializedName("requests") val requests: ArrayList<MeetingRequest>
+)
+
 data class MeetingRequest(
     @SerializedName("_id") val id: String,
     @SerializedName("requester") val requester: String,
