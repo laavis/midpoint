@@ -1,9 +1,7 @@
 package com.nopoint.midpoint.fragments
 
-import android.content.Context
 import android.location.Location
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -23,9 +21,10 @@ import com.nopoint.midpoint.networking.API
 import com.nopoint.midpoint.networking.APIController
 import com.nopoint.midpoint.networking.ServiceVolley
 import kotlinx.android.synthetic.main.map_content.view.*
-import android.widget.LinearLayout
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.nopoint.midpoint.MainActivity
+import com.nopoint.midpoint.models.CurrentUser
+import com.nopoint.midpoint.models.LocalUser
 import kotlinx.android.synthetic.main.bottom_sheet.view.*
 
 /**
@@ -56,23 +55,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         }
 
         (activity as MainActivity).supportActionBar?.title = "Map"
-
         childFragmentManager.beginTransaction().replace(R.id.google_map, mapFragment!!).commit()
-        getToken()
-        view.directions_btn.setOnClickListener {
-            if (mRouteMarkerList.isNotEmpty()) clearMarkersAndRoute()
-
-            if (view.destination_txt.text.isNotBlank()) {
-                getDirections(destination = view.destination_txt.text.toString())
-            } else {
-                //Test coordinates for helsinki
-                //TODO actually get friend's coordinates from API
-                val dest = Location("")
-                dest.latitude = 60.1696327
-                dest.longitude = 24.9369516
-                getDirections(destinationCoord = dest)
-            }
-        }
         sheetBehavior = BottomSheetBehavior.from(view.bottom_sheet)
         sheetBehavior!!.bottomSheetCallback = createBottomSheetCb()
         return view
@@ -91,14 +74,6 @@ class MapFragment : Fragment(), OnMapReadyCallback {
     override fun onResume() {
         super.onResume()
         if (requestingLocationUpdates) startLocationUpdates()
-    }
-
-    private fun getToken() {
-        Log.d("GET TOKEN", "start")
-        val prefs = this.activity!!.getSharedPreferences("userPrefs", Context.MODE_PRIVATE)
-        val token = prefs.getString("token", "") ?: ""
-
-        Log.d("TOKEN", token)
     }
 
     private fun createBottomSheetCb(): BottomSheetBehavior.BottomSheetCallback{
@@ -129,6 +104,8 @@ class MapFragment : Fragment(), OnMapReadyCallback {
                     if (!requestingLocationUpdates) {
                         val loc = LatLng(location.latitude, location.longitude)
                         val cam = CameraUpdateFactory.newLatLngZoom(loc, 15.0f)
+                        val sheetFragment = childFragmentManager.findFragmentById(R.id.fragment) as MeetingFragment
+                        sheetFragment.currentLocation = location
                         mMap.animateCamera(cam)
                     }
                     requestingLocationUpdates = true
@@ -153,10 +130,11 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         }
     }
 
-    private fun getDirections(
-        destination: String = "Helsinki",
-        destinationCoord: Location? = null
-    ) {
+    fun getDirections(destination: String = "", destinationCoord: Location?) {
+        if (mRouteMarkerList.isNotEmpty()) clearMarkersAndRoute()
+        if (state == BottomSheetBehavior.STATE_EXPANDED){
+            sheetBehavior!!.state = BottomSheetBehavior.STATE_COLLAPSED
+        }
         fusedLocationClient?.lastLocation?.addOnSuccessListener { loc: Location? ->
             val url = if (destinationCoord != null)
                 Directions.buildUrl(loc, Directions.getMiddlePoint(loc!!, destinationCoord))

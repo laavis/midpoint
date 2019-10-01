@@ -26,5 +26,13 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="meet_a_friend">Meet a Friend</string>
 
+    <!-- Titles for meeting request recycler view -->
+    <string name="meeting_active">%s accepted</string>
+    <string name="meeting_incoming">%s wants to meet</string>
+    <string name="meeting_outgoing">Request sent to %s</string>
+    <string name="meeting_rejected">%s rejected</string>
+    <string name="meeting_heading">%s REQUESTS</string>
+    <string name="show_route">Show route</string>
+    <string name="send_request">Send request</string>
 
 </resources>

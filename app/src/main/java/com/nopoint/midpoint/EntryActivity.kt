@@ -1,6 +1,6 @@
 package com.nopoint.midpoint
 
-import android.content.pm.PackageManager
+import android.content.Intent
 import android.graphics.Typeface
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -11,6 +11,7 @@ import kotlinx.android.synthetic.main.activity_entry.*
 import android.widget.TextView
 import com.nopoint.midpoint.fragments.LoginFragment
 import com.nopoint.midpoint.fragments.SignUpFragment
+import com.nopoint.midpoint.models.CurrentUser
 
 
 class EntryActivity : AppCompatActivity() {
@@ -25,10 +26,12 @@ class EntryActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_entry)
-        hasPermissions()
-
         val strokeParams = entry_stroke.layoutParams as RelativeLayout.LayoutParams
-
+        if(checkValidSession()){
+            val intent = Intent(this, MainActivity::class.java)
+            startActivity(intent)
+            finish()
+        }
         fManager = supportFragmentManager
         fTransaction = fManager.beginTransaction()
 
@@ -62,6 +65,10 @@ class EntryActivity : AppCompatActivity() {
         }
     }
 
+    private fun checkValidSession(): Boolean {
+        return (CurrentUser.getLocalUser(this) != null)
+    }
+
     private fun toggleTextStyle(active: TextView, inactive: TextView) {
         active.typeface = Typeface.DEFAULT_BOLD
         inactive.typeface = Typeface.DEFAULT
@@ -79,9 +86,4 @@ class EntryActivity : AppCompatActivity() {
         fTransaction.commit()
     }
 
-    private fun hasPermissions() {
-        if (checkSelfPermission(android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            requestPermissions(arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION), 1)
-        }
-    }
 }

@@ -34,3 +34,8 @@ data class LoginErrorResponse (
     @SerializedName("email")val email: String,
     @SerializedName("password")val password: String
 )
+
+data class LocalUser(
+    @SerializedName("user")val user:User,
+    @SerializedName("token")val token: String,
+    @SerializedName("expiration")val expiration: Long)

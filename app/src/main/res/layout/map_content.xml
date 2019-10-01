@@ -3,18 +3,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
+
     <FrameLayout
         android:id="@+id/google_map"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/linearLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         tools:context=".MapsActivity" />
 
-    <LinearLayout
+<!--    <LinearLayout
         android:id="@+id/linearLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -38,5 +34,5 @@
             android:layout_height="wrap_content"
             android:layout_weight="1.25"
             android:text="Get directions" />
-    </LinearLayout>
+    </LinearLayout>-->
 </androidx.constraintlayout.widget.ConstraintLayout>
