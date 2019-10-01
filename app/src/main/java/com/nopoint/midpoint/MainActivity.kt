@@ -9,34 +9,44 @@ import com.nopoint.midpoint.fragments.MapFragment
 import com.nopoint.midpoint.fragments.SettingsFragment
 import androidx.fragment.app.Fragment
 import kotlinx.android.synthetic.main.activity_main.*
+import androidx.core.app.ComponentActivity.ExtraData
+import androidx.core.content.ContextCompat.getSystemService
+import android.icu.lang.UCharacter.GraphemeClusterBreak.T
+import androidx.fragment.app.FragmentManager
+
 
 class MainActivity : AppCompatActivity() {
-
+    private val mapFragment = MapFragment()
+    private val friendsFragment = FriendsFragment()
+    private val settingsFragment = SettingsFragment()
+    val fm: FragmentManager = supportFragmentManager
+    var active: Fragment = mapFragment
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         hasPermissions()
         bottom_navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
-        val fragment = MapFragment()
-        loadFragment(fragment)
+        fm.beginTransaction().add(container.id, settingsFragment, "3").hide(settingsFragment).commit()
+        fm.beginTransaction().add(container.id, friendsFragment, "2").hide(friendsFragment).commit()
+        fm.beginTransaction().add(container.id, mapFragment, "1").commit()
     }
 
     private val mOnNavigationItemSelectedListener = BottomNavigationView.OnNavigationItemSelectedListener { menuItem ->
         when (menuItem.itemId) {
             R.id.nav_home -> {
-                val fragment = MapFragment()
-                loadFragment(fragment)
+                fm.beginTransaction().hide(active).show(mapFragment).commit()
+                active = mapFragment
                 return@OnNavigationItemSelectedListener true
             }
             R.id.nav_friends -> {
-                val fragment = FriendsFragment()
-                loadFragment(fragment)
+                fm.beginTransaction().hide(active).show(friendsFragment).commit()
+                active = friendsFragment
                 return@OnNavigationItemSelectedListener true
             }
             R.id.nav_settings -> {
-                val fragment = SettingsFragment()
-                loadFragment(fragment)
+                fm.beginTransaction().hide(active).show(settingsFragment).commit()
+                active = settingsFragment
                 return@OnNavigationItemSelectedListener true
             }
         }
