@@ -2,6 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context="com.nopoint.midpoint.fragments.SettingsFragment">
 
     <!-- TODO: Update blank fragment layout -->
@@ -10,4 +11,12 @@
         android:layout_height="match_parent"
         android:text="Settings Fragment" />
 
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/logout_btn"
+        style="@style/ButtonPrimary"
+        android:layout_gravity="bottom|center"
+        android:layout_margin="8dp"
+        android:text="@string/log_out"
+        android:textColor="@color/color_white"
+        app:cornerRadius="0dp" />
 </FrameLayout>
