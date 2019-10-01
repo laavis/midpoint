@@ -129,6 +129,8 @@ class MapFragment : Fragment(), OnMapReadyCallback {
                     if (!requestingLocationUpdates) {
                         val loc = LatLng(location.latitude, location.longitude)
                         val cam = CameraUpdateFactory.newLatLngZoom(loc, 15.0f)
+                        val sheetFragment = childFragmentManager.findFragmentById(R.id.fragment) as MeetingFragment
+                        sheetFragment.currentLocation = location
                         mMap.animateCamera(cam)
                     }
                     requestingLocationUpdates = true
@@ -153,7 +155,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         }
     }
 
-    private fun getDirections(
+    fun getDirections(
         destination: String = "Helsinki",
         destinationCoord: Location? = null
     ) {
