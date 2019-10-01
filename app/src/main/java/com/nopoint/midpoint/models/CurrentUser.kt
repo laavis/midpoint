@@ -34,4 +34,8 @@ object CurrentUser {
             if (System.currentTimeMillis() < localUser.expiration) localUser else null
         } else null
     }
+
+    fun clearUser(context: Context){
+        context.getSharedPreferences("userPrefs", Context.MODE_PRIVATE).edit().clear().apply()
+    }
 }

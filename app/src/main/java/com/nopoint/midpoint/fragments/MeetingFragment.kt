@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.snackbar.Snackbar
 import com.google.gson.Gson
+import com.nopoint.midpoint.MainActivity
 import com.nopoint.midpoint.MeetingRequestsAdapter
 import com.nopoint.midpoint.R
 import com.nopoint.midpoint.map.Directions
@@ -24,7 +25,6 @@ import com.nopoint.midpoint.networking.ServiceVolley
 import kotlinx.android.synthetic.main.fragment_meeting.view.*
 import org.json.JSONObject
 import java.io.IOException
-
 
 /**
  * A simple [Fragment] subclass.
@@ -42,7 +42,6 @@ class MeetingFragment : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_meeting, container, false)
-        getRequests()
         view.request_btn.setOnClickListener { sendRequest(view.friend_username.text.toString()) }
         return view
     }
@@ -50,6 +49,7 @@ class MeetingFragment : Fragment() {
     override fun onAttach(context: Context) {
         super.onAttach(context)
         localUser = CurrentUser.getLocalUser(activity!!)!!
+        getRequests()
     }
 
     private fun onResponseSent(meetingRequest: MeetingRequest) {
@@ -101,7 +101,10 @@ class MeetingFragment : Fragment() {
                     Gson().fromJson(response.toString(), MeetingRequestResponse::class.java)
                 meetingRequests =
                     MeetingUtils.sortRequests(meetingResponse.requests, localUser.user)
-                initializeRecyclerView()
+                // Was causing a crash
+                if (view != null && activity != null){
+                    initializeRecyclerView()
+                }
             } catch (e: IOException) {
                 Log.e("MEETING", "$e")
             }
@@ -110,8 +113,8 @@ class MeetingFragment : Fragment() {
 
     private fun initializeRecyclerView() {
         view!!.requests_view.adapter =
-            MeetingRequestsAdapter(meetingRequests, activity!!, ::onResponseSent, ::showOnMap)
-        view!!.requests_view.layoutManager = LinearLayoutManager(activity!!)
+            MeetingRequestsAdapter(meetingRequests, (activity as MainActivity), ::onResponseSent, ::showOnMap)
+        view!!.requests_view.layoutManager = LinearLayoutManager((activity as MainActivity))
         val dividerItemDecoration = DividerItemDecoration(
             view!!.requests_view.context,
             (view!!.requests_view.layoutManager as LinearLayoutManager).orientation
