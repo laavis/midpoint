@@ -19,8 +19,10 @@ import com.nopoint.midpoint.networking.ServiceVolley
 import kotlinx.android.synthetic.main.fragment_login.*
 import com.google.gson.Gson
 import com.nopoint.midpoint.EntryActivity
+import com.nopoint.midpoint.models.LocalUser
 import com.nopoint.midpoint.models.LoginErrorResponse
 import com.nopoint.midpoint.models.LoginResponse
+import com.nopoint.midpoint.models.User
 import org.json.JSONException
 import org.json.JSONObject
 import java.io.IOException
@@ -67,7 +69,7 @@ class LoginFragment : Fragment() {
                 Log.d("RES", "$loginResponse")
 
                 if (loginResponse.success) {
-                    saveToken(loginResponse.token)
+                    saveTokenAndUser(loginResponse.token, loginResponse.user)
                         val intent = Intent(context!!.applicationContext, MainActivity::class.java)
                         startActivity(intent)
                         (activity as EntryActivity).finish()
@@ -88,16 +90,18 @@ class LoginFragment : Fragment() {
     }
 
 
-    private fun saveToken(token: String) {
+    private fun saveTokenAndUser(token: String, user: User) {
         val editor: SharedPreferences.Editor
         val sharedPrefs: SharedPreferences =
             activity!!.getSharedPreferences("userPrefs", Context.MODE_PRIVATE)
         editor = sharedPrefs.edit()
+        val expiration: Long = System.currentTimeMillis() + 3600000 //1 hour
 
+        val localUser = LocalUser(user, token, expiration)
         try {
-            editor.putString("token", token)
+            val serializedUser = Gson().toJson(localUser)
+            editor.putString("localUser", serializedUser)
             editor.apply()
-
         } catch (e: JSONException) {
             e.printStackTrace()
         }

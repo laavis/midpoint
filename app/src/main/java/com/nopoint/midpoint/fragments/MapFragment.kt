@@ -23,6 +23,8 @@ import com.nopoint.midpoint.networking.ServiceVolley
 import kotlinx.android.synthetic.main.map_content.view.*
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.nopoint.midpoint.MainActivity
+import com.nopoint.midpoint.models.CurrentUser
+import com.nopoint.midpoint.models.LocalUser
 import kotlinx.android.synthetic.main.bottom_sheet.view.*
 
 /**
@@ -53,7 +55,6 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         }
 
         (activity as MainActivity).supportActionBar?.title = "Map"
-
         childFragmentManager.beginTransaction().replace(R.id.google_map, mapFragment!!).commit()
         sheetBehavior = BottomSheetBehavior.from(view.bottom_sheet)
         sheetBehavior!!.bottomSheetCallback = createBottomSheetCb()
@@ -129,7 +130,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         }
     }
 
-    fun getDirections(destination: String, destinationCoord: Location?) {
+    fun getDirections(destination: String = "", destinationCoord: Location?) {
         if (mRouteMarkerList.isNotEmpty()) clearMarkersAndRoute()
         if (state == BottomSheetBehavior.STATE_EXPANDED){
             sheetBehavior!!.state = BottomSheetBehavior.STATE_COLLAPSED

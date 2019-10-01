@@ -1,5 +1,6 @@
 package com.nopoint.midpoint
 
+import android.content.Intent
 import android.graphics.Typeface
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -10,6 +11,7 @@ import kotlinx.android.synthetic.main.activity_entry.*
 import android.widget.TextView
 import com.nopoint.midpoint.fragments.LoginFragment
 import com.nopoint.midpoint.fragments.SignUpFragment
+import com.nopoint.midpoint.models.CurrentUser
 
 
 class EntryActivity : AppCompatActivity() {
@@ -25,7 +27,11 @@ class EntryActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_entry)
         val strokeParams = entry_stroke.layoutParams as RelativeLayout.LayoutParams
-
+        if(checkValidSession()){
+            val intent = Intent(this, MainActivity::class.java)
+            startActivity(intent)
+            finish()
+        }
         fManager = supportFragmentManager
         fTransaction = fManager.beginTransaction()
 
@@ -57,6 +63,10 @@ class EntryActivity : AppCompatActivity() {
             strokeParams.addRule(RelativeLayout.ALIGN_END, R.id.textbutton_show_sign_up)
             entry_stroke.layoutParams = strokeParams
         }
+    }
+
+    private fun checkValidSession(): Boolean {
+        return (CurrentUser.getLocalUser(this) != null)
     }
 
     private fun toggleTextStyle(active: TextView, inactive: TextView) {

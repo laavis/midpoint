@@ -25,6 +25,7 @@ import kotlinx.android.synthetic.main.fragment_meeting.view.*
 import org.json.JSONObject
 import java.io.IOException
 
+
 /**
  * A simple [Fragment] subclass.
  */
@@ -33,6 +34,7 @@ class MeetingFragment : Fragment() {
     private val apiController = APIController(service)
     var currentLocation: Location? = null
     private var meetingRequests = mutableListOf<MeetingRequestRow>()
+    private lateinit var localUser: LocalUser
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -43,6 +45,11 @@ class MeetingFragment : Fragment() {
         getRequests()
         view.request_btn.setOnClickListener { sendRequest(view.friend_username.text.toString()) }
         return view
+    }
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        localUser = CurrentUser.getLocalUser(activity!!)!!
     }
 
     private fun onResponseSent(meetingRequest: MeetingRequest) {
@@ -61,7 +68,7 @@ class MeetingFragment : Fragment() {
         params.put("response", 1) //TODO allow setting different response types
 
         Log.d("MEET", meetingRequest.toString())
-        apiController.post(API.LOCAL_API, path, params, getToken()) { response ->
+        apiController.post(API.LOCAL_API, path, params, localUser.token) { response ->
             try {
                 Log.d("RES", "$response")
                 Snackbar.make(
@@ -87,13 +94,13 @@ class MeetingFragment : Fragment() {
 
     private fun getRequests() {
         val path = "/meeting-request/all"
-        apiController.get(API.LOCAL_API, path, getToken()) { response ->
+        apiController.get(API.LOCAL_API, path, localUser.token) { response ->
             try {
                 Log.d("RES", "$response")
                 val meetingResponse =
                     Gson().fromJson(response.toString(), MeetingRequestResponse::class.java)
                 meetingRequests =
-                    MeetingUtils.sortRequests(meetingResponse.requests, getCurrentUser())
+                    MeetingUtils.sortRequests(meetingResponse.requests, localUser.user)
                 initializeRecyclerView()
             } catch (e: IOException) {
                 Log.e("MEETING", "$e")
@@ -118,7 +125,7 @@ class MeetingFragment : Fragment() {
         params.put("receiver", username)
         params.put("lat", currentLocation!!.latitude)
         params.put("lng", currentLocation!!.longitude)
-        apiController.post(API.LOCAL_API, path, params, getToken()) { response ->
+        apiController.post(API.LOCAL_API, path, params, localUser.token) { response ->
             try {
                 //TODO Refresh recycler view with new request
                 Log.d("RES", "$response")
@@ -127,17 +134,6 @@ class MeetingFragment : Fragment() {
                 Log.e("MEETING", "$e")
             }
         }
-    }
-
-
-    private fun getToken(): String {
-        val prefs = this.activity!!.getSharedPreferences("userPrefs", Context.MODE_PRIVATE)
-        return prefs.getString("token", "") ?: ""
-    }
-
-    private fun getCurrentUser(): User {
-        //TODO get user from shared prefs / fetch from server
-        return User("5d8b6b2ae11065074b882035", "aa", "a@a.com", "", arrayListOf())
     }
 
 }
