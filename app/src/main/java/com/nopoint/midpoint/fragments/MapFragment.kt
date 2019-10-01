@@ -23,7 +23,6 @@ import com.nopoint.midpoint.networking.API
 import com.nopoint.midpoint.networking.APIController
 import com.nopoint.midpoint.networking.ServiceVolley
 import kotlinx.android.synthetic.main.map_content.view.*
-import android.widget.LinearLayout
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.nopoint.midpoint.MainActivity
 import kotlinx.android.synthetic.main.bottom_sheet.view.*
@@ -60,8 +59,6 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         childFragmentManager.beginTransaction().replace(R.id.google_map, mapFragment!!).commit()
         getToken()
         view.directions_btn.setOnClickListener {
-            if (mRouteMarkerList.isNotEmpty()) clearMarkersAndRoute()
-
             if (view.destination_txt.text.isNotBlank()) {
                 getDirections(destination = view.destination_txt.text.toString())
             } else {
@@ -159,6 +156,10 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         destination: String = "Helsinki",
         destinationCoord: Location? = null
     ) {
+        if (mRouteMarkerList.isNotEmpty()) clearMarkersAndRoute()
+        if (state == BottomSheetBehavior.STATE_EXPANDED){
+            sheetBehavior!!.state = BottomSheetBehavior.STATE_COLLAPSED
+        }
         fusedLocationClient?.lastLocation?.addOnSuccessListener { loc: Location? ->
             val url = if (destinationCoord != null)
                 Directions.buildUrl(loc, Directions.getMiddlePoint(loc!!, destinationCoord))
