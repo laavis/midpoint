@@ -33,5 +33,6 @@
     <string name="meeting_rejected">%s rejected</string>
     <string name="meeting_heading">%s REQUESTS</string>
     <string name="show_route">Show route</string>
+    <string name="send_request">Send request</string>
 
 </resources>

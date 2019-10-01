@@ -1,9 +1,7 @@
 package com.nopoint.midpoint.fragments
 
-import android.content.Context
 import android.location.Location
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -57,19 +55,6 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         (activity as MainActivity).supportActionBar?.title = "Map"
 
         childFragmentManager.beginTransaction().replace(R.id.google_map, mapFragment!!).commit()
-        getToken()
-        view.directions_btn.setOnClickListener {
-            if (view.destination_txt.text.isNotBlank()) {
-                getDirections(destination = view.destination_txt.text.toString())
-            } else {
-                //Test coordinates for helsinki
-                //TODO actually get friend's coordinates from API
-                val dest = Location("")
-                dest.latitude = 60.1696327
-                dest.longitude = 24.9369516
-                getDirections(destinationCoord = dest)
-            }
-        }
         sheetBehavior = BottomSheetBehavior.from(view.bottom_sheet)
         sheetBehavior!!.bottomSheetCallback = createBottomSheetCb()
         return view
@@ -88,14 +73,6 @@ class MapFragment : Fragment(), OnMapReadyCallback {
     override fun onResume() {
         super.onResume()
         if (requestingLocationUpdates) startLocationUpdates()
-    }
-
-    private fun getToken() {
-        Log.d("GET TOKEN", "start")
-        val prefs = this.activity!!.getSharedPreferences("userPrefs", Context.MODE_PRIVATE)
-        val token = prefs.getString("token", "") ?: ""
-
-        Log.d("TOKEN", token)
     }
 
     private fun createBottomSheetCb(): BottomSheetBehavior.BottomSheetCallback{
@@ -152,10 +129,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         }
     }
 
-    fun getDirections(
-        destination: String = "Helsinki",
-        destinationCoord: Location? = null
-    ) {
+    fun getDirections(destination: String, destinationCoord: Location?) {
         if (mRouteMarkerList.isNotEmpty()) clearMarkersAndRoute()
         if (state == BottomSheetBehavior.STATE_EXPANDED){
             sheetBehavior!!.state = BottomSheetBehavior.STATE_COLLAPSED

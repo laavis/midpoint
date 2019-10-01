@@ -1,6 +1,5 @@
 package com.nopoint.midpoint
 
-import android.content.pm.PackageManager
 import android.graphics.Typeface
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -25,8 +24,6 @@ class EntryActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_entry)
-        hasPermissions()
-
         val strokeParams = entry_stroke.layoutParams as RelativeLayout.LayoutParams
 
         fManager = supportFragmentManager
@@ -79,9 +76,4 @@ class EntryActivity : AppCompatActivity() {
         fTransaction.commit()
     }
 
-    private fun hasPermissions() {
-        if (checkSelfPermission(android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            requestPermissions(arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION), 1)
-        }
-    }
 }

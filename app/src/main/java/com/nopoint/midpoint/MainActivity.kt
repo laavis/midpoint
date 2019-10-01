@@ -1,5 +1,6 @@
 package com.nopoint.midpoint
 
+import android.content.pm.PackageManager
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -15,7 +16,7 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
+        hasPermissions()
         bottom_navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
         val fragment = MapFragment()
         loadFragment(fragment)
@@ -48,5 +49,11 @@ class MainActivity : AppCompatActivity() {
         transaction.replace(container.id, fragment)
         //transaction.addToBackStack(null)
         transaction.commit()
+    }
+
+    private fun hasPermissions() {
+        if (checkSelfPermission(android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION), 1)
+        }
     }
 }
