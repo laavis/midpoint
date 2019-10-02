@@ -52,6 +52,7 @@ class MeetingRequestsAdapter(
                     holder.meetBtn!!.visibility = View.GONE
                 }
             }
+            holder.timestamp!!.text = android.text.format.DateUtils.getRelativeTimeSpanString(request.meetingRequest?.timestamp?.time ?: 0)
         } else {
             holder.headerTxt!!.text = context.getString(R.string.meeting_heading, request.type.toString())
         }
@@ -65,5 +66,7 @@ class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
     // Holds the TextView that will add each animal to
     val userName: TextView? = view.receiver_txt
     val meetBtn: Button? = view.meet_btn
+    val timestamp: TextView? = view.timestamp_txt
+
     val headerTxt: TextView? = view.header_txt
 }

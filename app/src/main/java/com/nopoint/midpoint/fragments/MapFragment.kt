@@ -16,15 +16,12 @@ import com.google.maps.android.PolyUtil
 import com.nopoint.midpoint.R
 import com.nopoint.midpoint.map.Directions
 import com.nopoint.midpoint.map.MapsFactory
-import com.nopoint.midpoint.map.models.Route
+import com.nopoint.midpoint.map.models.FullRoute
 import com.nopoint.midpoint.networking.API
 import com.nopoint.midpoint.networking.APIController
 import com.nopoint.midpoint.networking.ServiceVolley
-import kotlinx.android.synthetic.main.map_content.view.*
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.nopoint.midpoint.MainActivity
-import com.nopoint.midpoint.models.CurrentUser
-import com.nopoint.midpoint.models.LocalUser
 import kotlinx.android.synthetic.main.bottom_sheet.view.*
 
 /**
@@ -149,14 +146,14 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         }
     }
 
-    private fun setMarkersAndRoute(route: Route) {
-        val startLatLng = LatLng(route.startLat!!, route.startLng!!)
+    private fun setMarkersAndRoute(fullRoute: FullRoute) {
+        val startLatLng = LatLng(fullRoute.startLat!!, fullRoute.startLng!!)
         val startMarkerOptions: MarkerOptions =
-            MarkerOptions().position(startLatLng).title(route.startName)
+            MarkerOptions().position(startLatLng).title(fullRoute.startName)
                 .icon(BitmapDescriptorFactory.fromBitmap(MapsFactory.drawMarker(this.activity!!, "")))
-        val endLatLng = LatLng(route.endLat!!, route.endLng!!)
+        val endLatLng = LatLng(fullRoute.endLat!!, fullRoute.endLng!!)
         val endMarkerOptions: MarkerOptions =
-            MarkerOptions().position(endLatLng).title(route.endName).icon(
+            MarkerOptions().position(endLatLng).title(fullRoute.endName).icon(
                 BitmapDescriptorFactory.fromBitmap(MapsFactory.drawMarker(this.activity!!, ""))
             )
         val startMarker = mMap.addMarker(startMarkerOptions)
@@ -165,7 +162,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         mRouteMarkerList.add(endMarker)
 
         val polylineOptions = MapsFactory.drawRoute(this.activity!!)
-        val pointsList = PolyUtil.decode(route.overviewPolyline)
+        val pointsList = PolyUtil.decode(fullRoute.overviewPolyline)
         for (point in pointsList) {
             polylineOptions.add(point)
         }

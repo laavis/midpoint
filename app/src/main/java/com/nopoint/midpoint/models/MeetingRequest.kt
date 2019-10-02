@@ -1,6 +1,8 @@
 package com.nopoint.midpoint.models
 
 import com.google.gson.annotations.SerializedName
+import java.util.*
+import kotlin.collections.ArrayList
 
 data class MeetingRequestResponse(
     @SerializedName("requests") val requests: ArrayList<MeetingRequest>
@@ -18,7 +20,8 @@ data class MeetingRequest(
     @SerializedName("recieverLat") val receiverLatitude: Double?,
     @SerializedName("recieverLng") val receiverLongitude: Double?,
     @SerializedName("meetingPointLat") val meetingPointLatitude: Double?,
-    @SerializedName("meetingPointLng") val meetingPointLongitude: Double?
+    @SerializedName("meetingPointLng") val meetingPointLongitude: Double?,
+    @SerializedName("timestamp") val timestamp: Date
 )
 
 data class MeetingRequestRow(val meetingRequest: MeetingRequest?, val type: MeetingType?, val rowType: RowType)
