@@ -1,5 +1,6 @@
 package com.nopoint.midpoint.map.models
 
+
 data class Direction(
     val geocoded_waypoints: List<GeocodedWaypoint>,
     val routes: List<Route>,

@@ -8,3 +8,4 @@ data class FullRoute(
     val endLng: Double?,
     val overviewPolyline: String = ""
 )
+

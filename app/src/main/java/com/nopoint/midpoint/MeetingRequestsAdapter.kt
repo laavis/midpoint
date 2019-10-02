@@ -44,7 +44,7 @@ class MeetingRequestsAdapter(
                     holder.meetBtn.setOnClickListener { showOnMap(request.meetingRequest) }
                 }
                 MeetingType.INCOMING -> {
-                    holder.userName!!.text = context.getString(R.string.meeting_incoming, request.meetingRequest!!.receiverUsername)
+                    holder.userName!!.text = context.getString(R.string.meeting_incoming, request.meetingRequest!!.requesterUsername)
                     holder.meetBtn!!.setOnClickListener { respond(request.meetingRequest) }
                 }
                 MeetingType.OUTGOING -> {
@@ -67,6 +67,5 @@ class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
     val userName: TextView? = view.receiver_txt
     val meetBtn: Button? = view.meet_btn
     val timestamp: TextView? = view.timestamp_txt
-
     val headerTxt: TextView? = view.header_txt
 }

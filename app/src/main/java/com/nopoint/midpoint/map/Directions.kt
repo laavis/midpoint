@@ -2,6 +2,8 @@ package com.nopoint.midpoint.map
 
 import android.location.Location
 import android.net.Uri
+import android.util.Log
+import com.google.android.gms.maps.model.LatLng
 import com.google.gson.Gson
 import com.nopoint.midpoint.BuildConfig
 import com.nopoint.midpoint.map.models.Direction
@@ -39,6 +41,15 @@ object Directions {
         return builder.build().toString()
     }
 
+    fun buildUrlTest(origin: LatLng, destination: LatLng?): String {
+        val builder = Uri.Builder()
+        builder.appendQueryParameter("origin", "${origin.latitude},${origin.longitude}")
+            .appendQueryParameter("destination", "${destination!!.latitude},${destination.longitude}")
+            .appendQueryParameter("mode", "walking")
+            .appendQueryParameter("key", BuildConfig.api_key)
+        return builder.build().toString()
+    }
+
     /**
      * Builds route object from directions API json response
      * @param response The google directions API response json object
@@ -58,6 +69,14 @@ object Directions {
             bestRoute.overview_polyline.points)
     }
 
+    data class MidPointRoute(
+        val startLat: Double,
+        val startLng: Double,
+        val endLat: Double,
+        val endLng: Double
+    )
+
+
     /**
      * Calculates & returns the middle point between 2 coordinates
      * @param start Location object with the starting coordinates
@@ -70,6 +89,9 @@ object Directions {
         val location = Location("")
         location.latitude = midLat
         location.longitude = midLng
+
+        Log.d("DIRECTIONS", "lat: ${location.latitude}, lng: ${location.longitude}")
         return location
     }
+
 }

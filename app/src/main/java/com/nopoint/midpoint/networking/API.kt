@@ -7,3 +7,7 @@ enum class API(val path: String) {
     TEST("https://postman-echo.com/"),
     LOCAL_API("http://192.168.1.45:5000")
 }
+
+const val BASE_URL = "http://192.168.1.45:5000"
+const val LOGIN_URL = "$BASE_URL/user/login"
+const val MEETING_RESPOND_URL = "$BASE_URL/meeting-request/respond"
