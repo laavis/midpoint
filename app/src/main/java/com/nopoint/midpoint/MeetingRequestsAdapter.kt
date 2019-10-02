@@ -36,9 +36,13 @@ class MeetingRequestsAdapter(
             when(request.type) {
                 MeetingType.REJECTED -> holder.userName!!.text = context.getString(R.string.meeting_rejected, request.meetingRequest!!.receiverUsername)
                 MeetingType.ACTIVE -> {
-                    holder.userName!!.text = context.getString(R.string.meeting_active, request.meetingRequest!!.requesterUsername) // TODO show not current user
+                    if (request.rowType == RowType.DELETABLE) {
+                        holder.userName!!.text = context.getString(R.string.meeting_active, request.meetingRequest!!.receiverUsername)
+                    } else {
+                        holder.userName!!.text = context.getString(R.string.meeting_active, "You")
+                    }
                     holder.meetBtn!!.text = context.getString(R.string.show_route)
-                    holder.meetBtn.setOnClickListener { showOnMap(request.meetingRequest) }
+                    holder.meetBtn.setOnClickListener { showOnMap(request.meetingRequest!!) }
                 }
                 MeetingType.INCOMING -> {
                     holder.userName!!.text = context.getString(R.string.meeting_incoming, request.meetingRequest!!.requesterUsername)
