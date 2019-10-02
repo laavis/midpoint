@@ -80,11 +80,11 @@ class MapFragment : Fragment(), OnMapReadyCallback {
                     BottomSheetBehavior.STATE_HIDDEN -> state = BottomSheetBehavior.STATE_HIDDEN
                     BottomSheetBehavior.STATE_EXPANDED -> state = BottomSheetBehavior.STATE_EXPANDED
                     BottomSheetBehavior.STATE_COLLAPSED -> state = BottomSheetBehavior.STATE_COLLAPSED
-                    BottomSheetBehavior.STATE_DRAGGING -> {
+                    BottomSheetBehavior.STATE_DRAGGING -> state = BottomSheetBehavior.STATE_DRAGGING
+/*                    Buggy AF
                         if (state != BottomSheetBehavior.STATE_HALF_EXPANDED) {
                             sheetBehavior!!.state = BottomSheetBehavior.STATE_HALF_EXPANDED
-                        }
-                    }
+                    }*/
                     BottomSheetBehavior.STATE_SETTLING -> state = BottomSheetBehavior.STATE_SETTLING
                     BottomSheetBehavior.STATE_HALF_EXPANDED -> state = BottomSheetBehavior.STATE_HALF_EXPANDED
                 }

@@ -43,6 +43,7 @@ class MeetingFragment : Fragment() {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_meeting, container, false)
         view.request_btn.setOnClickListener { sendRequest(view.friend_username.text.toString()) }
+        view.refresh_btn.setOnClickListener { getRequests() }
         return view
     }
 
