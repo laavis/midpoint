@@ -22,6 +22,7 @@ import com.nopoint.midpoint.models.*
 import com.nopoint.midpoint.networking.API
 import com.nopoint.midpoint.networking.APIController
 import com.nopoint.midpoint.networking.ServiceVolley
+import kotlinx.android.synthetic.main.fragment_meeting.*
 import kotlinx.android.synthetic.main.fragment_meeting.view.*
 import org.json.JSONObject
 import java.io.IOException
