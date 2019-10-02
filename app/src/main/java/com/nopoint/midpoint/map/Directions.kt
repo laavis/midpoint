@@ -2,8 +2,10 @@ package com.nopoint.midpoint.map
 
 import android.location.Location
 import android.net.Uri
+import com.google.gson.Gson
 import com.nopoint.midpoint.BuildConfig
-import com.nopoint.midpoint.map.models.Route
+import com.nopoint.midpoint.map.models.Direction
+import com.nopoint.midpoint.map.models.FullRoute
 import org.json.JSONObject
 
 object Directions {
@@ -40,24 +42,20 @@ object Directions {
     /**
      * Builds route object from directions API json response
      * @param response The google directions API response json object
-     * @return Route object with coordinates for start & end and a polyline of the route
+     * @return FullRoute object with coordinates for start & end and a polyline of the route
      */
-    fun buildRoute(response: JSONObject): Route {
-        //TODO Create models for the entire directions response & serialize it using Gson
-        val routes = response.getJSONArray("routes")[0] as JSONObject
-        val legs = routes.getJSONArray("legs")[0] as JSONObject
-        val startLocation = legs.getJSONObject("start_location")
-        val endLocation = legs.getJSONObject("end_location")
-        val polyline = routes.getJSONObject("overview_polyline").getString("points")
-        return Route(
-            legs.getString("start_address"),
-            legs.getString("end_address"),
-            startLocation.getDouble("lat"),
-            startLocation.getDouble("lng"),
-            endLocation.getDouble("lat"),
-            endLocation.getDouble("lng"),
-            polyline
-        )
+    fun buildRoute(response: JSONObject): FullRoute {
+        val directions = Gson().fromJson(response.toString(), Direction::class.java)
+        val bestRoute = directions.routes[0]
+        val leg = bestRoute.legs[0]
+        return FullRoute(
+            leg.start_address,
+            leg.end_address,
+            leg.start_location.lat,
+            leg.start_location.lng,
+            leg.end_location.lat,
+            leg.end_location.lng,
+            bestRoute.overview_polyline.points)
     }
 
     /**

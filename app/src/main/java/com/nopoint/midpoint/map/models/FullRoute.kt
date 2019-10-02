@@ -1,5 +1,5 @@
 package com.nopoint.midpoint.map.models
-data class Route(
+data class FullRoute(
     val startName: String = "",
     val endName: String = "",
     val startLat: Double?,
