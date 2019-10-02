@@ -2,7 +2,6 @@ package com.nopoint.midpoint.fragments
 
 
 import android.content.Context
-import android.os.Build
 import android.os.Bundle
 import android.text.TextWatcher
 import androidx.fragment.app.Fragment
@@ -29,6 +28,7 @@ import com.nopoint.midpoint.networking.API
 import com.nopoint.midpoint.networking.APIController
 import com.nopoint.midpoint.networking.ServiceVolley
 import java.io.IOException
+import com.google.gson.reflect.TypeToken
 
 
 class FriendsFragment : Fragment() {
@@ -42,14 +42,14 @@ class FriendsFragment : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
-        val view = inflater.inflate(R.layout.fragment_friends, container, false)
+        val v = inflater.inflate(R.layout.fragment_friends, container, false)
 
-        searchInput = view.findViewById(R.id.search_input)
-        bottomNav = (activity as MainActivity).findViewById<BottomNavigationView>(R.id.bottom_navigation)
+        searchInput = v.findViewById(R.id.search_input)
+        bottomNav = (activity as MainActivity).findViewById(R.id.bottom_navigation)
 
         (activity as MainActivity).supportActionBar?.title = "Friends"
 
-        return view
+        return v
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -65,6 +65,8 @@ class FriendsFragment : Fragment() {
                 timer.schedule(object : TimerTask() {
                     override fun run() {
                         // do your actual work here
+                        Log.d("FRIENDS|ADD|SEARCH", "${searchInput.text}")
+
                         Log.d("AF", "times up")
                         getSearchResults()
                     }
@@ -100,18 +102,28 @@ class FriendsFragment : Fragment() {
     }
 
 
-
     private fun getSearchResults() {
         val params = JSONObject()
-        val path = "/search/users"
+        val path = "/search/users?username=${searchInput.text}"
 
-        params.put("username", searchInput.text)
-        apiController.post(API.LOCAL_API, path, params, localUser.token) { response ->
+        // params.put("username", searchInput.text.toString())
+
+
+        apiController.get(API.LOCAL_API, path, localUser.token) { response ->
             try {
+
+                //val resList: List<UserSearchResponse> = Gson().fromJson(response.toString(), Array<UserSearchResponse>::class.java).toList()
+
+                // val homedateList: List<UserSearchResponse> = Gson().fromJson(response.toString(), Array<UserSearchResponse>::class.java).toList()
+                //
+
                 val searchResponse = Gson().fromJson(response.toString(), UserSearchResponse::class.java)
+
                 Log.d("FRIENDS|ADD|SEARCH", "$searchResponse")
 
-
+                if (searchResponse.users.isNotEmpty()) {
+                    friends_result_text.text = searchResponse.users[0].username
+                }
 
             } catch (e: IOException) {
                 Log.e("FRIENDS|ADD|SEARCH", "$e")
