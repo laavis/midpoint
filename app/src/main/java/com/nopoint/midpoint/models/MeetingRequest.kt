@@ -35,5 +35,6 @@ enum class MeetingType(val type: Int){
 
 enum class RowType{
     HEADER,
-    REQUEST
+    REQUEST,
+    DELETABLE
 }

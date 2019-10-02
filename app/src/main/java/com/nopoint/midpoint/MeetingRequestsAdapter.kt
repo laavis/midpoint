@@ -17,7 +17,6 @@ class MeetingRequestsAdapter(
     private val respond: (meetingRequest: MeetingRequest) -> Unit,
     private val showOnMap: (meetingRequest: MeetingRequest) -> Unit
 ) : RecyclerView.Adapter<ViewHolder>() {
-    private lateinit var localUser: LocalUser
     override fun getItemCount(): Int = requests.size
 
     // Inflates the item views
@@ -25,6 +24,7 @@ class MeetingRequestsAdapter(
         val layoutInflater = LayoutInflater.from(context)
         val inflatedView: View = when (viewType) {
             RowType.REQUEST.ordinal -> layoutInflater.inflate(R.layout.request_row, parent, false)
+            RowType.DELETABLE.ordinal -> layoutInflater.inflate(R.layout.request_row, parent, false)
             else -> layoutInflater.inflate(R.layout.request_header, parent, false)
         }
         return ViewHolder(inflatedView)
@@ -32,7 +32,7 @@ class MeetingRequestsAdapter(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val request = requests[position]
-        if (request.rowType == RowType.REQUEST) {
+        if (request.rowType != RowType.HEADER) {
             when(request.type) {
                 MeetingType.REJECTED -> holder.userName!!.text = context.getString(R.string.meeting_rejected, request.meetingRequest!!.receiverUsername)
                 MeetingType.ACTIVE -> {

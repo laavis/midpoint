@@ -7,8 +7,10 @@ import android.graphics.Paint
 import android.graphics.PorterDuff
 import android.graphics.PorterDuffXfermode
 import android.graphics.drawable.ColorDrawable
+import android.util.Log
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
+import com.nopoint.midpoint.models.RowType
 
 
 abstract class SwipeToDeleteCallback(context: Context) : ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
@@ -31,6 +33,7 @@ abstract class SwipeToDeleteCallback(context: Context) : ItemTouchHelper.SimpleC
          * if (viewHolder?.adapterPosition == 0) return 0
          */
         //TODO disable swipe for requests not created by current user
+        if(viewHolder.itemViewType != RowType.DELETABLE.ordinal) return 0
         return super.getMovementFlags(recyclerView, viewHolder)
     }
     override fun onMove(
