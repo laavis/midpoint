@@ -92,22 +92,24 @@ class MeetingFragment : Fragment() {
                 var midpointLatLng: LatLng? = DirectionsUtils.getAbsoluteMidpoint(result)
                 // Midpoint calculation success
                 if (midpointLatLng != null) {
-                    val placesUrl = PlacesUtils.buildUrl(latestLocation, "cafe")
+                    val placesUrl = PlacesUtils.buildUrl(midpointLatLng, "cafe")
                     apiController.get(API.PLACES, placesUrl) { placesResponse ->
                         Log.d("PLACES", placesResponse.toString())
                         val places = Gson().fromJson(placesResponse.toString(), Places::class.java)
                         body.put("requestId", meetingRequest.id)
                         body.put("lat", latestLocation.latitude)
                         body.put("lng", latestLocation.longitude)
+                        var name = result.routes[0].legs[0].end_address
                         if (places.results.isNotEmpty()) {
                             val best = places.results[0]
                             body.put("middleLat", best.geometry.location.lat)
                             body.put("middleLng", best.geometry.location.lng)
                             body.put("middlePointName", best.name)
+                            name = best.name
                         } else {
                             body.put("middleLat", midpointLatLng.latitude)
                             body.put("middleLng", midpointLatLng.longitude)
-                            body.put("middlePointName", result.routes[0].legs[0].end_location)
+                            body.put("middlePointName", name)
                         }
 
                         body.put("response", 1) //TODO allow setting different response types
@@ -128,7 +130,7 @@ class MeetingFragment : Fragment() {
                         ) {
                             try {
                                 val map = parentFragment as MapFragment
-                                map.getDirectionsToAbsoluteMidpoint(midpointURL)
+                                map.getDirectionsToAbsoluteMidpoint(midpointURL, name, true)
                             } catch (e: IOException) {
                                 Log.e("MEETING", "$e")
                             }
@@ -145,7 +147,7 @@ class MeetingFragment : Fragment() {
             LatLng(meetingRequest.meetingPointLatitude!!, meetingRequest.meetingPointLongitude!!)
         )
         val map = parentFragment as MapFragment
-        map.getDirectionsToAbsoluteMidpoint(midpointURL)
+        map.getDirectionsToAbsoluteMidpoint(midpointURL, clearPrevious = true)
     }
 
     private fun getRequests() {

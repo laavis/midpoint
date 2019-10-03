@@ -10,7 +10,7 @@ object PlacesUtils {
         val builder = Uri.Builder()
         builder.appendQueryParameter("location", "${location.latitude},${location.longitude}")
             .appendQueryParameter("type", type) // https://developers.google.com/places/web-service/supported_types
-            .appendQueryParameter("radius", "100") // meters
+            .appendQueryParameter("radius", "400") // meters
             .appendQueryParameter("key", BuildConfig.api_key)
         return builder.build().toString()
     }

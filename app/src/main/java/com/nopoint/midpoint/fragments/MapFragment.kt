@@ -76,10 +76,10 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         }
     }
 
-    fun getDirectionsToAbsoluteMidpoint(midpointURL: String, meetingPlace: String? = null) {
+    fun getDirectionsToAbsoluteMidpoint(midpointURL: String, meetingPlace: String? = null, clearPrevious: Boolean) {
         apiController.get(API.DIRECTIONS, midpointURL) { response ->
             if (response != null) {
-                if (mRouteMarkerList.isNotEmpty()) clearMarkersAndRoute()
+                if (clearPrevious) clearMarkersAndRoute()
                 if (state == BottomSheetBehavior.STATE_EXPANDED) {
                     sheetBehavior!!.state = BottomSheetBehavior.STATE_COLLAPSED
                 }
