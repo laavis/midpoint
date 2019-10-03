@@ -2,7 +2,6 @@ package com.nopoint.midpoint.fragments
 
 import android.location.Location
 import android.os.Bundle
-import android.telephony.mbms.StreamingServiceInfo
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -23,9 +22,6 @@ import com.nopoint.midpoint.networking.API
 import com.nopoint.midpoint.networking.APIController
 import com.nopoint.midpoint.networking.ServiceVolley
 import com.google.android.material.bottomsheet.BottomSheetBehavior
-import com.google.gson.Gson
-import com.google.maps.android.SphericalUtil
-import com.nopoint.midpoint.map.models.Direction
 import kotlinx.android.synthetic.main.bottom_sheet.view.*
 import kotlinx.android.synthetic.main.fragment_map.*
 import com.google.android.gms.maps.model.LatLng
@@ -101,6 +97,26 @@ class MapFragment : Fragment(), OnMapReadyCallback {
     override fun onResume() {
         super.onResume()
         if (requestingLocationUpdates) startLocationUpdates()
+    }
+
+    private fun createBottomSheetCb(): BottomSheetBehavior.BottomSheetCallback{
+        return object : BottomSheetBehavior.BottomSheetCallback() {
+            override fun onStateChanged(view: View, newState: Int) {
+                when (newState) {
+                    BottomSheetBehavior.STATE_HIDDEN -> state = BottomSheetBehavior.STATE_HIDDEN
+                    BottomSheetBehavior.STATE_EXPANDED -> state = BottomSheetBehavior.STATE_EXPANDED
+                    BottomSheetBehavior.STATE_COLLAPSED -> state = BottomSheetBehavior.STATE_COLLAPSED
+                    BottomSheetBehavior.STATE_DRAGGING -> state = BottomSheetBehavior.STATE_DRAGGING
+/*                    Buggy AF
+                        if (state != BottomSheetBehavior.STATE_HALF_EXPANDED) {
+                            sheetBehavior!!.state = BottomSheetBehavior.STATE_HALF_EXPANDED
+                    }*/
+                    BottomSheetBehavior.STATE_SETTLING -> state = BottomSheetBehavior.STATE_SETTLING
+                    BottomSheetBehavior.STATE_HALF_EXPANDED -> state = BottomSheetBehavior.STATE_HALF_EXPANDED
+                }
+            }
+            override fun onSlide(view: View, v: Float) {}
+        }
     }
 
     private fun createLocationCallback(): LocationCallback {
@@ -203,30 +219,5 @@ class MapFragment : Fragment(), OnMapReadyCallback {
             }
         }
     }
-
-    // Bottom sheet
-    private fun createBottomSheetCb(): BottomSheetBehavior.BottomSheetCallback {
-        return object : BottomSheetBehavior.BottomSheetCallback() {
-            override fun onStateChanged(view: View, newState: Int) {
-                when (newState) {
-                    BottomSheetBehavior.STATE_HIDDEN -> state = BottomSheetBehavior.STATE_HIDDEN
-                    BottomSheetBehavior.STATE_EXPANDED -> state = BottomSheetBehavior.STATE_EXPANDED
-                    BottomSheetBehavior.STATE_COLLAPSED -> state =
-                        BottomSheetBehavior.STATE_COLLAPSED
-                    BottomSheetBehavior.STATE_DRAGGING -> {
-                        if (state != BottomSheetBehavior.STATE_HALF_EXPANDED) {
-                            sheetBehavior!!.state = BottomSheetBehavior.STATE_HALF_EXPANDED
-                        }
-                    }
-                    BottomSheetBehavior.STATE_SETTLING -> state = BottomSheetBehavior.STATE_SETTLING
-                    BottomSheetBehavior.STATE_HALF_EXPANDED -> state =
-                        BottomSheetBehavior.STATE_HALF_EXPANDED
-                }
-            }
-
-            override fun onSlide(view: View, v: Float) {}
-        }
-    }
-
 
 }

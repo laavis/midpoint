@@ -1,6 +1,5 @@
 package com.nopoint.midpoint.fragments
 
-
 import android.content.Context
 import android.location.Location
 import android.os.Bundle
@@ -10,19 +9,21 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.maps.model.LatLng
+import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textfield.TextInputEditText
 import com.google.gson.Gson
-import com.nopoint.midpoint.MainActivity
-import com.nopoint.midpoint.MeetingRequestsAdapter
-import com.nopoint.midpoint.R
+import com.nopoint.midpoint.*
 import com.nopoint.midpoint.map.Directions
 import com.nopoint.midpoint.map.MeetingUtils
 import com.nopoint.midpoint.map.models.Direction
 import com.nopoint.midpoint.models.*
+import com.nopoint.midpoint.networking.API
+import com.nopoint.midpoint.networking.APIController
+import com.nopoint.midpoint.networking.ServiceVolley
 import com.nopoint.midpoint.networking.*
 import kotlinx.android.synthetic.main.fragment_meeting.view.*
 import org.json.JSONObject
@@ -34,10 +35,7 @@ import java.io.IOException
 class MeetingFragment : Fragment() {
     private val service = ServiceVolley()
     private val apiController = APIController(service)
-
-    //todo rename to recCoord as receiver coordinates
     var currentLocation: Location? = null
-
     private var meetingRequests = mutableListOf<MeetingRequestRow>()
     private lateinit var localUser: LocalUser
 
@@ -47,6 +45,8 @@ class MeetingFragment : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_meeting, container, false)
+        // view.request_btn.setOnClickListener { sendRequest(view.friend_username.text.toString()) }
+        view.refresh_btn.setOnClickListener { getRequests() }
         meetingUsernameInput = view.findViewById(R.id.meeting_username_input)
 
         view.request_btn.setOnClickListener {
@@ -65,25 +65,6 @@ class MeetingFragment : Fragment() {
         getRequests()
     }
 
-    private fun sendRequest(username: String) {
-        val body = JSONObject()
-
-        val latestLocation = currentLocation
-
-        Log.d("COORD | REQUESTER", "lat: ${latestLocation!!.latitude}, lng: ${latestLocation!!.longitude}")
-        body.put("receiver", username)
-        body.put("lat", latestLocation.latitude)
-        body.put("lng", latestLocation.longitude)
-        apiController.post(API.LOCAL_API, MEETING_REQUEST_URL, body, localUser.token) { response ->
-            try {
-                //TODO Refresh recycler view with new request
-                Log.d("RES", "$response")
-
-            } catch (e: IOException) {
-                Log.e("MEETING", "$e")
-            }
-        }
-    }
 
     // RESPOND TO MEETING REQUEST
     private fun onResponseSent(meetingRequest: MeetingRequest) {
@@ -94,7 +75,7 @@ class MeetingFragment : Fragment() {
 
         val latestLocation = currentLocation
 
-        val fullRouteURL = Directions.buildUrlTest(
+        val fullRouteURL = Directions.buildUrlFromLatLng(
             LatLng(latestLocation!!.latitude, latestLocation.longitude),
             LatLng(requesterLoc.latitude, requesterLoc.longitude)
         )
@@ -119,7 +100,7 @@ class MeetingFragment : Fragment() {
 
                     Log.d("MEETING", "$body")
 
-                    val midpointURL = Directions.buildUrlTest(
+                    val midpointURL = Directions.buildUrlFromLatLng(
                         LatLng(latestLocation.latitude, latestLocation.longitude),
                         LatLng(midpointLatLng.latitude, midpointLatLng.longitude)
                     )
@@ -160,7 +141,7 @@ class MeetingFragment : Fragment() {
                 meetingRequests =
                     MeetingUtils.sortRequests(meetingResponse.requests, localUser.user)
                 // Was causing a crash
-                if (view != null && activity != null){
+                if (view != null && activity != null) {
                     initializeRecyclerView()
                 }
             } catch (e: IOException) {
@@ -169,15 +150,77 @@ class MeetingFragment : Fragment() {
         }
     }
 
-    // init
     private fun initializeRecyclerView() {
         view!!.requests_view.adapter =
-            MeetingRequestsAdapter(meetingRequests, (activity as MainActivity), ::onResponseSent, ::showOnMap)
+            MeetingRequestsAdapter(
+                meetingRequests,
+                (activity as MainActivity),
+                ::onResponseSent,
+                ::showOnMap
+            )
         view!!.requests_view.layoutManager = LinearLayoutManager((activity as MainActivity))
         val dividerItemDecoration = DividerItemDecoration(
             view!!.requests_view.context,
             (view!!.requests_view.layoutManager as LinearLayoutManager).orientation
         )
         view!!.requests_view.addItemDecoration(dividerItemDecoration)
+
+        val swipeHandler = object : SwipeToDeleteCallback(activity!!) {
+            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+                val adapter = view!!.requests_view.adapter as MeetingRequestsAdapter
+                val removed = adapter.removeAt(viewHolder.adapterPosition)
+                deleteRequest(removed.meetingRequest!!)
+            }
+        }
+        val itemTouchHelper = ItemTouchHelper(swipeHandler)
+        itemTouchHelper.attachToRecyclerView(view!!.requests_view)
     }
+
+    private fun sendRequest(username: String = "testpete") {
+        val params = JSONObject()
+        val path = "/meeting-request/request"
+        params.put("receiver", username)
+        params.put("lat", currentLocation!!.latitude)
+        params.put("lng", currentLocation!!.longitude)
+        apiController.post(API.LOCAL_API, path, params, localUser.token) { response ->
+            try {
+                //TODO Refresh recycler view with new request
+                Log.d("RES", "$response")
+                val msg = if (response != null) {
+                    "Meeting request sent"
+                } else "Bugg"
+                Snackbar.make(
+                    activity!!.findViewById(android.R.id.content),
+                    msg ?: "Big bugg",
+                    Snackbar.LENGTH_LONG
+                ).show()
+
+            } catch (e: IOException) {
+                Log.e("MEETING", "$e")
+            }
+        }
+    }
+
+    private fun deleteRequest(meetingRequest: MeetingRequest) {
+        val params = JSONObject()
+        val path = "/meeting-request/delete"
+        params.put("requestId", meetingRequest.id)
+        apiController.post(API.LOCAL_API, path, params, localUser.token) { response ->
+            try {
+                Log.d("RES", "$response")
+                val msg =
+                    if (response?.optString("msg").isNullOrEmpty()) {
+                        response?.getString("errors")
+                    } else response?.getString("msg")
+                Snackbar.make(
+                    activity!!.findViewById(android.R.id.content),
+                    msg!!,
+                    Snackbar.LENGTH_LONG
+                ).show()
+            } catch (e: IOException) {
+                Log.e("MEETING", "$e")
+            }
+        }
+    }
+
 }

@@ -43,7 +43,7 @@ object Directions {
         return builder.build().toString()
     }
 
-    fun buildUrlTest(origin: LatLng, destination: LatLng?): String {
+    fun buildUrlFromLatLng(origin: LatLng, destination: LatLng?): String {
         val builder = Uri.Builder()
         builder.appendQueryParameter("origin", "${origin.latitude},${origin.longitude}")
             .appendQueryParameter("destination", "${destination!!.latitude},${destination.longitude}")

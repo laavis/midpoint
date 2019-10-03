@@ -11,9 +11,9 @@ data class MeetingRequestResponse(
 data class MeetingRequest(
     @SerializedName("_id") val id: String,
     @SerializedName("requester") val requester: String,
-    @SerializedName("requesterUsername") val requesterUsername: String,
+    @SerializedName("requesterUsername") var requesterUsername: String,
     @SerializedName("receiver") val receiver: String,
-    @SerializedName("receiverUsername") val receiverUsername: String,
+    @SerializedName("receiverUsername") var receiverUsername: String,
     @SerializedName("status") val status: Int,
     @SerializedName("requesterLat") val requesterLatitude: Double,
     @SerializedName("requesterLng") val requesterLongitude: Double,
@@ -35,5 +35,6 @@ enum class MeetingType(val type: Int){
 
 enum class RowType{
     HEADER,
-    REQUEST
+    REQUEST,
+    DELETABLE
 }
