@@ -79,6 +79,5 @@ class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
     val userName: TextView? = view.receiver_txt
     val meetBtn: Button? = view.meet_btn
     val timestamp: TextView? = view.timestamp_txt
-
     val headerTxt: TextView? = view.header_txt
 }

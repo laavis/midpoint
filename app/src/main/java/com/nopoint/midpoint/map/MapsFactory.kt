@@ -5,6 +5,7 @@ import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Paint
 import android.graphics.PixelFormat
+import android.util.Log
 import com.google.android.gms.maps.CameraUpdate
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.model.LatLng
@@ -36,7 +37,7 @@ object MapsFactory {
     }
 
     fun drawMarker(context: Context, text: String): Bitmap {
-        val drawable = context.resources.getDrawable(R.drawable.ic_black_marker, context.theme)
+        val drawable = context.resources.getDrawable(R.drawable.ic_person_pin, context.theme)
         val bitmap = Bitmap.createBitmap(
             drawable.intrinsicWidth,
             drawable.intrinsicHeight,
@@ -58,6 +59,31 @@ object MapsFactory {
 
         return bitmap
     }
+
+    fun drawEndMarker(context: Context, text: String): Bitmap {
+        val drawable = context.resources.getDrawable(R.drawable.ic_logo, context.theme)
+        val bitmap = Bitmap.createBitmap(
+            drawable.intrinsicWidth,
+            drawable.intrinsicHeight,
+            if (drawable.opacity != PixelFormat.OPAQUE) Bitmap.Config.ARGB_8888 else Bitmap.Config.RGB_565
+        )
+        val canvas = Canvas(bitmap)
+        drawable.setBounds(0, 0, drawable.intrinsicWidth, drawable.intrinsicHeight)
+        drawable.draw(canvas)
+        val paint = Paint()
+        paint.textSize = 50 * context.resources.displayMetrics.density / 2
+        paint.style = Paint.Style.FILL
+        val textCanvas = Canvas(bitmap)
+        textCanvas.drawText(
+            text,
+            ((bitmap.width * 7) / 20).toFloat(),
+            (bitmap.height / 2).toFloat(),
+            paint
+        )
+
+        return bitmap
+    }
+
 
     fun drawRoute(context: Context): PolylineOptions {
         val polylineOptions = PolylineOptions()
