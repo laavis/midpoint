@@ -10,39 +10,17 @@ import com.google.maps.android.SphericalUtil
 import com.nopoint.midpoint.BuildConfig
 import com.nopoint.midpoint.map.models.Direction
 import com.nopoint.midpoint.map.models.FullRoute
+import com.nopoint.midpoint.models.Result
 import org.json.JSONObject
 
-object Directions {
-    /**
-     * Builds url for Directions API based on location name
-     * @param origin Starting point for the route
-     * @param destination Name of the location to get the route to
-     * @return String with the parameters for the directions API GET request
-     */
-    fun buildUrl(origin: Location?, destination: String): String {
-        val builder = Uri.Builder()
-        builder.appendQueryParameter("origin", "${origin?.latitude},${origin?.longitude}")
-            .appendQueryParameter("destination", destination)
-            .appendQueryParameter("mode", "walking")
-            .appendQueryParameter("key", BuildConfig.api_key)
-        return builder.build().toString()
-    }
+object DirectionsUtils {
 
     /**
-     * Builds url for Directions API based on location name
-     * @param origin Starting point for the route
-     * @param destination Location object with the coordinates for the destination
+     * Builds url for DirectionsUtils API based on location name
+     * @param origin LatLng object with the starting point for the route
+     * @param destination LatLng object with the coordinates for the destination
      * @return String with the parameters for the directions API GET request
      */
-    fun buildUrl(origin: Location?, destination: Location): String {
-        val builder = Uri.Builder()
-        builder.appendQueryParameter("origin", "${origin?.latitude},${origin?.longitude}")
-            .appendQueryParameter("destination", "${destination.latitude},${destination.longitude}")
-            .appendQueryParameter("mode", "walking")
-            .appendQueryParameter("key", BuildConfig.api_key)
-        return builder.build().toString()
-    }
-
     fun buildUrlFromLatLng(origin: LatLng, destination: LatLng?): String {
         val builder = Uri.Builder()
         builder.appendQueryParameter("origin", "${origin.latitude},${origin.longitude}")
@@ -57,13 +35,13 @@ object Directions {
      * @param response The google directions API response json object
      * @return FullRoute object with coordinates for start & end and a polyline of the route
      */
-    fun buildRoute(response: JSONObject): FullRoute {
+    fun buildRoute(response: JSONObject, meetingPlace: String? = null): FullRoute {
         val directions = Gson().fromJson(response.toString(), Direction::class.java)
         val bestRoute = directions.routes[0]
         val leg = bestRoute.legs[0]
         return FullRoute(
             leg.start_address,
-            leg.end_address,
+            meetingPlace ?: leg.end_address,
             leg.start_location.lat,
             leg.start_location.lng,
             leg.end_location.lat,

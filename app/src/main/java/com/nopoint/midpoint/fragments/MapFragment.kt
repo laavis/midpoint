@@ -15,7 +15,7 @@ import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.*
 import com.google.maps.android.PolyUtil
 import com.nopoint.midpoint.R
-import com.nopoint.midpoint.map.Directions
+import com.nopoint.midpoint.map.DirectionsUtils
 import com.nopoint.midpoint.map.MapsFactory
 import com.nopoint.midpoint.map.models.FullRoute
 import com.nopoint.midpoint.networking.API
@@ -43,8 +43,8 @@ class MapFragment : Fragment(), OnMapReadyCallback {
     private lateinit var mRoutePolyline: Polyline
     private var sheetBehavior: BottomSheetBehavior<*>? = null
     private var state = BottomSheetBehavior.STATE_COLLAPSED
-    private lateinit var sheetMeetingFragment: MeetingFragment
-
+    private lateinit var sheetFragment: MeetingFragment
+    private lateinit var currentLocation: Location
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -59,7 +59,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         }
 
         childFragmentManager.beginTransaction().replace(R.id.google_map, mapFragment!!).commit()
-        sheetMeetingFragment = childFragmentManager.findFragmentById(R.id.fragment) as MeetingFragment
+        sheetFragment = childFragmentManager.findFragmentById(R.id.fragment) as MeetingFragment
         sheetBehavior = BottomSheetBehavior.from(view.bottom_sheet)
         sheetBehavior!!.bottomSheetCallback = createBottomSheetCb()
 
@@ -76,10 +76,14 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         }
     }
 
-    fun getDirectionsToAbsoluteMidpoint(midpointURL: String) {
+    fun getDirectionsToAbsoluteMidpoint(midpointURL: String, meetingPlace: String? = null) {
         apiController.get(API.DIRECTIONS, midpointURL) { response ->
             if (response != null) {
-                val route = Directions.buildRoute(response)
+                if (mRouteMarkerList.isNotEmpty()) clearMarkersAndRoute()
+                if (state == BottomSheetBehavior.STATE_EXPANDED) {
+                    sheetBehavior!!.state = BottomSheetBehavior.STATE_COLLAPSED
+                }
+                val route = DirectionsUtils.buildRoute(response, meetingPlace)
                 setMarkersAndRoute(route)
             }
         }
@@ -132,7 +136,8 @@ class MapFragment : Fragment(), OnMapReadyCallback {
                         val loc = LatLng(location.latitude, location.longitude)
                         Log.d("MAP", "lat: ${location.latitude}, lng: ${location.longitude}")
                         val cam = CameraUpdateFactory.newLatLngZoom(loc, 15.0f)
-                        sheetMeetingFragment.currentLocation = location
+                        sheetFragment.currentLocation = LatLng(location.latitude, location.longitude)
+                        currentLocation = location
                         mMap.animateCamera(cam)
                     }
                     requestingLocationUpdates = true
@@ -202,24 +207,4 @@ class MapFragment : Fragment(), OnMapReadyCallback {
             mRoutePolyline.remove()
         }
     }
-
-    fun getDirections(destination: String = "", destinationCoord: Location?) {
-        if (mRouteMarkerList.isNotEmpty()) clearMarkersAndRoute()
-        if (state == BottomSheetBehavior.STATE_EXPANDED) {
-            sheetBehavior!!.state = BottomSheetBehavior.STATE_COLLAPSED
-        }
-        fusedLocationClient?.lastLocation?.addOnSuccessListener { loc: Location? ->
-            val url = if (destinationCoord != null)
-                Directions.buildUrl(loc, destinationCoord)
-            else
-                Directions.buildUrl(loc, destination)
-            apiController.get(API.DIRECTIONS, url) { response ->
-                if (response != null) {
-                    // val route = Directions.buildRoute(response)
-                    // setMarkersAndRoute(route)
-                }
-            }
-        }
-    }
-
 }
