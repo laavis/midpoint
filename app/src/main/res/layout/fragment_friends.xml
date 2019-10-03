@@ -28,13 +28,10 @@
                 >
 
                 <ImageButton
+                    style="@style/ButtonImage"
                     android:id="@+id/friends_add_return"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
                     android:layout_marginTop="16dp"
-                    android:padding="8dp"
-                    android:cropToPadding="true"
                     android:src="@drawable/ic_arrow_left"
                     android:background="@color/trans"
                     />
@@ -58,36 +55,14 @@
 
             </LinearLayout>
 
-            <RelativeLayout
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/friends_search_list"
                 android:layout_below="@id/friends_add_sheet_header"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingTop="16dp"
-                android:paddingBottom="16dp"
-                android:paddingStart="8dp"
-                android:paddingEnd="8dp">
-
-                <TextView
-                    android:id="@+id/friends_result_text"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:text="friends_search_result_username"/>
-
-                <Button
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentRight="true"
-                    android:text="Add"
-                    />
-
-            </RelativeLayout>
+                android:layout_height="match_parent"
+                />
 
         </RelativeLayout>
-
-
-
-
     </com.google.android.material.circularreveal.CircularRevealFrameLayout>
 
 
@@ -99,7 +74,7 @@
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="16dp"
         app:tint="@color/color_white"
-        app:srcCompat="@drawable/ic_add"
+        app:srcCompat="@drawable/ic_plus"
         app:maxImageSize="16dp"
         app:backgroundTint="@color/orange"
         />

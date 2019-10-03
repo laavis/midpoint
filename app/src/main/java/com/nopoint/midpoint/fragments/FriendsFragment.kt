@@ -22,35 +22,46 @@ import java.util.TimerTask
 import java.util.Timer
 import android.text.Editable
 import android.util.Log
+import android.widget.ImageButton
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.gson.Gson
+import com.nopoint.midpoint.FriendSearchAdapter
+import com.nopoint.midpoint.OnItemClickListener
+import com.nopoint.midpoint.models.FriendRequest
 import com.nopoint.midpoint.models.UserSearchResponse
 import com.nopoint.midpoint.networking.API
 import com.nopoint.midpoint.networking.APIController
 import com.nopoint.midpoint.networking.ServiceVolley
 import java.io.IOException
-import com.google.gson.reflect.TypeToken
 
-
-class FriendsFragment : Fragment() {
+class FriendsFragment : Fragment(), OnItemClickListener {
 
     private val service = ServiceVolley()
+
     private val apiController = APIController(service)
 
     private lateinit var bottomNav: BottomNavigationView
     private lateinit var localUser: LocalUser
     private lateinit var searchInput: EditText
 
+    private lateinit var adapter: FriendSearchAdapter
+
+    private var searchResultsList = ArrayList<String>()
+    private var sortedSearchResultsList:List<String> = ArrayList()
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
         val v = inflater.inflate(R.layout.fragment_friends, container, false)
 
+        val mainActivity = MainActivity()
+
         searchInput = v.findViewById(R.id.search_input)
         bottomNav = (activity as MainActivity).findViewById(R.id.bottom_navigation)
 
-        (activity as MainActivity).supportActionBar?.title = "Friends"
 
         return v
     }
+
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -103,33 +114,42 @@ class FriendsFragment : Fragment() {
 
 
     private fun getSearchResults() {
-        val params = JSONObject()
         val path = "/search/users?username=${searchInput.text}"
-
-        // params.put("username", searchInput.text.toString())
-
 
         apiController.get(API.LOCAL_API, path, localUser.token) { response ->
             try {
-
-                //val resList: List<UserSearchResponse> = Gson().fromJson(response.toString(), Array<UserSearchResponse>::class.java).toList()
-
-                // val homedateList: List<UserSearchResponse> = Gson().fromJson(response.toString(), Array<UserSearchResponse>::class.java).toList()
-                //
-
+                searchResultsList.clear()
                 val searchResponse = Gson().fromJson(response.toString(), UserSearchResponse::class.java)
 
-                Log.d("FRIENDS|ADD|SEARCH", "$searchResponse")
-
                 if (searchResponse.users.isNotEmpty()) {
-                    friends_result_text.text = searchResponse.users[0].username
+                    searchResponse.users.forEach {
+                        searchResultsList.add(it.username)
+                        println(it)
+                    }
+                    searchResultsList.sort()
+                } else {
+                    searchResultsList.clear()
                 }
+                initRecyclerView(searchResultsList)
 
             } catch (e: IOException) {
                 Log.e("FRIENDS|ADD|SEARCH", "$e")
             }
         }
     }
+
+
+
+    private fun initRecyclerView(list: List<String>) {
+        adapter = FriendSearchAdapter(list, (activity as MainActivity), this)
+        friends_search_list.layoutManager = LinearLayoutManager((activity as MainActivity))
+        friends_search_list.adapter = adapter
+    }
+
+    override fun onItemClicked(button: ImageButton) {
+        Log.d("FRIENDS", "a")
+    }
+
 
     private fun setStatusBarColor(colorId: Int) {
             val ma = activity as MainActivity

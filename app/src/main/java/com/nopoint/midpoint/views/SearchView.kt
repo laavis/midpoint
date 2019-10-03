@@ -12,10 +12,12 @@ import kotlinx.android.synthetic.main.view_search.view.*
 
 class SearchView(context: Context, attrs: AttributeSet) : FrameLayout(context, attrs) {
 
+    private val duration: Long = 200
+
     init {
         LayoutInflater.from(context).inflate(R.layout.view_search, this, true)
 
-        open_search_button.setOnClickListener { openSearch() }
+        search_button_open.setOnClickListener { openSearch() }
         close_search_button.setOnClickListener { closeSearch() }
     }
 
@@ -24,23 +26,23 @@ class SearchView(context: Context, attrs: AttributeSet) : FrameLayout(context, a
         search_open_view.visibility = View.VISIBLE
         val circularReveal = ViewAnimationUtils.createCircularReveal(
             search_open_view,
-            (open_search_button.right + open_search_button.left) / 2,
-            (open_search_button.top + open_search_button.bottom) / 2,
+            (search_button_open.right + search_button_open.left) / 2,
+            (search_button_open.top + search_button_open.bottom) / 2,
             0f, width.toFloat()
         )
-        circularReveal.duration = 300
+        circularReveal.duration = duration
         circularReveal.start()
     }
 
     private fun closeSearch() {
         val circularConceal = ViewAnimationUtils.createCircularReveal(
             search_open_view,
-            (open_search_button.right + open_search_button.left) / 2,
-            (open_search_button.top + open_search_button.bottom) / 2,
+            (search_button_open.right + search_button_open.left) / 2,
+            (search_button_open.top + search_button_open.bottom) / 2,
             width.toFloat(), 0f
         )
 
-        circularConceal.duration = 300
+        circularConceal.duration = duration
         circularConceal.start()
         circularConceal.addListener(object : Animator.AnimatorListener {
             override fun onAnimationRepeat(animation: Animator?) = Unit
