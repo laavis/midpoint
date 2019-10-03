@@ -131,6 +131,11 @@ class MeetingFragment : Fragment() {
                             try {
                                 val map = parentFragment as MapFragment
                                 map.getDirectionsToAbsoluteMidpoint(midpointURL, name, true)
+                                val otherPersonUrl = DirectionsUtils.buildUrlFromLatLng(
+                                    LatLng(meetingRequest.requesterLatitude, meetingRequest.requesterLongitude),
+                                    LatLng(midpointLatLng.latitude, midpointLatLng.longitude)
+                                )
+                                map.getDirectionsToAbsoluteMidpoint(midpointURL, name, false)
                             } catch (e: IOException) {
                                 Log.e("MEETING", "$e")
                             }
@@ -148,6 +153,20 @@ class MeetingFragment : Fragment() {
         )
         val map = parentFragment as MapFragment
         map.getDirectionsToAbsoluteMidpoint(midpointURL, clearPrevious = true)
+        Log.d("HMM", meetingRequest.toString())
+        if (localUser.user.id == meetingRequest.receiver) {
+            val otherPersonUrl = DirectionsUtils.buildUrlFromLatLng(
+                LatLng(meetingRequest.requesterLatitude, meetingRequest.requesterLongitude),
+                LatLng(meetingRequest.meetingPointLatitude, meetingRequest.meetingPointLongitude)
+            )
+            map.getDirectionsToAbsoluteMidpoint(otherPersonUrl, meetingRequest.meetingPointName, clearPrevious = false)
+        } else {
+            val otherPersonUrl = DirectionsUtils.buildUrlFromLatLng(
+                LatLng(meetingRequest.receiverLatitude!!, meetingRequest.receiverLongitude!!),
+                LatLng(meetingRequest.meetingPointLatitude, meetingRequest.meetingPointLongitude)
+            )
+            map.getDirectionsToAbsoluteMidpoint(otherPersonUrl, meetingRequest.meetingPointName, clearPrevious = false)
+        }
     }
 
     private fun getRequests() {
