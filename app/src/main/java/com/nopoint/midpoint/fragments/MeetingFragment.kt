@@ -21,10 +21,9 @@ import com.nopoint.midpoint.MeetingRequestsAdapter
 import com.nopoint.midpoint.R
 import com.nopoint.midpoint.map.Directions
 import com.nopoint.midpoint.map.MeetingUtils
+import com.nopoint.midpoint.map.models.Direction
 import com.nopoint.midpoint.models.*
-import com.nopoint.midpoint.networking.API
-import com.nopoint.midpoint.networking.APIController
-import com.nopoint.midpoint.networking.ServiceVolley
+import com.nopoint.midpoint.networking.*
 import kotlinx.android.synthetic.main.fragment_meeting.view.*
 import org.json.JSONObject
 import java.io.IOException
@@ -39,18 +38,10 @@ class MeetingFragment : Fragment() {
     //todo rename to recCoord as receiver coordinates
     var currentLocation: Location? = null
 
-
-
     private var meetingRequests = mutableListOf<MeetingRequestRow>()
     private lateinit var localUser: LocalUser
 
-    private lateinit var userLocationRequest: LocationRequest
-
     private lateinit var meetingUsernameInput: TextInputEditText
-
-    private var hasGps = false
-    private var hasNetwork = false
-
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
@@ -74,41 +65,75 @@ class MeetingFragment : Fragment() {
         getRequests()
     }
 
+    private fun sendRequest(username: String) {
+        val body = JSONObject()
+
+        val latestLocation = currentLocation
+
+        Log.d("COORD | REQUESTER", "lat: ${latestLocation!!.latitude}, lng: ${latestLocation!!.longitude}")
+        body.put("receiver", username)
+        body.put("lat", latestLocation.latitude)
+        body.put("lng", latestLocation.longitude)
+        apiController.post(API.LOCAL_API, MEETING_REQUEST_URL, body, localUser.token) { response ->
+            try {
+                //TODO Refresh recycler view with new request
+                Log.d("RES", "$response")
+
+            } catch (e: IOException) {
+                Log.e("MEETING", "$e")
+            }
+        }
+    }
 
     // RESPOND TO MEETING REQUEST
     private fun onResponseSent(meetingRequest: MeetingRequest) {
-        val params = JSONObject()
-        val path = "/meeting-request/respond"
+        val body = JSONObject()
         val requesterLoc = Location("")
         requesterLoc.longitude = meetingRequest.requesterLongitude
         requesterLoc.latitude = meetingRequest.requesterLatitude
-        val middlePoint = Directions.getMiddlePoint(currentLocation!!, requesterLoc)
 
-        var latestLocation = currentLocation
+        val latestLocation = currentLocation
 
-        Log.d("COORD | RECEIVER ON RESPOND", "lat: ${latestLocation!!.latitude}, lng: ${latestLocation!!.longitude}")
+        val fullRouteURL = Directions.buildUrlTest(
+            LatLng(latestLocation!!.latitude, latestLocation.longitude),
+            LatLng(requesterLoc.latitude, requesterLoc.longitude)
+        )
 
+        Log.d("MEETING", "$fullRouteURL")
 
-        params.put("requestId", meetingRequest.id)
-        params.put("lat", currentLocation!!.latitude)
-        params.put("lng", currentLocation!!.longitude)
-        params.put("middleLat", middlePoint.latitude)
-        params.put("middleLng", middlePoint.longitude)
-        params.put("response", 1) //TODO allow setting different response types
+        // Get full route
+        apiController.get(API.DIRECTIONS, fullRouteURL) { response ->
+            if (response != null) {
+                val result = Gson().fromJson(response.toString(), Direction::class.java)
+                Log.d("MEETING", "$result")
+                var midpointLatLng: LatLng? = Directions.getAbsoluteMidpoint(result)
 
-        Log.d("MEET", meetingRequest.toString())
-        apiController.post(API.LOCAL_API, path, params, localUser.token) { response ->
-            try {
-                Log.d("RES", "$response")
-                Snackbar.make(
-                    activity!!.findViewById(android.R.id.content),
-                    response!!.get("msg").toString(),
-                    Snackbar.LENGTH_LONG
-                ).show()
-                val map = parentFragment as MapFragment
-                map.getDirections(destinationCoord = requesterLoc)
-            } catch (e: IOException) {
-                Log.e("MEETING", "$e")
+                // Midpoint calculation success
+                if (midpointLatLng != null) {
+                    body.put("requestId", meetingRequest.id)
+                    body.put("lat", latestLocation.latitude)
+                    body.put("lng", latestLocation.longitude)
+                    body.put("middleLat", midpointLatLng.latitude)
+                    body.put("middleLng", midpointLatLng.longitude)
+                    body.put("response", 1) //TODO allow setting different response types
+
+                    Log.d("MEETING", "$body")
+
+                    val midpointURL = Directions.buildUrlTest(
+                        LatLng(latestLocation.latitude, latestLocation.longitude),
+                        LatLng(midpointLatLng.latitude, midpointLatLng.longitude)
+                    )
+
+                    // Respond to requester
+                    apiController.post(API.LOCAL_API, MEETING_RESPOND_URL, body, localUser.token) { response ->
+                        try {
+                            val map = parentFragment as MapFragment
+                            map.getDirectionsToAbsoluteMidpoint(midpointURL)
+                        } catch (e: IOException) {
+                            Log.e("MEETING", "$e")
+                        }
+                    }
+                }
             }
         }
     }
@@ -123,28 +148,6 @@ class MeetingFragment : Fragment() {
         fullRoute.longitude = meetingRequest.requesterLongitude
         val map = parentFragment as MapFragment
         map.getDirections(destinationCoord = fullRoute)
-    }
-
-
-    private fun sendRequest(username: String) {
-        val params = JSONObject()
-        val path = "/meeting-request/request"
-
-        val latestLocation = currentLocation
-
-        Log.d("COORD | REQUESTER", "lat: ${latestLocation!!.latitude}, lng: ${latestLocation!!.longitude}")
-        params.put("receiver", username)
-        params.put("lat", latestLocation!!.latitude)
-        params.put("lng", latestLocation!!.longitude)
-        apiController.post(API.LOCAL_API, path, params, localUser.token) { response ->
-            try {
-                //TODO Refresh recycler view with new request
-                Log.d("RES", "$response")
-
-            } catch (e: IOException) {
-                Log.e("MEETING", "$e")
-            }
-        }
     }
 
     private fun getRequests() {

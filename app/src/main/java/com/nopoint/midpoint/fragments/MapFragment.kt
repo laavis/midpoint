@@ -2,6 +2,7 @@ package com.nopoint.midpoint.fragments
 
 import android.location.Location
 import android.os.Bundle
+import android.telephony.mbms.StreamingServiceInfo
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -72,150 +73,19 @@ class MapFragment : Fragment(), OnMapReadyCallback {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // For testing
-        val espooLatLng = LatLng(60.205498, 24.653837)
-        val kauklahtiLatLng = LatLng(60.193357, 24.598792)
-        val hese = LatLng(60.191205, 24.949999)
-
-        val url = Directions.buildUrlTest(espooLatLng, kauklahtiLatLng)
-        val url2 = Directions.buildUrlTest(kauklahtiLatLng, hese)
-
 
         button_TEST.setOnClickListener {
-            Log.d("ROUTING", "url: $url")
-
-            apiController.get(API.DIRECTIONS, url2) { response ->
-                if (response != null) {
-
-                    val result = Gson().fromJson(response.toString(), Direction::class.java)
-
-                    val legs = result.routes[0].legs
-                    val path = ArrayList<LatLng>()
-
-                    for (i in 0 until legs[0].steps.size) {
-                        path.addAll(PolyUtil.decode(legs[0].steps[i].polyline.points))
-                    }
-
-                    Log.d("ROUTING DISTANCE VALUE", "${legs[0].distance.value}")
-
-                    val middle = (legs[0].distance.value / 2).toDouble()
-
-                    val midPointCoordinates = extrapolate(path, path[0], middle)
-
-
-                    val midpointURL = Directions.buildUrlTest(kauklahtiLatLng, midPointCoordinates)
-
-
-                    apiController.get(API.DIRECTIONS, midpointURL) { response ->
-                        if (response != null) {
-                            val route = Directions.buildRoute(response)
-                            setMarkersAndRoute(route)
-                        }
-                    }
-
-                }
-            }
+            // getDirectionsToAbsoluteMidpoint(LatLng(60.172744, 24.938799),  LatLng(60.162869, 24.932577))
         }
     }
 
-    public fun decodePolyline(encoded: String): List<LatLng> {
-
-        val poly = ArrayList<LatLng>()
-        var index = 0
-        val len = encoded.length
-        var lat = 0
-        var lng = 0
-
-        while (index < len) {
-            var b: Int
-            var shift = 0
-            var result = 0
-            do {
-                b = encoded[index++].toInt() - 63
-                result = result or (b and 0x1f shl shift)
-                shift += 5
-            } while (b >= 0x20)
-            val dlat = if (result and 1 != 0) (result shr 1).inv() else result shr 1
-            lat += dlat
-
-            shift = 0
-            result = 0
-            do {
-                b = encoded[index++].toInt() - 63
-                result = result or (b and 0x1f shl shift)
-                shift += 5
-            } while (b >= 0x20)
-            val dlng = if (result and 1 != 0) (result shr 1).inv() else result shr 1
-            lng += dlng
-
-            val latLng = LatLng((lat.toDouble() / 1E5), (lng.toDouble() / 1E5))
-            poly.add(latLng)
-        }
-
-        return poly
-    }
-
-
-    private fun extrapolate(path: List<LatLng>, origin: LatLng, distance: Double): LatLng? {
-        var extrapolated: LatLng? = null
-
-        if (!PolyUtil.isLocationOnPath(origin, path, false, 10.0)) {
-            return null
-        }
-
-        var accDistance = 0.0
-        var foundStart = false
-        val segment = ArrayList<LatLng>()
-
-
-        for (i in 0 until path.size - 1) {
-            val segmentStart = path[i]
-            val segmentEnd = path[i + 1]
-
-            segment.clear()
-            segment.add(segmentStart)
-            segment.add(segmentEnd)
-
-            var currentDistance: Double = 0.0
-
-            if (!foundStart) {
-
-                if (PolyUtil.isLocationOnPath(origin, segment, false, 1.0)) {
-
-                    foundStart = true
-
-                    currentDistance = SphericalUtil.computeDistanceBetween(origin, segmentEnd)
-
-
-                    if (currentDistance > distance) {
-
-                        val heading: Double = SphericalUtil.computeHeading(origin, segmentEnd)
-                        extrapolated =
-                            SphericalUtil.computeOffset(origin, distance - accDistance, heading)
-                        break
-                    }
-                }
-
-
-            } else {
-                currentDistance = SphericalUtil.computeDistanceBetween(segmentStart, segmentEnd)
-
-
-                if (currentDistance + accDistance > distance) {
-                    val heading: Double = SphericalUtil.computeHeading(segmentStart, segmentEnd)
-                    extrapolated =
-                        SphericalUtil.computeOffset(segmentStart, distance - accDistance, heading)
-                    break
-                }
+    fun getDirectionsToAbsoluteMidpoint(midpointURL: String) {
+        apiController.get(API.DIRECTIONS, midpointURL) { response ->
+            if (response != null) {
+                val route = Directions.buildRoute(response)
+                setMarkersAndRoute(route)
             }
-
-            accDistance += currentDistance
         }
-
-        Log.d("EXTRA EXTRAPOLATED", "$extrapolated")
-
-        return extrapolated
-
     }
 
     override fun onMapReady(googleMap: GoogleMap) {
@@ -232,7 +102,6 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         super.onResume()
         if (requestingLocationUpdates) startLocationUpdates()
     }
-
 
     private fun createLocationCallback(): LocationCallback {
         return object : LocationCallback() {
