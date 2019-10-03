@@ -39,6 +39,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
     private val apiController = APIController(service)
     private var sheetBehavior: BottomSheetBehavior<*>? = null
     private var state = BottomSheetBehavior.STATE_COLLAPSED
+    private lateinit var sheetMeetingFragment: MeetingFragment
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -53,6 +54,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
 
         (activity as MainActivity).supportActionBar?.title = "Map"
         childFragmentManager.beginTransaction().replace(R.id.google_map, mapFragment!!).commit()
+        sheetMeetingFragment = childFragmentManager.findFragmentById(R.id.fragment) as MeetingFragment
         sheetBehavior = BottomSheetBehavior.from(view.bottom_sheet)
         sheetBehavior!!.bottomSheetCallback = createBottomSheetCb()
         return view
@@ -62,6 +64,9 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         mMap = googleMap
         if (!requestingLocationUpdates) {
             mMap.isMyLocationEnabled = true
+            // Starting location over Helsinki
+            val cam = CameraUpdateFactory.newLatLngZoom(LatLng(60.2,24.7385084), 8.0f)
+            mMap.moveCamera(cam)
             fusedLocationClient = LocationServices.getFusedLocationProviderClient(activity!!)
             locationCallback = createLocationCallback()
             startLocationUpdates()
@@ -101,8 +106,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
                     if (!requestingLocationUpdates) {
                         val loc = LatLng(location.latitude, location.longitude)
                         val cam = CameraUpdateFactory.newLatLngZoom(loc, 15.0f)
-                        val sheetFragment = childFragmentManager.findFragmentById(R.id.fragment) as MeetingFragment
-                        sheetFragment.currentLocation = location
+                        sheetMeetingFragment.currentLocation = location
                         mMap.animateCamera(cam)
                     }
                     requestingLocationUpdates = true

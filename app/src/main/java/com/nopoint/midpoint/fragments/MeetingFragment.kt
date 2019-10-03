@@ -152,12 +152,13 @@ class MeetingFragment : Fragment() {
             try {
                 //TODO Refresh recycler view with new request
                 Log.d("RES", "$response")
-                val msg = if (response != null) {
-                    "Meeting request sent"
-                } else "Bugg"
+                val msg =
+                    if (response?.optString("msg").isNullOrEmpty()) {
+                        response?.getString("errors")
+                    } else response?.getString("msg")
                 Snackbar.make(
                     activity!!.findViewById(android.R.id.content),
-                    msg ?: "Big bugg",
+                    msg ?: "Big bug",
                     Snackbar.LENGTH_LONG
                 ).show()
 
