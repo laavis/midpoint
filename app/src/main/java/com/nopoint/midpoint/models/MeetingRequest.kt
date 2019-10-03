@@ -21,6 +21,7 @@ data class MeetingRequest(
     @SerializedName("recieverLng") val receiverLongitude: Double?,
     @SerializedName("meetingPointLat") val meetingPointLatitude: Double?,
     @SerializedName("meetingPointLng") val meetingPointLongitude: Double?,
+    @SerializedName("meetingPointName") val meetingPointName: String?,
     @SerializedName("timestamp") val timestamp: Date
 )
 
