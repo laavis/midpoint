@@ -10,6 +10,7 @@ import com.google.maps.android.SphericalUtil
 import com.nopoint.midpoint.BuildConfig
 import com.nopoint.midpoint.map.models.Direction
 import com.nopoint.midpoint.map.models.FullRoute
+import com.nopoint.midpoint.models.MeetingRequest
 import com.nopoint.midpoint.models.Result
 import org.json.JSONObject
 
@@ -47,6 +48,22 @@ object DirectionsUtils {
             leg.end_location.lat,
             leg.end_location.lng,
             bestRoute.overview_polyline.points)
+    }
+
+    /**
+     * Builds jsonObject with the parameters required
+     * @param
+     * @return JsonObject with the given params
+     */
+    fun buildResponseBody(meetingRequest: MeetingRequest, latestLocation: LatLng, midpointLatLng: LatLng): JSONObject {
+        val body = JSONObject()
+        body.put("requestId", meetingRequest.id)
+        body.put("lat", latestLocation.latitude)
+        body.put("lng", latestLocation.longitude)
+        body.put("middleLat", midpointLatLng.latitude)
+        body.put("middleLng", midpointLatLng.longitude)
+        body.put("response", 1) //TODO allow setting different response types
+        return body
     }
 
     data class MidPointRoute(
