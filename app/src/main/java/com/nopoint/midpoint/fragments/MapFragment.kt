@@ -1,5 +1,6 @@
 package com.nopoint.midpoint.fragments
 
+import android.content.ContentValues.TAG
 import android.location.Location
 import android.os.Bundle
 import android.util.Log
@@ -7,6 +8,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import com.google.android.gms.location.*
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -25,6 +27,11 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import kotlinx.android.synthetic.main.bottom_sheet.view.*
 import kotlinx.android.synthetic.main.fragment_map.*
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.tasks.OnCompleteListener
+import com.google.firebase.iid.FirebaseInstanceId
+import com.nopoint.midpoint.models.CurrentUser
+import com.nopoint.midpoint.models.LocalUser
+import org.json.JSONObject
 
 
 /**
@@ -45,6 +52,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
     private var state = BottomSheetBehavior.STATE_COLLAPSED
     private lateinit var sheetFragment: MeetingFragment
     private lateinit var currentLocation: Location
+    private lateinit var localUser: LocalUser
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -57,7 +65,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
             mapFragment = SupportMapFragment.newInstance()
             mapFragment!!.getMapAsync(this)
         }
-
+        localUser = CurrentUser.getLocalUser(activity!!)!!
         childFragmentManager.beginTransaction().replace(R.id.google_map, mapFragment!!).commit()
         sheetFragment = childFragmentManager.findFragmentById(R.id.fragment) as MeetingFragment
         sheetBehavior = BottomSheetBehavior.from(view.bottom_sheet)
@@ -73,6 +81,27 @@ class MapFragment : Fragment(), OnMapReadyCallback {
 
         button_TEST.setOnClickListener {
             // getDirectionsToAbsoluteMidpoint(LatLng(60.172744, 24.938799),  LatLng(60.162869, 24.932577))
+            FirebaseInstanceId.getInstance().instanceId
+                .addOnCompleteListener(OnCompleteListener { task ->
+                    if (!task.isSuccessful) {
+                        Log.w(TAG, "getInstanceId failed", task.exception)
+                        return@OnCompleteListener
+                    }
+                    // Get new Instance ID token
+                    val token = task.result?.token
+
+                    // Log and toast
+                    val msg = "TOKEN: $token"
+                    val path = "/user/updateToken"
+                    val body = JSONObject()
+                    body.put("firebaseToken", token)
+                    Log.d("BODY", body.toString())
+                    apiController.post(API.LOCAL_API, path, body, localUser.token){ response ->
+                        val message = response?.optString("msg") ?: response?.optString("errors")
+                        Log.d("FIRBASE TOKEN", message)
+                    }
+                    Log.d(TAG, msg)
+                })
         }
     }
 

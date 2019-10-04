@@ -27,6 +27,9 @@ data class MeetingRequest(
 
 data class MeetingRequestRow(val meetingRequest: MeetingRequest?, val type: MeetingType?, val rowType: RowType)
 
+data class MeetingRequestNotification(
+    @SerializedName("meetingRequest")val meetingRequest: MeetingRequest
+)
 enum class MeetingType(val type: Int){
     ACTIVE(0),
     INCOMING(1),
