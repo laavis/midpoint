@@ -1,4 +1,4 @@
-package com.nopoint.midpoint
+package com.nopoint.midpoint.adapters
 
 import android.content.Context
 import android.view.LayoutInflater
@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.nopoint.midpoint.R
 import com.nopoint.midpoint.models.*
 import kotlinx.android.synthetic.main.request_header.view.*
 import kotlinx.android.synthetic.main.request_row.view.*

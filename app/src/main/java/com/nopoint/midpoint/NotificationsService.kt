@@ -14,26 +14,14 @@ import androidx.work.WorkManager
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import com.google.gson.Gson
-import com.google.gson.GsonBuilder
 import com.nopoint.midpoint.models.MeetingRequest
-import com.nopoint.midpoint.models.MeetingRequestNotification
 import com.nopoint.midpoint.networking.API
 import com.nopoint.midpoint.networking.APIController
 import com.nopoint.midpoint.networking.ServiceVolley
 import org.json.JSONObject
-import java.text.DateFormat
-import java.util.*
-import androidx.core.content.ContextCompat.getSystemService
-import android.icu.lang.UCharacter.GraphemeClusterBreak.T
-import java.text.SimpleDateFormat
-import java.util.Collections.replaceAll
-import androidx.core.content.ContextCompat.getSystemService
-import android.icu.lang.UCharacter.GraphemeClusterBreak.T
 
 
-
-
-class NotificationsService: FirebaseMessagingService(){
+class NotificationsService : FirebaseMessagingService() {
     private val service = ServiceVolley()
     private val apiController = APIController(service)
 
@@ -69,13 +57,14 @@ class NotificationsService: FirebaseMessagingService(){
         remoteMessage.notification?.let {
             val body = it.body
             val title = it.title
-            sendNotification(body!!, title!!)
+            val request = remoteMessage.data["meetingRequest"]
+            try {
+                val result = Gson().fromJson(request, MeetingRequest::class.java)
+                sendNotification(body!!, title!!, result)
+            } catch (exception: Throwable) {
+                Log.d("PARSE FAILURE", exception.printStackTrace().toString())
+            }
         }
-        val request = remoteMessage.data["meetingRequest"]
-        // TODO figure out how to parse meeting request
-        //val result = Gson().fromJson(request!!, MeetingRequest::class.java)
-        // Also if you intend on generating your own notifications as a result of a received FCM
-        // message, here is where that should be initiated. See sendNotification method below.
     }
 
 
@@ -98,12 +87,24 @@ class NotificationsService: FirebaseMessagingService(){
      *
      * @param messageBody FCM message body received.
      */
-    private fun sendNotification(messageBody: String, messageTitle: String) {
+    private fun sendNotification(messageBody: String, messageTitle: String, meetingRequest: MeetingRequest) {
         val intent = Intent(this, MainActivity::class.java)
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-        val pendingIntent = PendingIntent.getActivity(this, 0 /* Request code */, intent,
-            PendingIntent.FLAG_ONE_SHOT)
+        val pendingIntent = PendingIntent.getActivity(
+            this, 0 /* Request code */, intent,
+            PendingIntent.FLAG_ONE_SHOT
+        )
+        val intentAccept = Intent(this, NotificationActionReceiver::class.java)
+        val intentReject = Intent(this, NotificationActionReceiver::class.java)
+        val NOTIFICATION_ID = 1
+        //This is optional if you have more than one buttons and want to differentiate between two
+        intentAccept.putExtra("actionAccept", meetingRequest.id)
+        intentAccept.putExtra("notificationId", NOTIFICATION_ID)
+        intentReject.putExtra("actionReject", meetingRequest.id)
+        intentReject.putExtra("notificationId", NOTIFICATION_ID)
 
+        val pIntentAccept = PendingIntent.getBroadcast(this,1,intentAccept,PendingIntent.FLAG_UPDATE_CURRENT)
+        val pIntentReject = PendingIntent.getBroadcast(this,2,intentReject,PendingIntent.FLAG_UPDATE_CURRENT)
         val channelId = getString(R.string.default_notification_channel_id)
         val defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
         val notificationBuilder = NotificationCompat.Builder(this, channelId)
@@ -113,18 +114,23 @@ class NotificationsService: FirebaseMessagingService(){
             .setAutoCancel(true)
             .setSound(defaultSoundUri)
             .setContentIntent(pendingIntent)
+            .addAction(R.drawable.ic_logo, "Accept", pIntentAccept)
+            .addAction(R.drawable.ic_logo, "Reject", pIntentReject)
 
-        val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        val notificationManager =
+            getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
         // Since android Oreo notification channel is needed.
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val channel = NotificationChannel(channelId,
+            val channel = NotificationChannel(
+                channelId,
                 "Channel human readable title",
-                NotificationManager.IMPORTANCE_HIGH)
+                NotificationManager.IMPORTANCE_HIGH
+            )
             notificationManager.createNotificationChannel(channel)
         }
 
-        notificationManager.notify(0 /* ID of notification */, notificationBuilder.build())
+        notificationManager.notify(NOTIFICATION_ID /* ID of notification */, notificationBuilder.build())
     }
 
     companion object {
@@ -146,7 +152,7 @@ class NotificationsService: FirebaseMessagingService(){
         val path = "users/updateToken"
         val body = JSONObject()
         body.put("firebaseToken", token)
-        apiController.post(API.LOCAL_API, path, body){ response ->
+        apiController.post(API.LOCAL_API, path, body) { response ->
             val msg = response?.optString("msg") ?: response?.optString("errors")
             Log.d("FIRBASE TOKEN", msg!!)
         }

@@ -1,7 +1,6 @@
 package com.nopoint.midpoint.fragments
 
 import android.content.Context
-import android.location.Location
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -17,9 +16,9 @@ import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textfield.TextInputEditText
 import com.google.gson.Gson
 import com.nopoint.midpoint.*
+import com.nopoint.midpoint.adapters.MeetingRequestsAdapter
 import com.nopoint.midpoint.map.DirectionsUtils
 import com.nopoint.midpoint.map.MeetingUtils
-import com.nopoint.midpoint.map.PlacesUtils
 import com.nopoint.midpoint.map.models.Direction
 import com.nopoint.midpoint.models.*
 import com.nopoint.midpoint.networking.API
