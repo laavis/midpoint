@@ -6,6 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:gravity="center_vertical"
+    android:layout_marginTop="144dp"
     tools:context=".fragments.LoginFragment">
 
     <LinearLayout
@@ -14,7 +15,6 @@
         android:orientation="vertical">
 
         <com.google.android.material.textfield.TextInputLayout
-            style="@style/InputLayout"
             android:id="@+id/login_input_layout_email"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -24,18 +24,16 @@
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/login_input_email"
                 style="@style/InputEditText"
-                android:text="a@a.com"
+                android:text="kauklahti@test.com"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
 
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
-            style="@style/InputLayout"
             android:id="@+id/login_input_layout_password"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
             android:hint="@string/hint_password"
             app:errorEnabled="true">
 
@@ -43,7 +41,7 @@
                 style="@style/InputEditText"
                 android:id="@+id/login_input_password"
                 android:inputType="textPassword"
-                android:text="password1"
+                android:text="password"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
 
@@ -55,14 +53,8 @@
     <com.google.android.material.button.MaterialButton
         style="@style/ButtonPrimary"
         android:id="@+id/button_log_in"
-        android:layout_marginTop="24dp"
-        android:layout_height="56dp"
-        android:layout_width="match_parent"
-        app:cornerRadius="0dp"
-        app:icon="@drawable/ic_arrow"
-        app:iconGravity="textStart"
-        app:iconPadding="0dp"
-        app:iconTint="@color/barely_white"
-        app:srcCompat="@drawable/ic_arrow" />
+        android:layout_marginTop="16dp"
+        android:layout_height="72dp"
+        android:text="@string/entry_log_in"/>
 
 </LinearLayout>

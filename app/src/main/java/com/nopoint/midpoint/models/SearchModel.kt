@@ -8,5 +8,14 @@ data class UserSearchResponse(
 
 data class UserSearchResponseUser(
     @SerializedName("_id")val _id: String,
-    @SerializedName("username")val username: String
+    @SerializedName("username")val username: String,
+    @SerializedName("isFriend")val isFriend: Boolean?,
+    @SerializedName("isRequestSent")val isRequestSent: Boolean?
+)
+
+data class UserSearchResponseUserF(
+    @SerializedName("_id")val _id: String,
+    @SerializedName("username")val username: String,
+    @SerializedName("isFriend")val isFriend: Boolean,
+    @SerializedName("isRequestSent")val isRequestSent: Boolean
 )

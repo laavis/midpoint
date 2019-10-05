@@ -56,13 +56,14 @@ class LoginFragment : Fragment() {
     }
 
     private fun login() {
-        val params = JSONObject()
+        val body = JSONObject()
         val path = "/user/login"
 
-        params.put("email", emailField.text.toString())
-        params.put("password", passwordField.text.toString())
 
-        apiController.post(API.LOCAL_API, path, params) { response ->
+        body.put("email", emailField.text.toString())
+        body.put("password", passwordField.text.toString())
+
+        apiController.post(API.LOCAL_API, path, body) { response ->
             try {
                 val loginResponse = Gson().fromJson(response.toString(), LoginResponse::class.java)
 

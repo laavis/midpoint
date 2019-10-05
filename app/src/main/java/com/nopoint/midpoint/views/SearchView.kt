@@ -9,6 +9,8 @@ import android.view.ViewAnimationUtils
 import android.widget.FrameLayout
 import com.nopoint.midpoint.R
 import kotlinx.android.synthetic.main.view_search.view.*
+import android.hardware.input.InputManager
+
 
 class SearchView(context: Context, attrs: AttributeSet) : FrameLayout(context, attrs) {
 
@@ -32,6 +34,9 @@ class SearchView(context: Context, attrs: AttributeSet) : FrameLayout(context, a
         )
         circularReveal.duration = duration
         circularReveal.start()
+        search_input.requestFocus()
+        //todo open keyboard
+        // val inputManager = context.getSystemService(Context) as InputManager
     }
 
     private fun closeSearch() {

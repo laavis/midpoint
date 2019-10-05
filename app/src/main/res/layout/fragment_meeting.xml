@@ -42,7 +42,6 @@
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/sign_up_input_layout_username"
-            style="@style/InputLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
