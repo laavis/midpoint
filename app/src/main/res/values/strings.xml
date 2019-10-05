@@ -2,7 +2,7 @@
     /****** ENTRY ******/
     // Strings
     <string name="app_name" translatable="false">Midpoint</string>
-
+    <string name="default_notification_channel_id">1001</string>
     // Entry
     <string name="entry_log_in">Log In</string>
     <string name="entry_sign_up">Sign Up</string>

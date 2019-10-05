@@ -70,81 +70,77 @@ class MeetingFragment : Fragment() {
 
     // RESPOND TO MEETING REQUEST
     private fun onResponseSent(meetingRequest: MeetingRequest) {
-        val body = JSONObject()
-        val requesterLoc = Location("")
-        requesterLoc.longitude = meetingRequest.requesterLongitude
-        requesterLoc.latitude = meetingRequest.requesterLatitude
-
         val latestLocation = currentLocation
-
         val fullRouteURL = DirectionsUtils.buildUrlFromLatLng(
             LatLng(latestLocation!!.latitude, latestLocation.longitude),
-            LatLng(requesterLoc.latitude, requesterLoc.longitude)
+            LatLng(meetingRequest.requesterLatitude,  meetingRequest.requesterLongitude)
         )
-
-        Log.d("MEETING", "$fullRouteURL")
-
+        Log.d("MEETING", fullRouteURL)
         // Get full route
         apiController.get(API.DIRECTIONS, fullRouteURL) { response ->
             if (response != null) {
                 val result = Gson().fromJson(response.toString(), Direction::class.java)
                 Log.d("MEETING", "$result")
-                var midpointLatLng: LatLng? = DirectionsUtils.getAbsoluteMidpoint(result)
+                val midpointLatLng: LatLng? = DirectionsUtils.getAbsoluteMidpoint(result)
                 // Midpoint calculation success
                 if (midpointLatLng != null) {
-                    val placesUrl = PlacesUtils.buildUrl(midpointLatLng, "cafe")
-                    apiController.get(API.PLACES, placesUrl) { placesResponse ->
-                        Log.d("PLACES", placesResponse.toString())
-                        val places = Gson().fromJson(placesResponse.toString(), Places::class.java)
-                        body.put("requestId", meetingRequest.id)
-                        body.put("lat", latestLocation.latitude)
-                        body.put("lng", latestLocation.longitude)
-                        var name = result.routes[0].legs[0].end_address
-                        if (places.results.isNotEmpty()) {
-                            val best = places.results[0]
-                            body.put("middleLat", best.geometry.location.lat)
-                            body.put("middleLng", best.geometry.location.lng)
-                            body.put("middlePointName", best.name)
-                            name = best.name
-                        } else {
-                            body.put("middleLat", midpointLatLng.latitude)
-                            body.put("middleLng", midpointLatLng.longitude)
-                            body.put("middlePointName", name)
-                        }
-
-                        body.put("response", 1) //TODO allow setting different response types
-
-                        Log.d("MEETING", "$body")
-
-                        val midpointURL = DirectionsUtils.buildUrlFromLatLng(
-                            LatLng(latestLocation.latitude, latestLocation.longitude),
-                            LatLng(midpointLatLng.latitude, midpointLatLng.longitude)
-                        )
-
-                        // Respond to requester
-                        apiController.post(
-                            API.LOCAL_API,
-                            MEETING_RESPOND_URL,
-                            body,
-                            localUser.token
-                        ) {
-                            try {
-                                val map = parentFragment as MapFragment
-                                map.getDirectionsToAbsoluteMidpoint(midpointURL, name, true)
-                                val otherPersonUrl = DirectionsUtils.buildUrlFromLatLng(
-                                    LatLng(meetingRequest.requesterLatitude, meetingRequest.requesterLongitude),
-                                    LatLng(midpointLatLng.latitude, midpointLatLng.longitude)
-                                )
-                                map.getDirectionsToAbsoluteMidpoint(midpointURL, name, false)
-                            } catch (e: IOException) {
-                                Log.e("MEETING", "$e")
-                            }
+                    val body = DirectionsUtils.buildResponseBody(
+                        meetingRequest,
+                        latestLocation,
+                        midpointLatLng
+                    )
+                    val midpointURL = DirectionsUtils.buildUrlFromLatLng(
+                        LatLng(latestLocation.latitude, latestLocation.longitude),
+                        LatLng(midpointLatLng.latitude, midpointLatLng.longitude)
+                    )
+                    // Respond to requester
+                    apiController.post(
+                        API.LOCAL_API,
+                        MEETING_RESPOND_URL,
+                        body,
+                        localUser.token
+                    ) { response ->
+                        try {
+                            val map = parentFragment as MapFragment
+                            map.getDirectionsToAbsoluteMidpoint(midpointURL, true)
+                        } catch (e: IOException) {
+                            Log.e("MEETING", "$e")
                         }
                     }
                 }
             }
         }
     }
+
+    /**
+    apiController.get(API.PLACES, placesUrl) { placesResponse ->
+    Log.d("PLACES", placesResponse.toString())
+    val places = Gson().fromJson(placesResponse.toString(), Places::class.java)
+    body.put("requestId", meetingRequest.id)
+    body.put("lat", latestLocation.latitude)
+    body.put("lng", latestLocation.longitude)
+    var name = result.routes[0].legs[0].end_address
+    if (places.results.isNotEmpty()) {
+    val best = places.results[0]
+    body.put("middleLat", best.geometry.location.lat)
+    body.put("middleLng", best.geometry.location.lng)
+    body.put("middlePointName", best.name)
+    name = best.name
+    } else {
+    body.put("middleLat", midpointLatLng.latitude)
+    body.put("middleLng", midpointLatLng.longitude)
+    body.put("middlePointName", name)
+    }
+
+    body.put("response", 1) //TODO allow setting different response types
+
+    Log.d("MEETING", "$body")
+
+    val midpointURL = DirectionsUtils.buildUrlFromLatLng(
+    LatLng(latestLocation.latitude, latestLocation.longitude),
+    LatLng(midpointLatLng.latitude, midpointLatLng.longitude)
+    )
+     */
 
     private fun showOnMap(meetingRequest: MeetingRequest) {
         val midpointURL = DirectionsUtils.buildUrlFromLatLng(
@@ -153,8 +149,7 @@ class MeetingFragment : Fragment() {
         )
         val map = parentFragment as MapFragment
         map.getDirectionsToAbsoluteMidpoint(midpointURL, clearPrevious = true)
-        Log.d("HMM", meetingRequest.toString())
-        if (localUser.user.id == meetingRequest.receiver) {
+/*        if (localUser.user.id == meetingRequest.receiver) {
             val otherPersonUrl = DirectionsUtils.buildUrlFromLatLng(
                 LatLng(meetingRequest.requesterLatitude, meetingRequest.requesterLongitude),
                 LatLng(meetingRequest.meetingPointLatitude, meetingRequest.meetingPointLongitude)
@@ -166,7 +161,7 @@ class MeetingFragment : Fragment() {
                 LatLng(meetingRequest.meetingPointLatitude, meetingRequest.meetingPointLongitude)
             )
             map.getDirectionsToAbsoluteMidpoint(otherPersonUrl, meetingRequest.meetingPointName, clearPrevious = false)
-        }
+        }*/
     }
 
     private fun getRequests() {
