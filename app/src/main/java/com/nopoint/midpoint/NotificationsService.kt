@@ -7,6 +7,7 @@ import android.content.Context
 import android.content.Intent
 import android.media.RingtoneManager
 import android.os.Build
+import android.os.Bundle
 import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.work.OneTimeWorkRequest
@@ -20,6 +21,11 @@ import com.nopoint.midpoint.networking.APIController
 import com.nopoint.midpoint.networking.ServiceVolley
 import org.json.JSONObject
 
+const val ACCEPT_FRIEND_REQUEST = "1005"
+const val DECLINE_FRIEND_REQUEST = "1006"
+const val ACCEPT_MEETING_REQUEST = "1007"
+const val DECLINE_MEETING_REQUEST = "1008"
+const val EXTRA_NOTIFICATION_ID = "12345"
 
 class NotificationsService : FirebaseMessagingService() {
     private val service = ServiceVolley()
@@ -40,29 +46,27 @@ class NotificationsService : FirebaseMessagingService() {
         // Not getting messages here? See why this may be: https://goo.gl/39bRNJ
         Log.d(TAG, "From: ${remoteMessage.from}")
 
-        // Check if message contains a data payload.
-        remoteMessage.data.isNotEmpty().let {
-            Log.d(TAG, "Message data payload: " + remoteMessage.data)
-
-            if (/* Check if data needs to be processed by long running job */ true) {
-                // For long-running tasks (10 seconds or more) use WorkManager.
-                scheduleJob()
-            } else {
-                // Handle message within 10 seconds
-                handleNow()
-            }
-        }
-
         // Check if message contains a notification payload.
+        // This is run when app is in the foreground
         remoteMessage.notification?.let {
             val body = it.body
             val title = it.title
-            val request = remoteMessage.data["meetingRequest"]
-            try {
-                val result = Gson().fromJson(request, MeetingRequest::class.java)
-                sendNotification(body!!, title!!, result)
-            } catch (exception: Throwable) {
-                Log.d("PARSE FAILURE", exception.printStackTrace().toString())
+            val meetingRequest = remoteMessage.data["meetingRequest"]
+            val friendRequest = remoteMessage.data["friendRequest"]
+            if (meetingRequest != null) {
+                try {
+                    val result = Gson().fromJson(meetingRequest, MeetingRequest::class.java)
+                    sendNotification(body!!, title!!, result)
+                } catch (exception: Throwable) {
+                    exception.printStackTrace()
+                }
+            } else if (friendRequest != null) {
+                try {
+                    //val result = Gson().fromJson(friendRequest, FriendRequest::class.java) TODO: create friend request model
+
+                } catch (exception: Throwable) {
+                    exception.printStackTrace()
+                }
             }
         }
     }
@@ -87,24 +91,20 @@ class NotificationsService : FirebaseMessagingService() {
      *
      * @param messageBody FCM message body received.
      */
-    private fun sendNotification(messageBody: String, messageTitle: String, meetingRequest: MeetingRequest) {
+    private fun sendNotification(
+        messageBody: String,
+        messageTitle: String,
+        meetingRequest: MeetingRequest
+    ) {
         val intent = Intent(this, MainActivity::class.java)
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
         val pendingIntent = PendingIntent.getActivity(
             this, 0 /* Request code */, intent,
             PendingIntent.FLAG_ONE_SHOT
         )
-        val intentAccept = Intent(this, NotificationActionReceiver::class.java)
-        val intentReject = Intent(this, NotificationActionReceiver::class.java)
         val NOTIFICATION_ID = 1
         //This is optional if you have more than one buttons and want to differentiate between two
-        intentAccept.putExtra("actionAccept", meetingRequest.id)
-        intentAccept.putExtra("notificationId", NOTIFICATION_ID)
-        intentReject.putExtra("actionReject", meetingRequest.id)
-        intentReject.putExtra("notificationId", NOTIFICATION_ID)
 
-        val pIntentAccept = PendingIntent.getBroadcast(this,1,intentAccept,PendingIntent.FLAG_UPDATE_CURRENT)
-        val pIntentReject = PendingIntent.getBroadcast(this,2,intentReject,PendingIntent.FLAG_UPDATE_CURRENT)
         val channelId = getString(R.string.default_notification_channel_id)
         val defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
         val notificationBuilder = NotificationCompat.Builder(this, channelId)
@@ -114,8 +114,8 @@ class NotificationsService : FirebaseMessagingService() {
             .setAutoCancel(true)
             .setSound(defaultSoundUri)
             .setContentIntent(pendingIntent)
-            .addAction(R.drawable.ic_logo, "Accept", pIntentAccept)
-            .addAction(R.drawable.ic_logo, "Reject", pIntentReject)
+            .addAction(R.drawable.ic_logo, "Accept", NotificationController.pendingIntent(this, ACCEPT_MEETING_REQUEST, meetingRequest.id))
+            .addAction(R.drawable.ic_logo, "Reject", NotificationController.pendingIntent(this, DECLINE_MEETING_REQUEST, meetingRequest.id))
 
         val notificationManager =
             getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
@@ -124,13 +124,16 @@ class NotificationsService : FirebaseMessagingService() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val channel = NotificationChannel(
                 channelId,
-                "Channel human readable title",
+                "Meeting requests",
                 NotificationManager.IMPORTANCE_HIGH
             )
             notificationManager.createNotificationChannel(channel)
         }
 
-        notificationManager.notify(NOTIFICATION_ID /* ID of notification */, notificationBuilder.build())
+        notificationManager.notify(
+            NOTIFICATION_ID /* ID of notification */,
+            notificationBuilder.build()
+        )
     }
 
     companion object {
@@ -155,6 +158,17 @@ class NotificationsService : FirebaseMessagingService() {
         apiController.post(API.LOCAL_API, path, body) { response ->
             val msg = response?.optString("msg") ?: response?.optString("errors")
             Log.d("FIRBASE TOKEN", msg!!)
+        }
+    }
+
+    object NotificationController {
+        fun pendingIntent(context: Context, name: String, extras: String): PendingIntent {
+            val intent = Intent(context, NotificationActionReceiver::class.java).apply {
+                action = name
+                putExtra(EXTRA_NOTIFICATION_ID, extras)
+            }
+
+            return PendingIntent.getBroadcast(context, 0, intent, 0)
         }
     }
 }
