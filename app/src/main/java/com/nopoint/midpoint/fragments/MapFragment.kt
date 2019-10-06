@@ -96,7 +96,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
                     val body = JSONObject()
                     body.put("firebaseToken", token)
                     Log.d("BODY", body.toString())
-                    apiController.post(API.LOCAL_API, path, body, localUser.token){ response ->
+                    apiController.post(API.LOCAL_API, path, body, localUser.token) { response ->
                         val message = response?.optString("msg") ?: response?.optString("errors")
                         Log.d("FIRBASE TOKEN", message)
                     }
@@ -123,7 +123,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         if (!requestingLocationUpdates) {
             mMap.isMyLocationEnabled = true
             // Starting location over Helsinki
-            val cam = CameraUpdateFactory.newLatLngZoom(LatLng(60.2,24.7385084), 8.0f)
+            val cam = CameraUpdateFactory.newLatLngZoom(LatLng(60.2, 24.7385084), 8.0f)
             mMap.moveCamera(cam)
             fusedLocationClient = LocationServices.getFusedLocationProviderClient(activity!!)
             locationCallback = createLocationCallback()
@@ -136,22 +136,25 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         if (requestingLocationUpdates) startLocationUpdates()
     }
 
-    private fun createBottomSheetCb(): BottomSheetBehavior.BottomSheetCallback{
+    private fun createBottomSheetCb(): BottomSheetBehavior.BottomSheetCallback {
         return object : BottomSheetBehavior.BottomSheetCallback() {
             override fun onStateChanged(view: View, newState: Int) {
                 when (newState) {
                     BottomSheetBehavior.STATE_HIDDEN -> state = BottomSheetBehavior.STATE_HIDDEN
                     BottomSheetBehavior.STATE_EXPANDED -> state = BottomSheetBehavior.STATE_EXPANDED
-                    BottomSheetBehavior.STATE_COLLAPSED -> state = BottomSheetBehavior.STATE_COLLAPSED
+                    BottomSheetBehavior.STATE_COLLAPSED -> state =
+                        BottomSheetBehavior.STATE_COLLAPSED
                     BottomSheetBehavior.STATE_DRAGGING -> state = BottomSheetBehavior.STATE_DRAGGING
 /*                    Buggy AF
                         if (state != BottomSheetBehavior.STATE_HALF_EXPANDED) {
                             sheetBehavior!!.state = BottomSheetBehavior.STATE_HALF_EXPANDED
                     }*/
                     BottomSheetBehavior.STATE_SETTLING -> state = BottomSheetBehavior.STATE_SETTLING
-                    BottomSheetBehavior.STATE_HALF_EXPANDED -> state = BottomSheetBehavior.STATE_HALF_EXPANDED
+                    BottomSheetBehavior.STATE_HALF_EXPANDED -> state =
+                        BottomSheetBehavior.STATE_HALF_EXPANDED
                 }
             }
+
             override fun onSlide(view: View, v: Float) {}
         }
     }
@@ -165,7 +168,8 @@ class MapFragment : Fragment(), OnMapReadyCallback {
                         val loc = LatLng(location.latitude, location.longitude)
                         Log.d("MAP", "lat: ${location.latitude}, lng: ${location.longitude}")
                         val cam = CameraUpdateFactory.newLatLngZoom(loc, 15.0f)
-                        sheetFragment.currentLocation = LatLng(location.latitude, location.longitude)
+                        sheetFragment.currentLocation =
+                            LatLng(location.latitude, location.longitude)
                         currentLocation = location
                         mMap.animateCamera(cam)
                     }

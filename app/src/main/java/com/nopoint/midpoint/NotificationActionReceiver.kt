@@ -6,6 +6,9 @@ import android.content.Context
 import android.content.Intent
 import android.util.Log
 import android.widget.Toast
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
+
+
 
 
 class NotificationActionReceiver : BroadcastReceiver() {
@@ -19,33 +22,35 @@ class NotificationActionReceiver : BroadcastReceiver() {
                 Toast.makeText(context, "Declined friend request", Toast.LENGTH_SHORT).show()
             }
             ACCEPT_MEETING_REQUEST-> {
-                Toast.makeText(context, "Accepted meeting request", Toast.LENGTH_SHORT).show()
+                //Toast.makeText(context, "Accepted meeting request", Toast.LENGTH_SHORT).show()
+                LocalBroadcastManager.getInstance(context).sendBroadcast(intent)
             }
             DECLINE_MEETING_REQUEST -> {
-                Toast.makeText(context, "Declined meeting request", Toast.LENGTH_SHORT).show()
+                //Toast.makeText(context, "Declined meeting request", Toast.LENGTH_SHORT).show()
+                LocalBroadcastManager.getInstance(context).sendBroadcast(intent)
             }
         }
-        val notificationId = intent.getIntExtra(EXTRA_NOTIFICATION_ID, 0)
         val manager =
             context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-        manager.cancel(notificationId)
+        manager.cancel(1)
         //This is used to close the notification tray
         val it = Intent(Intent.ACTION_CLOSE_SYSTEM_DIALOGS)
         context.sendBroadcast(it)
     }
 
-    fun acceptRequest(id: String) {
-        Log.d("ACCEPT", "ACCEPTED")
+    fun acceptMeetingRequest(id: String) {
         //Fetch all meeting requests
         //Find request with id
         //Send response with status 1
     }
 
-    fun rejectRequest(id: String) {
-        Log.d("REJECT", "REJECTED")
-        //Fetch all meeting requests
-        //Find request with id
+    fun declineMeetingRequest(id: String) {
         //Send response with status 2
     }
 
+    fun acceptFriendRequest(id: String) {
+    }
+
+    fun declineFriendRequest(id: String) {
+    }
 }

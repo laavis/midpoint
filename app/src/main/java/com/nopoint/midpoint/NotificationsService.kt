@@ -10,11 +10,13 @@ import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import androidx.core.app.NotificationCompat
+import androidx.core.os.bundleOf
 import androidx.work.OneTimeWorkRequest
 import androidx.work.WorkManager
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import com.google.gson.Gson
+import com.nopoint.midpoint.models.FriendRequestResponse
 import com.nopoint.midpoint.models.MeetingRequest
 import com.nopoint.midpoint.networking.API
 import com.nopoint.midpoint.networking.APIController
@@ -26,6 +28,7 @@ const val DECLINE_FRIEND_REQUEST = "1006"
 const val ACCEPT_MEETING_REQUEST = "1007"
 const val DECLINE_MEETING_REQUEST = "1008"
 const val EXTRA_NOTIFICATION_ID = "12345"
+const val LAUNCHED_FROM_NOTIFICATION_ID = "09876"
 
 class NotificationsService : FirebaseMessagingService() {
     private val service = ServiceVolley()
@@ -56,21 +59,20 @@ class NotificationsService : FirebaseMessagingService() {
             if (meetingRequest != null) {
                 try {
                     val result = Gson().fromJson(meetingRequest, MeetingRequest::class.java)
-                    sendNotification(body!!, title!!, result)
+                    sendNotification(body!!, title!!, result, null)
                 } catch (exception: Throwable) {
                     exception.printStackTrace()
                 }
             } else if (friendRequest != null) {
                 try {
-                    //val result = Gson().fromJson(friendRequest, FriendRequest::class.java) TODO: create friend request model
-
+                    val result = Gson().fromJson(friendRequest, FriendRequestResponse::class.java)
+                    sendNotification(body!!, title!!, null, result)
                 } catch (exception: Throwable) {
                     exception.printStackTrace()
                 }
             }
         }
     }
-
 
     /**
      * Schedule async work using WorkManager.
@@ -94,10 +96,12 @@ class NotificationsService : FirebaseMessagingService() {
     private fun sendNotification(
         messageBody: String,
         messageTitle: String,
-        meetingRequest: MeetingRequest
+        meetingRequest: MeetingRequest?,
+        friendRequest: FriendRequestResponse?
     ) {
         val intent = Intent(this, MainActivity::class.java)
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+        intent.putExtra(LAUNCHED_FROM_NOTIFICATION_ID, true)
         val pendingIntent = PendingIntent.getActivity(
             this, 0 /* Request code */, intent,
             PendingIntent.FLAG_ONE_SHOT
@@ -109,13 +113,55 @@ class NotificationsService : FirebaseMessagingService() {
         val defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
         val notificationBuilder = NotificationCompat.Builder(this, channelId)
             .setSmallIcon(R.drawable.ic_logo)
+            .setColor(getColor(R.color.color_primary))
             .setContentTitle(messageTitle)
             .setContentText(messageBody)
             .setAutoCancel(true)
             .setSound(defaultSoundUri)
             .setContentIntent(pendingIntent)
-            .addAction(R.drawable.ic_logo, "Accept", NotificationController.pendingIntent(this, ACCEPT_MEETING_REQUEST, meetingRequest.id))
-            .addAction(R.drawable.ic_logo, "Reject", NotificationController.pendingIntent(this, DECLINE_MEETING_REQUEST, meetingRequest.id))
+
+        if (meetingRequest != null) {
+            notificationBuilder
+                .addAction(
+                    R.drawable.ic_logo,
+                    "Accept",
+                    NotificationController.pendingIntent(
+                        this,
+                        ACCEPT_MEETING_REQUEST,
+                        meetingRequest.id
+                    )
+                )
+                .addAction(
+                    R.drawable.ic_logo,
+                    "Reject",
+                    NotificationController.pendingIntent(
+                        this,
+                        DECLINE_MEETING_REQUEST,
+                        meetingRequest.id
+                    )
+                )
+        } else if (friendRequest != null) {
+            notificationBuilder
+                .addAction(
+                    R.drawable.ic_logo,
+                    "Accept",
+                    NotificationController.pendingIntent(
+                        this,
+                        ACCEPT_FRIEND_REQUEST,
+                        friendRequest.id
+                    )
+                )
+                .addAction(
+                    R.drawable.ic_logo,
+                    "Reject",
+                    NotificationController.pendingIntent(
+                        this,
+                        DECLINE_FRIEND_REQUEST,
+                        friendRequest.id
+                    )
+                )
+        }
+
 
         val notificationManager =
             getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
@@ -127,6 +173,9 @@ class NotificationsService : FirebaseMessagingService() {
                 "Meeting requests",
                 NotificationManager.IMPORTANCE_HIGH
             )
+            channel.enableLights(true)
+            channel.lightColor = R.color.color_white_accent
+            channel.enableVibration(true)
             notificationManager.createNotificationChannel(channel)
         }
 

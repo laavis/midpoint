@@ -1,12 +1,18 @@
 package com.nopoint.midpoint.fragments
 
+import android.app.NotificationManager
+import android.content.BroadcastReceiver
 import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -49,7 +55,8 @@ class MeetingFragment : Fragment() {
         // view.request_btn.setOnClickListener { sendRequest(view.friend_username.text.toString()) }
         view.refresh_btn.setOnClickListener { getRequests() }
         meetingUsernameInput = view.findViewById(R.id.meeting_username_input)
-
+        LocalBroadcastManager.getInstance(context!!.applicationContext)
+            .registerReceiver(mLocalBroadcastReceiver, getLocalIntentFilter())
         view.request_btn.setOnClickListener {
 
             if (meetingUsernameInput.text!!.isNotEmpty()) {
@@ -72,7 +79,7 @@ class MeetingFragment : Fragment() {
         val latestLocation = currentLocation
         val fullRouteURL = DirectionsUtils.buildUrlFromLatLng(
             LatLng(latestLocation!!.latitude, latestLocation.longitude),
-            LatLng(meetingRequest.requesterLatitude,  meetingRequest.requesterLongitude)
+            LatLng(meetingRequest.requesterLatitude, meetingRequest.requesterLongitude)
         )
         Log.d("MEETING", fullRouteURL)
         // Get full route
@@ -256,4 +263,37 @@ class MeetingFragment : Fragment() {
         }
     }
 
+    private val mLocalBroadcastReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
+            when (intent?.action) {
+                ACCEPT_MEETING_REQUEST -> {
+                    Toast.makeText(
+                        context, "Accepted meeting request ${intent.getStringExtra(
+                            EXTRA_NOTIFICATION_ID
+                        )}", Toast.LENGTH_SHORT
+                    ).show()
+                }
+                DECLINE_MEETING_REQUEST -> {
+                    Toast.makeText(
+                        context, "Declined meeting request ${intent.getStringExtra(
+                            EXTRA_NOTIFICATION_ID
+                        )}", Toast.LENGTH_SHORT
+                    ).show()
+                }
+            }
+        }
+    }
+
+    private fun getLocalIntentFilter(): IntentFilter {
+        val iFilter = IntentFilter()
+        iFilter.addAction(ACCEPT_MEETING_REQUEST)
+        iFilter.addAction(DECLINE_MEETING_REQUEST)
+        return iFilter
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        LocalBroadcastManager.getInstance(context!!.applicationContext)
+            .unregisterReceiver(mLocalBroadcastReceiver)
+    }
 }
