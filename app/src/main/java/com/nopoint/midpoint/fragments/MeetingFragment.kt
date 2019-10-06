@@ -31,6 +31,7 @@ import com.nopoint.midpoint.networking.API
 import com.nopoint.midpoint.networking.APIController
 import com.nopoint.midpoint.networking.ServiceVolley
 import com.nopoint.midpoint.networking.*
+import kotlinx.android.synthetic.main.fragment_meeting.*
 import kotlinx.android.synthetic.main.fragment_meeting.view.*
 import org.json.JSONObject
 import java.io.IOException
@@ -109,6 +110,7 @@ class MeetingFragment : Fragment() {
                         try {
                             val map = parentFragment as MapFragment
                             map.getDirectionsToAbsoluteMidpoint(midpointURL, true)
+                            getRequests()
                         } catch (e: IOException) {
                             Log.e("MEETING", "$e")
                         }
@@ -267,18 +269,28 @@ class MeetingFragment : Fragment() {
         override fun onReceive(context: Context?, intent: Intent?) {
             when (intent?.action) {
                 ACCEPT_MEETING_REQUEST -> {
-                    Toast.makeText(
-                        context, "Accepted meeting request ${intent.getStringExtra(
-                            EXTRA_NOTIFICATION_ID
-                        )}", Toast.LENGTH_SHORT
-                    ).show()
+                    val request = intent.getStringExtra(EXTRA_NOTIFICATION_ID)
+                    if (request != null) {
+                        try {
+                            val meetingRequest = Gson().fromJson(request, MeetingRequest::class.java)
+                            Log.d("HMM", meetingRequest.toString())
+                            onResponseSent(meetingRequest)
+                        } catch (throwable: Throwable) {
+                            throwable.printStackTrace()
+                        }
+                    }
                 }
                 DECLINE_MEETING_REQUEST -> {
-                    Toast.makeText(
-                        context, "Declined meeting request ${intent.getStringExtra(
-                            EXTRA_NOTIFICATION_ID
-                        )}", Toast.LENGTH_SHORT
-                    ).show()
+                    val request = intent.getStringExtra("meetingRequest")
+                    if (request != null) {
+                        try {
+                            val meetingRequest = Gson().fromJson(request, MeetingRequest::class.java)
+                            Log.d("HMM", meetingRequest.toString())
+                            // TODO Decline
+                        } catch (throwable: Throwable) {
+                            throwable.printStackTrace()
+                        }
+                    }
                 }
             }
         }

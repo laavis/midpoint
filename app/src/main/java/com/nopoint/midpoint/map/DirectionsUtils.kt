@@ -11,7 +11,9 @@ import com.nopoint.midpoint.BuildConfig
 import com.nopoint.midpoint.map.models.Direction
 import com.nopoint.midpoint.map.models.FullRoute
 import com.nopoint.midpoint.models.MeetingRequest
+import com.nopoint.midpoint.models.MeetingRequestRow
 import com.nopoint.midpoint.models.Result
+import com.nopoint.midpoint.models.RowType
 import org.json.JSONObject
 
 object DirectionsUtils {
@@ -65,14 +67,6 @@ object DirectionsUtils {
         body.put("response", 1) //TODO allow setting different response types
         return body
     }
-
-    data class MidPointRoute(
-        val startLat: Double,
-        val startLng: Double,
-        val endLat: Double,
-        val endLng: Double
-    )
-
 
     /**
      * Calculates & returns the middle point between 2 coordinates

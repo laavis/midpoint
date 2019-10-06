@@ -4,11 +4,8 @@ import android.app.NotificationManager
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import android.util.Log
 import android.widget.Toast
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
-
-
 
 
 class NotificationActionReceiver : BroadcastReceiver() {
@@ -21,7 +18,7 @@ class NotificationActionReceiver : BroadcastReceiver() {
             DECLINE_FRIEND_REQUEST -> {
                 Toast.makeText(context, "Declined friend request", Toast.LENGTH_SHORT).show()
             }
-            ACCEPT_MEETING_REQUEST-> {
+            ACCEPT_MEETING_REQUEST -> {
                 //Toast.makeText(context, "Accepted meeting request", Toast.LENGTH_SHORT).show()
                 LocalBroadcastManager.getInstance(context).sendBroadcast(intent)
             }

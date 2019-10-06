@@ -22,6 +22,7 @@ import com.nopoint.midpoint.networking.API
 import com.nopoint.midpoint.networking.APIController
 import com.nopoint.midpoint.networking.ServiceVolley
 import org.json.JSONObject
+import java.util.*
 
 const val ACCEPT_FRIEND_REQUEST = "1005"
 const val DECLINE_FRIEND_REQUEST = "1006"
@@ -56,21 +57,7 @@ class NotificationsService : FirebaseMessagingService() {
             val title = it.title
             val meetingRequest = remoteMessage.data["meetingRequest"]
             val friendRequest = remoteMessage.data["friendRequest"]
-            if (meetingRequest != null) {
-                try {
-                    val result = Gson().fromJson(meetingRequest, MeetingRequest::class.java)
-                    sendNotification(body!!, title!!, result, null)
-                } catch (exception: Throwable) {
-                    exception.printStackTrace()
-                }
-            } else if (friendRequest != null) {
-                try {
-                    val result = Gson().fromJson(friendRequest, FriendRequestResponse::class.java)
-                    sendNotification(body!!, title!!, null, result)
-                } catch (exception: Throwable) {
-                    exception.printStackTrace()
-                }
-            }
+            sendNotification(body!!, title!!, meetingRequest, friendRequest)
         }
     }
 
@@ -96,8 +83,8 @@ class NotificationsService : FirebaseMessagingService() {
     private fun sendNotification(
         messageBody: String,
         messageTitle: String,
-        meetingRequest: MeetingRequest?,
-        friendRequest: FriendRequestResponse?
+        meetingRequest: String?,
+        friendRequest: String?
     ) {
         val intent = Intent(this, MainActivity::class.java)
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
@@ -121,6 +108,7 @@ class NotificationsService : FirebaseMessagingService() {
             .setContentIntent(pendingIntent)
 
         if (meetingRequest != null) {
+            Log.d("ID", meetingRequest)
             notificationBuilder
                 .addAction(
                     R.drawable.ic_logo,
@@ -128,7 +116,7 @@ class NotificationsService : FirebaseMessagingService() {
                     NotificationController.pendingIntent(
                         this,
                         ACCEPT_MEETING_REQUEST,
-                        meetingRequest.id
+                        meetingRequest
                     )
                 )
                 .addAction(
@@ -137,7 +125,7 @@ class NotificationsService : FirebaseMessagingService() {
                     NotificationController.pendingIntent(
                         this,
                         DECLINE_MEETING_REQUEST,
-                        meetingRequest.id
+                        meetingRequest
                     )
                 )
         } else if (friendRequest != null) {
@@ -148,7 +136,7 @@ class NotificationsService : FirebaseMessagingService() {
                     NotificationController.pendingIntent(
                         this,
                         ACCEPT_FRIEND_REQUEST,
-                        friendRequest.id
+                        friendRequest
                     )
                 )
                 .addAction(
@@ -157,7 +145,7 @@ class NotificationsService : FirebaseMessagingService() {
                     NotificationController.pendingIntent(
                         this,
                         DECLINE_FRIEND_REQUEST,
-                        friendRequest.id
+                        friendRequest
                     )
                 )
         }
@@ -216,8 +204,7 @@ class NotificationsService : FirebaseMessagingService() {
                 action = name
                 putExtra(EXTRA_NOTIFICATION_ID, extras)
             }
-
-            return PendingIntent.getBroadcast(context, 0, intent, 0)
+            return PendingIntent.getBroadcast(context, UUID.randomUUID().hashCode(), intent, 0)
         }
     }
 }
