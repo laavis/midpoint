@@ -265,8 +265,31 @@ class MeetingFragment : Fragment() {
         }
     }
 
+    private fun declineRequest(meetingRequest: MeetingRequest) {
+        val params = JSONObject()
+        val path = "/meeting-request/decline"
+        params.put("requestId", meetingRequest.id)
+        apiController.post(API.LOCAL_API, path, params, localUser.token) { response ->
+            try {
+                Log.d("RES", "$response")
+                val msg =
+                    if (response?.optString("msg").isNullOrEmpty()) {
+                        response?.getString("errors")
+                    } else response?.getString("msg")
+                Snackbar.make(
+                    activity!!.findViewById(android.R.id.content),
+                    msg!!,
+                    Snackbar.LENGTH_LONG
+                ).show()
+            } catch (e: IOException) {
+                Log.e("MEETING", "$e")
+            }
+        }
+    }
+
     private val mLocalBroadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
+            Log.d("HMM", intent?.action)
             when (intent?.action) {
                 ACCEPT_MEETING_REQUEST -> {
                     val request = intent.getStringExtra(EXTRA_NOTIFICATION_ID)
@@ -281,12 +304,12 @@ class MeetingFragment : Fragment() {
                     }
                 }
                 DECLINE_MEETING_REQUEST -> {
-                    val request = intent.getStringExtra("meetingRequest")
+                    val request = intent.getStringExtra(EXTRA_NOTIFICATION_ID)
                     if (request != null) {
                         try {
                             val meetingRequest = Gson().fromJson(request, MeetingRequest::class.java)
                             Log.d("HMM", meetingRequest.toString())
-                            // TODO Decline
+                            declineRequest(meetingRequest)
                         } catch (throwable: Throwable) {
                             throwable.printStackTrace()
                         }
