@@ -6,7 +6,6 @@
     android:layout_height="wrap_content"
     android:background="#ffffff"
     android:orientation="vertical"
-    android:padding="8dp"
     style="@style/RoundedBottomSheet"
     app:behavior_hideable="false"
     app:behavior_peekHeight="48dp"
