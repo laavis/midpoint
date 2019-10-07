@@ -13,7 +13,7 @@
     <color name="color_white_accent">#F3F3F3</color>
     <color name="color_light_grey">#DCDCDC</color>
 
-    <color name="test">#FF0000</color>
+    <color name="color_warning">#E00000</color>
 
     <color name="orange">#F45905</color>
 </resources>

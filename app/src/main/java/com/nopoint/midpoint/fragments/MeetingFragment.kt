@@ -22,6 +22,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textfield.TextInputEditText
 import com.google.gson.Gson
 import com.nopoint.midpoint.*
+import com.nopoint.midpoint.adapters.MeetingRequestViewListener
 import com.nopoint.midpoint.adapters.MeetingRequestsAdapter
 import com.nopoint.midpoint.map.DirectionsUtils
 import com.nopoint.midpoint.map.MeetingUtils
@@ -39,7 +40,8 @@ import java.io.IOException
 /**
  * A simple [Fragment] subclass.
  */
-class MeetingFragment : Fragment() {
+class MeetingFragment : Fragment(), MeetingRequestViewListener {
+
     private val service = ServiceVolley()
     private val apiController = APIController(service)
     var currentLocation: LatLng? = null
@@ -76,7 +78,7 @@ class MeetingFragment : Fragment() {
 
 
     // RESPOND TO MEETING REQUEST
-    private fun onResponseSent(meetingRequest: MeetingRequest) {
+    override fun acceptRequest(meetingRequest: MeetingRequest) {
         val latestLocation = currentLocation
         val fullRouteURL = DirectionsUtils.buildUrlFromLatLng(
             LatLng(latestLocation!!.latitude, latestLocation.longitude),
@@ -150,7 +152,7 @@ class MeetingFragment : Fragment() {
     )
      */
 
-    private fun showOnMap(meetingRequest: MeetingRequest) {
+    override fun showOnMap(meetingRequest: MeetingRequest) {
         val midpointURL = DirectionsUtils.buildUrlFromLatLng(
             LatLng(currentLocation!!.latitude, currentLocation!!.longitude),
             LatLng(meetingRequest.meetingPointLatitude!!, meetingRequest.meetingPointLongitude!!)
@@ -196,16 +198,9 @@ class MeetingFragment : Fragment() {
             MeetingRequestsAdapter(
                 meetingRequests,
                 (activity as MainActivity),
-                ::onResponseSent,
-                ::showOnMap
+                this
             )
         view!!.requests_view.layoutManager = LinearLayoutManager((activity as MainActivity))
-        val dividerItemDecoration = DividerItemDecoration(
-            view!!.requests_view.context,
-            (view!!.requests_view.layoutManager as LinearLayoutManager).orientation
-        )
-        view!!.requests_view.addItemDecoration(dividerItemDecoration)
-
         val swipeHandler = object : SwipeToDeleteCallback(activity!!) {
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
                 val adapter = view!!.requests_view.adapter as MeetingRequestsAdapter
@@ -243,7 +238,7 @@ class MeetingFragment : Fragment() {
         }
     }
 
-    private fun deleteRequest(meetingRequest: MeetingRequest) {
+    override fun deleteRequest(meetingRequest: MeetingRequest) {
         val params = JSONObject()
         val path = "/meeting-request/delete"
         params.put("requestId", meetingRequest.id)
@@ -265,8 +260,31 @@ class MeetingFragment : Fragment() {
         }
     }
 
+    override fun declineRequest(meetingRequest: MeetingRequest) {
+        val params = JSONObject()
+        val path = "/meeting-request/decline"
+        params.put("requestId", meetingRequest.id)
+        apiController.post(API.LOCAL_API, path, params, localUser.token) { response ->
+            try {
+                Log.d("RES", "$response")
+                val msg =
+                    if (response?.optString("msg").isNullOrEmpty()) {
+                        response?.getString("errors")
+                    } else response?.getString("msg")
+                Snackbar.make(
+                    activity!!.findViewById(android.R.id.content),
+                    msg!!,
+                    Snackbar.LENGTH_LONG
+                ).show()
+            } catch (e: IOException) {
+                Log.e("MEETING", "$e")
+            }
+        }
+    }
+
     private val mLocalBroadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
+            Log.d("HMM", intent?.action)
             when (intent?.action) {
                 ACCEPT_MEETING_REQUEST -> {
                     val request = intent.getStringExtra(EXTRA_NOTIFICATION_ID)
@@ -274,19 +292,19 @@ class MeetingFragment : Fragment() {
                         try {
                             val meetingRequest = Gson().fromJson(request, MeetingRequest::class.java)
                             Log.d("HMM", meetingRequest.toString())
-                            onResponseSent(meetingRequest)
+                            this@MeetingFragment.acceptRequest(meetingRequest)
                         } catch (throwable: Throwable) {
                             throwable.printStackTrace()
                         }
                     }
                 }
                 DECLINE_MEETING_REQUEST -> {
-                    val request = intent.getStringExtra("meetingRequest")
+                    val request = intent.getStringExtra(EXTRA_NOTIFICATION_ID)
                     if (request != null) {
                         try {
                             val meetingRequest = Gson().fromJson(request, MeetingRequest::class.java)
                             Log.d("HMM", meetingRequest.toString())
-                            // TODO Decline
+                            declineRequest(meetingRequest)
                         } catch (throwable: Throwable) {
                             throwable.printStackTrace()
                         }

@@ -25,7 +25,7 @@ data class MeetingRequest(
     @SerializedName("timestamp") val timestamp: Date
 )
 
-data class MeetingRequestRow(val meetingRequest: MeetingRequest?, val type: MeetingType?, val rowType: RowType)
+data class MeetingRequestRow(val meetingRequest: MeetingRequest?, val type: MeetingType?, val rowType: RowType, var expanded: Boolean)
 
 enum class MeetingType(val type: Int){
     ACTIVE(0),

@@ -18,12 +18,13 @@ object MeetingUtils {
         val sortedMap = map.toSortedMap(compareBy {it.ordinal}) //sorts by importance
         val requests = ArrayList<MeetingRequestRow>()
         for ((key, value) in sortedMap) {
-            requests.add(MeetingRequestRow(null, key, RowType.HEADER))
+            requests.add(MeetingRequestRow(null, key, RowType.HEADER, false))
             value.mapTo(requests) {
                 MeetingRequestRow(
-                    it,
-                    key,
-                    rowType = if (it.requester == currentUser.id) RowType.DELETABLE else RowType.REQUEST
+                    meetingRequest = it,
+                    type = key,
+                    rowType = if (it.requester == currentUser.id) RowType.DELETABLE else RowType.REQUEST,
+                    expanded = false
                 )
             }
         }
