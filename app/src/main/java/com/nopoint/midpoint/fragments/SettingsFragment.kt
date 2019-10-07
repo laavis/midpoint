@@ -37,6 +37,4 @@ class SettingsFragment : Fragment() {
         return view
     }
 
-
-
 }

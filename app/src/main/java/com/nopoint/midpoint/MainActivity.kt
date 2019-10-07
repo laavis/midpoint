@@ -3,6 +3,7 @@ package com.nopoint.midpoint
 import android.content.pm.PackageManager
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.nopoint.midpoint.fragments.FriendsFragment
 import com.nopoint.midpoint.fragments.MapFragment
@@ -37,6 +38,7 @@ class MainActivity : AppCompatActivity() {
                 return@OnNavigationItemSelectedListener true
             }
             R.id.nav_friends -> {
+                Log.d("FRIENDS", "FRIEND FRAGMENT FTW")
                 fm.beginTransaction().hide(active).show(friendsFragment).commit()
                 active = friendsFragment
                 return@OnNavigationItemSelectedListener true
@@ -50,13 +52,6 @@ class MainActivity : AppCompatActivity() {
         false
     }
 
-    private fun loadFragment(fragment: Fragment) {
-        // load fragment
-        val transaction = supportFragmentManager.beginTransaction()
-        transaction.replace(container.id, fragment)
-        //transaction.addToBackStack(null)
-        transaction.commit()
-    }
 
     private fun hasPermissions() {
         if (checkSelfPermission(android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {

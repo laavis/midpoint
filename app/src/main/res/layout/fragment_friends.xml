@@ -1,4 +1,5 @@
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/friends_content"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -12,8 +13,8 @@
         android:background="@color/color_white_accent"
         android:layout_gravity="bottom|end"
         android:visibility="invisible"
-        app:layout_behavior="com.google.android.material.transformation.FabTransformationSheetBehavior"
-        >
+        android:elevation="1dp"
+        app:layout_behavior="com.google.android.material.transformation.FabTransformationSheetBehavior">
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -46,7 +47,6 @@
                     android:textSize="28sp"
                     android:textStyle="bold" />
 
-
                 <com.nopoint.midpoint.views.SearchView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -59,12 +59,24 @@
                 android:id="@+id/friends_search_list"
                 android:layout_below="@id/friends_add_sheet_header"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                />
+                android:layout_height="match_parent"/>
 
         </RelativeLayout>
     </com.google.android.material.circularreveal.CircularRevealFrameLayout>
 
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/refreshLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/friends_list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layoutAnimation="@anim/layout_animation"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
+
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/friends_fab_add"

@@ -18,14 +18,14 @@ class FriendSearchAdapter(
     private val searchResults: ArrayList<UserSearchResponseUser>,
     private val context: Context,
     private val sendReqBtnClickListener: OnSendFriendReqBtnClickListener
-) : RecyclerView.Adapter<FriendSearchAdapter.ViewHolder>(){
+) : RecyclerView.Adapter<FriendSearchAdapter.UserSearchVH>(){
 
 
     override fun getItemCount(): Int {
         return searchResults.size
     }
 
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: UserSearchVH, position: Int) {
         holder.username.text = searchResults[position].username
 
         val isRequestSent = searchResults[position].isRequestSent == true
@@ -45,16 +45,13 @@ class FriendSearchAdapter(
         holder.bind(sendReqBtnClickListener)
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        return ViewHolder(
-            LayoutInflater.from(
-                context
-            ).inflate(R.layout.row_friend_search_results, parent, false)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): UserSearchVH {
+        return UserSearchVH(LayoutInflater.from(context).inflate(R.layout.row_friend_search_results, parent, false)
         )
     }
 
 
-    class ViewHolder(v: View): RecyclerView.ViewHolder(v) {
+    class UserSearchVH(v: View): RecyclerView.ViewHolder(v) {
         val username: TextView = v.friends_search_list_username
         val statusIcon: ImageView = v.friends_req_status
         val buttonSendFriendRequest: ImageButton = v.friends_button_send_friend_request
@@ -67,6 +64,6 @@ class FriendSearchAdapter(
     }
 }
 
-interface OnSendFriendReqBtnClickListener{
+interface OnSendFriendReqBtnClickListener {
     fun onItemClicked(button: ImageButton, statusIcon: ImageView, position: Int)
 }

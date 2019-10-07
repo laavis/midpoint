@@ -36,4 +36,8 @@
     <string name="send_request">Send request</string>
     <string name="log_out">Log out</string>
 
+    // Friends
+    <string name="accept">Accept</string>
+    <string name="deny">Deny</string>
+
 </resources>
