@@ -104,9 +104,6 @@ class FriendsFragment :
     override fun onAttach(context: Context) {
         super.onAttach(context)
         token = CurrentUser.getLocalUser(activity!!)!!.token
-
-
-
     }
 
     private fun getFriends() {

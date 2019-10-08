@@ -59,7 +59,6 @@ class LoginFragment : Fragment() {
         val body = JSONObject()
         val path = "/user/login"
 
-
         body.put("email", emailField.text.toString())
         body.put("password", passwordField.text.toString())
 
