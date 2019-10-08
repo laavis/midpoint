@@ -16,9 +16,7 @@ import java.util.Timer
 import android.text.Editable
 import android.util.Log
 import android.widget.*
-import androidx.core.view.isNotEmpty
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.google.android.gms.tasks.Tasks.await
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.snackbar.Snackbar
 import com.google.gson.Gson
@@ -29,8 +27,6 @@ import com.nopoint.midpoint.adapters.OnSendFriendReqBtnClickListener
 import com.nopoint.midpoint.models.*
 import com.nopoint.midpoint.networking.*
 import kotlinx.android.synthetic.main.row_friend_search_results.*
-import org.jetbrains.anko.custom.async
-import org.jetbrains.anko.doAsync
 import org.json.JSONObject
 import java.io.IOException
 
@@ -134,7 +130,7 @@ class FriendsFragment :
                 }
                 refreshLayout.isRefreshing = false
 
-                val rows = doStuff(friendsRes.friends!!.size, friendsRes.requests!!.size)
+                val rows = calculateRowCount(friendsRes.friends!!.size, friendsRes.requests!!.size)
 
                 initFLRecyclerView(rows)
 
@@ -146,8 +142,7 @@ class FriendsFragment :
     }
 
 
-    // todo rename lol
-    private fun doStuff(numFriends: Int, numFriendRequests: Int): ArrayList<FriendsListAdapter.IRowFriend> {
+    private fun calculateRowCount(numFriends: Int, numFriendRequests: Int): ArrayList<FriendsListAdapter.IRowFriend> {
         val rows = ArrayList<FriendsListAdapter.IRowFriend>()
 
         for (i in 0 until numFriendRequests) {
@@ -157,7 +152,6 @@ class FriendsFragment :
         for (i in 0 until numFriends) {
             rows.add(FriendsListAdapter.FriendRow(friendList[i].username))
         }
-
         return rows
     }
 

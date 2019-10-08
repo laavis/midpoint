@@ -1,10 +1,7 @@
 package com.nopoint.midpoint.fragments
 
 import android.app.AlertDialog
-import android.content.BroadcastReceiver
-import android.content.Context
-import android.content.Intent
-import android.content.IntentFilter
+import android.content.*
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -113,6 +110,10 @@ class MeetingFragment : Fragment(), MeetingRequestViewListener {
                 }
             }
         }
+    }
+
+    private fun asd () {
+        Log.d("DIALOG", "asd")
     }
 
     /**
@@ -300,6 +301,7 @@ class MeetingFragment : Fragment(), MeetingRequestViewListener {
                             val meetingRequest =
                                 Gson().fromJson(request, MeetingRequest::class.java)
                             this@MeetingFragment.acceptRequest(meetingRequest)
+                            Log.d("MEETING", "accepted")
                         } catch (throwable: Throwable) {
                             throwable.printStackTrace()
                         }

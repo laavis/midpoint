@@ -1,13 +1,16 @@
 package com.nopoint.midpoint.fragments
 
 import android.content.ContentValues.TAG
+import android.content.Intent
 import android.location.Location
+import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.Toast
 import com.google.android.gms.location.*
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -28,10 +31,12 @@ import kotlinx.android.synthetic.main.bottom_sheet.view.*
 import kotlinx.android.synthetic.main.fragment_map.*
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.tasks.OnCompleteListener
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.firebase.iid.FirebaseInstanceId
 import com.nopoint.midpoint.models.CurrentUser
 import com.nopoint.midpoint.models.LocalUser
 import org.json.JSONObject
+import java.lang.NullPointerException
 
 
 /**
@@ -54,6 +59,10 @@ class MapFragment : Fragment(), OnMapReadyCallback {
     private lateinit var currentLocation: Location
     private lateinit var localUser: LocalUser
 
+    private lateinit var fabMapIntent: FloatingActionButton
+
+    lateinit var buttonOpenMaps: Button
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -71,9 +80,11 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         sheetBehavior = BottomSheetBehavior.from(view.bottom_sheet)
         sheetBehavior!!.bottomSheetCallback = createBottomSheetCb()
 
+
+        fabMapIntent = view.findViewById(R.id.fab_map_intent)
+
         return view
     }
-
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -98,7 +109,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
                     Log.d("BODY", body.toString())
                     apiController.post(API.LOCAL_API, path, body, localUser.token) { response ->
                         val message = response?.optString("msg") ?: response?.optString("errors")
-                        Log.d("FIRBASE TOKEN", message)
+                        Log.d("FIRBASE TOKEN MAP", message)
                     }
                     Log.d(TAG, msg)
                 })
@@ -114,9 +125,33 @@ class MapFragment : Fragment(), OnMapReadyCallback {
                 }
                 val route = DirectionsUtils.buildRoute(response)
                 setMarkersAndRoute(route)
+
+                if (route.endLat != null && route.endLng != null) {
+                    fabMapIntent.visibility = View.VISIBLE
+                    fabMapIntent.setOnClickListener {
+                        openMapsIntent(route.endLat, route.endLng)
+                    }
+                }
             }
         }
     }
+
+    private fun openMapsIntent(lat: Double, lng: Double) {
+        val gmIntentUri = Uri.parse("google.navigation:q=$lat,$lng&mode=w")
+        val mapIntent = Intent(Intent.ACTION_VIEW, gmIntentUri)
+        mapIntent.setPackage("com.google.android.apps.maps")
+
+        try {
+            if (mapIntent.resolveActivity(activity!!.packageManager) != null) {
+                startActivity(mapIntent)
+            } else {
+                Toast.makeText(activity, "Couldn't open map", Toast.LENGTH_SHORT).show()
+            }
+        } catch (e: NullPointerException) {
+            Log.e("MAP INTENT", "$e")
+        }
+    }
+
 
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
