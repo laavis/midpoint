@@ -1,23 +1,25 @@
 package com.nopoint.midpoint.fragments
 
-import android.app.NotificationManager
+import android.app.AlertDialog
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
-import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.gms.maps.model.LatLng
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.chip.Chip
+import com.google.android.material.chip.ChipDrawable
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textfield.TextInputEditText
 import com.google.gson.Gson
@@ -32,16 +34,16 @@ import com.nopoint.midpoint.networking.API
 import com.nopoint.midpoint.networking.APIController
 import com.nopoint.midpoint.networking.ServiceVolley
 import com.nopoint.midpoint.networking.*
-import kotlinx.android.synthetic.main.fragment_meeting.*
 import kotlinx.android.synthetic.main.fragment_meeting.view.*
+import kotlinx.android.synthetic.main.request_dialog.*
+import kotlinx.android.synthetic.main.request_dialog.view.*
 import org.json.JSONObject
 import java.io.IOException
 
 /**
- * A simple [Fragment] subclass.
+ * Fragment for meeting requests
  */
 class MeetingFragment : Fragment(), MeetingRequestViewListener {
-
     private val service = ServiceVolley()
     private val apiController = APIController(service)
     var currentLocation: LatLng? = null
@@ -57,16 +59,7 @@ class MeetingFragment : Fragment(), MeetingRequestViewListener {
         val view = inflater.inflate(R.layout.fragment_meeting, container, false)
         // view.request_btn.setOnClickListener { sendRequest(view.friend_username.text.toString()) }
         view.refresh_btn.setOnClickListener { getRequests() }
-        meetingUsernameInput = view.findViewById(R.id.meeting_username_input)
-        LocalBroadcastManager.getInstance(context!!.applicationContext)
-            .registerReceiver(mLocalBroadcastReceiver, getLocalIntentFilter())
-        view.request_btn.setOnClickListener {
-
-            if (meetingUsernameInput.text!!.isNotEmpty()) {
-                val reqString = meetingUsernameInput.text.toString()
-                sendRequest(reqString)
-            }
-        }
+        view.new_request_btn.setOnClickListener { createDialog() }
         return view
     }
 
@@ -175,8 +168,7 @@ class MeetingFragment : Fragment(), MeetingRequestViewListener {
     }
 
     private fun getRequests() {
-        val path = "/meeting-request/all"
-        apiController.get(API.LOCAL_API, path, localUser.token) { response ->
+        apiController.get(API.LOCAL_API, MEETING_REQUEST_LIST, localUser.token) { response ->
             try {
                 Log.d("RES", "$response")
                 val meetingResponse =
@@ -212,13 +204,17 @@ class MeetingFragment : Fragment(), MeetingRequestViewListener {
         itemTouchHelper.attachToRecyclerView(view!!.requests_view)
     }
 
-    private fun sendRequest(username: String = "testpete") {
+    private fun sendRequest(username: String, status: Int) {
         val params = JSONObject()
-        val path = "/meeting-request/request"
         params.put("receiver", username)
         params.put("lat", currentLocation!!.latitude)
         params.put("lng", currentLocation!!.longitude)
-        apiController.post(API.LOCAL_API, path, params, localUser.token) { response ->
+        apiController.post(
+            API.LOCAL_API,
+            MEETING_REQUEST_URL,
+            params,
+            localUser.token
+        ) { response ->
             try {
                 //TODO Refresh recycler view with new request
                 Log.d("RES", "$response")
@@ -231,7 +227,7 @@ class MeetingFragment : Fragment(), MeetingRequestViewListener {
                     msg ?: "Big bug",
                     Snackbar.LENGTH_LONG
                 ).show()
-
+                getRequests()
             } catch (e: IOException) {
                 Log.e("MEETING", "$e")
             }
@@ -240,9 +236,13 @@ class MeetingFragment : Fragment(), MeetingRequestViewListener {
 
     override fun deleteRequest(meetingRequest: MeetingRequest) {
         val params = JSONObject()
-        val path = "/meeting-request/delete"
         params.put("requestId", meetingRequest.id)
-        apiController.post(API.LOCAL_API, path, params, localUser.token) { response ->
+        apiController.post(
+            API.LOCAL_API,
+            MEETING_REQUEST_DELETE,
+            params,
+            localUser.token
+        ) { response ->
             try {
                 Log.d("RES", "$response")
                 val msg =
@@ -254,6 +254,9 @@ class MeetingFragment : Fragment(), MeetingRequestViewListener {
                     msg!!,
                     Snackbar.LENGTH_LONG
                 ).show()
+                val adapter =view!!.requests_view.adapter as MeetingRequestsAdapter
+                adapter.removeAt(meetingRequests.indexOfFirst { it.meetingRequest == meetingRequest })
+                getRequests()
             } catch (e: IOException) {
                 Log.e("MEETING", "$e")
             }
@@ -262,9 +265,13 @@ class MeetingFragment : Fragment(), MeetingRequestViewListener {
 
     override fun declineRequest(meetingRequest: MeetingRequest) {
         val params = JSONObject()
-        val path = "/meeting-request/decline"
         params.put("requestId", meetingRequest.id)
-        apiController.post(API.LOCAL_API, path, params, localUser.token) { response ->
+        apiController.post(
+            API.LOCAL_API,
+            MEETING_REQUEST_DECLINE,
+            params,
+            localUser.token
+        ) { response ->
             try {
                 Log.d("RES", "$response")
                 val msg =
@@ -276,6 +283,7 @@ class MeetingFragment : Fragment(), MeetingRequestViewListener {
                     msg!!,
                     Snackbar.LENGTH_LONG
                 ).show()
+                getRequests()
             } catch (e: IOException) {
                 Log.e("MEETING", "$e")
             }
@@ -284,14 +292,13 @@ class MeetingFragment : Fragment(), MeetingRequestViewListener {
 
     private val mLocalBroadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
-            Log.d("HMM", intent?.action)
             when (intent?.action) {
                 ACCEPT_MEETING_REQUEST -> {
                     val request = intent.getStringExtra(EXTRA_NOTIFICATION_ID)
                     if (request != null) {
                         try {
-                            val meetingRequest = Gson().fromJson(request, MeetingRequest::class.java)
-                            Log.d("HMM", meetingRequest.toString())
+                            val meetingRequest =
+                                Gson().fromJson(request, MeetingRequest::class.java)
                             this@MeetingFragment.acceptRequest(meetingRequest)
                         } catch (throwable: Throwable) {
                             throwable.printStackTrace()
@@ -302,8 +309,8 @@ class MeetingFragment : Fragment(), MeetingRequestViewListener {
                     val request = intent.getStringExtra(EXTRA_NOTIFICATION_ID)
                     if (request != null) {
                         try {
-                            val meetingRequest = Gson().fromJson(request, MeetingRequest::class.java)
-                            Log.d("HMM", meetingRequest.toString())
+                            val meetingRequest =
+                                Gson().fromJson(request, MeetingRequest::class.java)
                             declineRequest(meetingRequest)
                         } catch (throwable: Throwable) {
                             throwable.printStackTrace()
@@ -325,5 +332,73 @@ class MeetingFragment : Fragment(), MeetingRequestViewListener {
         super.onDestroyView()
         LocalBroadcastManager.getInstance(context!!.applicationContext)
             .unregisterReceiver(mLocalBroadcastReceiver)
+    }
+
+    private fun createDialog() {
+        val dialogView = layoutInflater.inflate(R.layout.request_dialog, null)
+        var selectedUser = ""
+        val dialog = AlertDialog.Builder(activity)
+            .setView(dialogView).show()
+        val chipGroup = dialog.chip_group
+        val sendBtn = dialogView.send_btn
+        val filterInput = dialogView.input_filter_friends
+        sendBtn.isEnabled = false
+        val friends = mutableListOf<Chip>()
+        apiController.get(API.LOCAL_API, FRIENDS_LIST, localUser.token) { res ->
+            try {
+                val friendsRes = Gson().fromJson(res.toString(), Friends::class.java)
+                friendsRes.friends?.forEach {
+                    val chip = createChip(it.username)
+                    friends.add(chip)
+                    chipGroup.addView(chip)
+                }
+            } catch (e: IOException) {
+                Log.e("FRIENDS", "$e")
+            }
+        }
+        filterInput.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(p0: Editable?) {
+                val filteredFriends = friends.filter { it.text.contains(p0.toString()) }
+                chipGroup.removeAllViews()
+                filteredFriends.forEach { chipGroup.addView(it) }
+            }
+
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+        })
+
+        chipGroup.setOnCheckedChangeListener { group, checkedId ->
+            if (checkedId != -1) {
+                val chip = group.findViewById<Chip>(checkedId)
+                selectedUser = chip.text as String
+                sendBtn.isEnabled = true
+            } else {
+                sendBtn.isEnabled = false
+            }
+        }
+        dialogView.cancel_btn.setOnClickListener {
+            dialog.cancel()
+        }
+        sendBtn.setOnClickListener {
+            sendRequest(selectedUser, if (dialog.location_switch.isChecked) 1 else 0)
+            dialog.cancel()
+        }
+    }
+
+    private fun createChip(username: String): Chip {
+        val drawable = ChipDrawable.createFromAttributes(
+            activity!!,
+            null,
+            0,
+            R.style.Widget_MaterialComponents_Chip_Action
+        )
+        val chip = Chip(activity)
+        chip.setChipDrawable(drawable)
+        chip.text = username
+        chip.chipIcon = activity!!.getDrawable(R.drawable.ic_avatar_ph)
+        chip.checkedIcon = activity!!.getDrawable(R.drawable.ic_avatar_ph)
+        chip.chipBackgroundColor = activity!!.getColorStateList(R.color.chip_bg_color)
+        chip.isCheckable = true
+        return chip
     }
 }

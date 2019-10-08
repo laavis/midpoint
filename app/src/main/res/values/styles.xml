@@ -23,6 +23,7 @@
     <!-- DIALOG -->
     <style name="DialogFriendRequest" parent="ThemeOverlay.MaterialComponents.MaterialAlertDialog">
         <item name="buttonBarPositiveButtonStyle">@style/PositiveButtonStyle</item>
+        <item name="colorAccent">@color/color_warning</item>
         <item name="android:titleTextStyle">@font/pt_sans_bold</item>
     </style>
     

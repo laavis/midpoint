@@ -33,4 +33,9 @@ data class Friend(
     @SerializedName("username")val username: String
 )
 
+data class FriendSearchResponse(
+    @SerializedName("success")val success: Boolean,
+    @SerializedName("friends")val friends: ArrayList<String>
+)
+
 

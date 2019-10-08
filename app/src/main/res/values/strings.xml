@@ -25,6 +25,7 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="meet_a_friend">Requests</string>
+    <string name="new_request">New Request</string>
 
     <!-- Titles for meeting request recycler view -->
     <string name="meeting_active">Active meeting with %s</string>
