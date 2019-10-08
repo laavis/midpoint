@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/color_dark_grey"
+    tools:context=".QRActivity">
+
+    <FrameLayout
+        android:id="@+id/qr_scanner_fragment_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="5dp"
+        android:layout_marginTop="5dp">
+
+        <ImageView
+            android:id="@+id/qr_image_view_code"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginEnd="25dp"
+            android:layout_marginStart="25dp"
+            android:contentDescription="@string/qr_code_imgview" />
+
+    </FrameLayout>
+
+
+
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/qr_button_scan"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/qr_scan"
+        android:layout_alignParentBottom="true"
+        />
+</RelativeLayout>

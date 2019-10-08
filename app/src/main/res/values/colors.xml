@@ -16,4 +16,9 @@
     <color name="color_warning">#E00000</color>
 
     <color name="orange">#F45905</color>
+    <color name="black">#000000</color>
+
+        <color name="viewfinder_mask">#70000000</color>
+        <color name="viewfinder_laser">#FF5722</color>
+        <color name="viewfinder_border">#FF5722</color>
 </resources>

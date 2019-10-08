@@ -12,7 +12,7 @@
         android:layout_height="match_parent"
         android:background="@color/color_white_accent"
         android:layout_gravity="bottom|end"
-        android:visibility="invisible"
+        android:visibility="visible"
         android:elevation="1dp"
         app:layout_behavior="com.google.android.material.transformation.FabTransformationSheetBehavior">
 
@@ -27,15 +27,30 @@
                 android:orientation="vertical"
                 android:background="@color/orange"
                 >
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
 
-                <ImageButton
-                    style="@style/ButtonImage"
-                    android:id="@+id/friends_add_return"
-                    android:layout_marginStart="16dp"
-                    android:layout_marginTop="16dp"
-                    android:src="@drawable/ic_arrow_left"
-                    android:background="@color/trans"
-                    />
+                    <ImageButton
+                        style="@style/ButtonImage"
+                        android:id="@+id/friends_add_return"
+                        android:layout_marginStart="16dp"
+                        android:layout_marginTop="16dp"
+                        android:src="@drawable/ic_arrow_left"
+                        android:background="@color/trans"
+                        />
+
+                    <ImageButton
+                        style="@style/ButtonImage"
+                        android:id="@+id/friends_open_qr"
+                        android:layout_marginEnd="16dp"
+                        android:layout_marginTop="16dp"
+                        android:src="@drawable/ic_key"
+                        android:layout_alignParentEnd="true"
+                        android:background="@color/trans"
+                        />
+                </RelativeLayout>
+
 
                 <TextView
                     android:layout_width="260dp"

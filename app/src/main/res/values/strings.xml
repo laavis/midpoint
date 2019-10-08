@@ -46,4 +46,8 @@
     // Friends
     <string name="deny">Deny</string>
 
+    <!-- QR -->
+    <string name="qr_scan">Scan QR code</string>
+    <string name="qr_code_imgview">Your QR code</string>
+
 </resources>

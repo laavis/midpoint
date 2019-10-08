@@ -2,6 +2,7 @@ package com.nopoint.midpoint.fragments
 
 
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.text.TextWatcher
 import androidx.fragment.app.Fragment
@@ -20,6 +21,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.snackbar.Snackbar
 import com.google.gson.Gson
+import com.nopoint.midpoint.QRActivity
 import com.nopoint.midpoint.adapters.FriendSearchAdapter
 import com.nopoint.midpoint.adapters.FriendsListAdapter
 import com.nopoint.midpoint.adapters.OnRespondFriendRequestClickListener
@@ -88,6 +90,12 @@ class FriendsFragment :
 
         friends_add_return.setOnClickListener {
             friends_fab_add.isExpanded = false
+        }
+
+        friends_open_qr.setOnClickListener {
+            val intent = Intent(context!!.applicationContext, QRActivity::class.java)
+            startActivity(intent)
+            (activity as MainActivity).finish()
         }
 
         refreshLayout.setOnRefreshListener {
