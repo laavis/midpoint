@@ -86,36 +86,6 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         return view
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
-
-        button_TEST.setOnClickListener {
-            // getDirectionsToAbsoluteMidpoint(LatLng(60.172744, 24.938799),  LatLng(60.162869, 24.932577))
-            FirebaseInstanceId.getInstance().instanceId
-                .addOnCompleteListener(OnCompleteListener { task ->
-                    if (!task.isSuccessful) {
-                        Log.w(TAG, "getInstanceId failed", task.exception)
-                        return@OnCompleteListener
-                    }
-                    // Get new Instance ID token
-                    val token = task.result?.token
-
-                    // Log and toast
-                    val msg = "TOKEN: $token"
-                    val path = "/user/updateToken"
-                    val body = JSONObject()
-                    body.put("firebaseToken", token)
-                    Log.d("BODY", body.toString())
-                    apiController.post(API.LOCAL_API, path, body, localUser.token) { response ->
-                        val message = response?.optString("msg") ?: response?.optString("errors")
-                        Log.d("FIRBASE TOKEN MAP", message)
-                    }
-                    Log.d(TAG, msg)
-                })
-        }
-    }
-
     fun getDirectionsToAbsoluteMidpoint(midpointURL: String, clearPrevious: Boolean) {
         apiController.get(API.DIRECTIONS, midpointURL) { response ->
             if (response != null) {

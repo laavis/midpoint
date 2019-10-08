@@ -6,14 +6,6 @@
     tools:context="com.nopoint.midpoint.fragments.MapFragment">
 
     <!-- Remove later -->
-    <Button
-        android:id="@+id/button_TEST"
-        android:backgroundTint="@color/color_warning"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textColor="@color/color_white"
-        android:text="test"
-        />
 
 
     <!--Map content-->

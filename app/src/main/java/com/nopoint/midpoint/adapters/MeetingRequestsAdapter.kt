@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.cardview.widget.CardView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.RecyclerView
@@ -64,13 +65,17 @@ class MeetingRequestsAdapter(
             holder.secondaryButton?.visibility = View.GONE
             bind(request, holder)
         } else {
-            holder.headerTxt!!.text =
-                context.getString(R.string.meeting_heading, request.type.toString())
+            holder.headerTxt!!.text = when(request.type){
+                MeetingType.INCOMING -> context.getString(R.string.incoming)
+                MeetingType.OUTGOING -> context.getString(R.string.outgoing)
+                else -> context.getString(R.string.meeting_heading, request.type.toString())
+            }
         }
     }
 
     private fun bind(request: MeetingRequestRow, holder: ViewHolder) {
         when (request.type) {
+            // Currently not used
             MeetingType.REJECTED -> {
                 if (request.rowType == RowType.DELETABLE) {
                     holder.userName!!.text = context.getString(
@@ -93,6 +98,9 @@ class MeetingRequestsAdapter(
                         request.meetingRequest?.requesterUsername
                     )
                 }
+                holder.card?.setCardBackgroundColor(context.getColor(R.color.color_primary))
+                holder.userName.setTextColor(context.getColor(R.color.color_white))
+                holder.timestamp!!.setTextColor(context.getColor(R.color.color_white_accent))
             }
             MeetingType.INCOMING -> {
                 holder.userName!!.text = context.getString(
@@ -126,8 +134,7 @@ class MeetingRequestsAdapter(
         }
     }
 
-    override fun getItemViewType(position: Int) =
-        requests[position].rowType.ordinal
+    override fun getItemViewType(position: Int) = requests[position].rowType.ordinal
 
     fun removeAt(position: Int): MeetingRequestRow {
         val removed = requests.removeAt(position)
@@ -156,7 +163,7 @@ class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
     val expandedLayout: ConstraintLayout? = view.expanded_layout
     val timestamp: TextView? = view.timestamp_txt
     val headerTxt: TextView? = view.header_txt
-    val card: MaterialCardView? = view.card
+    val card: CardView? = view.card
     val icon: ImageView? = view.icon_view
     val topDivider: View? = view.header_divider
 }
