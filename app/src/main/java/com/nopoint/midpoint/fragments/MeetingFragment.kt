@@ -227,7 +227,7 @@ class MeetingFragment : Fragment(), MeetingRequestViewListener {
                     msg ?: "Big bug",
                     Snackbar.LENGTH_LONG
                 ).show()
-
+                getRequests()
             } catch (e: IOException) {
                 Log.e("MEETING", "$e")
             }
@@ -254,6 +254,9 @@ class MeetingFragment : Fragment(), MeetingRequestViewListener {
                     msg!!,
                     Snackbar.LENGTH_LONG
                 ).show()
+                val adapter =view!!.requests_view.adapter as MeetingRequestsAdapter
+                adapter.removeAt(meetingRequests.indexOfFirst { it.meetingRequest == meetingRequest })
+                getRequests()
             } catch (e: IOException) {
                 Log.e("MEETING", "$e")
             }
@@ -280,6 +283,7 @@ class MeetingFragment : Fragment(), MeetingRequestViewListener {
                     msg!!,
                     Snackbar.LENGTH_LONG
                 ).show()
+                getRequests()
             } catch (e: IOException) {
                 Log.e("MEETING", "$e")
             }
