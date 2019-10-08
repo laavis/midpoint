@@ -187,7 +187,7 @@ class NotificationsService : FirebaseMessagingService() {
         val path = "users/updateToken"
         val body = JSONObject()
         body.put("firebaseToken", token)
-        apiController.post(API.LOCAL_API, path, body) { response ->
+        apiController.post(path, body) { response ->
             val msg = response?.optString("msg") ?: response?.optString("errors")
             Log.d("FIRBASE TOKEN", msg!!)
         }

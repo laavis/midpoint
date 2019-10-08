@@ -5,10 +5,12 @@ import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
+import android.util.DisplayMetrics
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.android.material.textfield.TextInputEditText
@@ -26,9 +28,13 @@ import com.nopoint.midpoint.models.LocalUser
 import com.nopoint.midpoint.models.LoginErrorResponse
 import com.nopoint.midpoint.models.LoginResponse
 import com.nopoint.midpoint.models.User
+import com.nopoint.midpoint.networking.LOGIN
+import kotlinx.android.synthetic.main.activity_entry.*
 import org.json.JSONException
 import org.json.JSONObject
 import java.io.IOException
+import java.lang.Error
+import java.lang.Exception
 
 class LoginFragment : Fragment() {
 
@@ -48,6 +54,9 @@ class LoginFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        setSpacing()
+
         emailField = v.findViewById(R.id.login_input_email)
         emailLayout = v.findViewById(R.id.login_input_layout_email)
         passwordField = v.findViewById(R.id.login_input_password)
@@ -58,18 +67,33 @@ class LoginFragment : Fragment() {
         }
     }
 
+    private fun setSpacing() {
+        val displayMetrics = DisplayMetrics()
+        (activity as EntryActivity).windowManager.defaultDisplay.getMetrics(displayMetrics)
+
+        val height = displayMetrics.heightPixels
+        val containerPaddingTop = if (height < 2400) (height * 0.2).toInt() else (height * 0.25).toInt()
+
+        login_container.setPadding(0, containerPaddingTop, 0, 0)
+    }
+
     private fun login() {
         val body = JSONObject()
-        val path = "/user/login"
 
         body.put("email", emailField.text.toString())
         body.put("password", passwordField.text.toString())
 
-        apiController.post(API.LOCAL_API, path, body) { response ->
+        apiController.post(LOGIN, body) { response ->
             try {
+
+                if (response == null) {
+                    throw Exception("Failed to connect")
+                }
+
                 val loginResponse = Gson().fromJson(response.toString(), LoginResponse::class.java)
 
                 Log.d("FIRE", "$loginResponse")
+
 
                 if (loginResponse.success) {
                     saveTokenAndUser(loginResponse.token, loginResponse.user)
@@ -82,8 +106,9 @@ class LoginFragment : Fragment() {
                     setErrors(authErrorResponse)
                 }
 
-            } catch (e: IOException) {
+            } catch (e: Exception) {
                 Log.e("LOGIN", "$e")
+                Toast.makeText(context, "${e.message}", Toast.LENGTH_SHORT).show()
             }
         }
     }

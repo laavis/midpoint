@@ -51,4 +51,6 @@
     <string name="qr_scan">Scan QR code</string>
     <string name="qr_code_imgview">Your QR code</string>
 
+    <string name="error_server_connection">Failed to connect</string>
+
 </resources>

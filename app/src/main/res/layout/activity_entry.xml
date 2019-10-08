@@ -21,7 +21,10 @@
         android:layout_height="match_parent"
         android:orientation="vertical"
         android:layout_above="@id/entry_footer"
-        android:padding="48dp">
+        android:paddingTop="48dp"
+        android:paddingStart="48dp"
+        android:paddingEnd="48dp"
+        android:paddingBottom="36dp">
 
         <RelativeLayout
             android:id="@+id/entry_header"

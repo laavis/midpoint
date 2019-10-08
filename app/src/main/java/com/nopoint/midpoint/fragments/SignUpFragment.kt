@@ -1,6 +1,7 @@
 package com.nopoint.midpoint.fragments
 
 import android.os.Bundle
+import android.util.DisplayMetrics
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -15,7 +16,9 @@ import com.nopoint.midpoint.models.SignUpErrorResponse
 import com.nopoint.midpoint.models.SignUpResponse
 import com.nopoint.midpoint.networking.APIController
 import com.nopoint.midpoint.networking.API
+import com.nopoint.midpoint.networking.REGISTER
 import com.nopoint.midpoint.networking.ServiceVolley
+import kotlinx.android.synthetic.main.fragment_login.*
 import kotlinx.android.synthetic.main.fragment_sign_up.*
 import org.json.JSONObject
 import java.io.IOException
@@ -45,6 +48,8 @@ class SignUpFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        setSpacing()
+
         emailField = v.findViewById(R.id.sign_up_input_email)
         emailLayout = v.findViewById(R.id.sign_up_input_layout_email)
 
@@ -62,9 +67,18 @@ class SignUpFragment : Fragment() {
         }
     }
 
+    private fun setSpacing() {
+        val displayMetrics = DisplayMetrics()
+        (activity as EntryActivity).windowManager.defaultDisplay.getMetrics(displayMetrics)
+
+        val height = displayMetrics.heightPixels
+        val containerPaddingTop = if (height < 2400) (height * 0.1).toInt() else (height * 0.15).toInt()
+
+        sign_up_container.setPadding(0, containerPaddingTop, 0, 0)
+    }
+
     private fun signUp() {
         val params = JSONObject()
-        val path = "/user/register"
 
         params.put("username", usernameField.text.toString())
         params.put("email", emailField.text.toString())
@@ -72,7 +86,7 @@ class SignUpFragment : Fragment() {
         params.put("confirm_password", confirmPasswordField.text.toString())
 
 
-        apiController.post(API.LOCAL_API, path, params) { response ->
+        apiController.post(REGISTER, params) { response ->
             try {
                 val signUpRes = Gson().fromJson(response.toString(), SignUpResponse::class.java)
 

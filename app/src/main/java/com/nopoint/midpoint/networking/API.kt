@@ -8,7 +8,7 @@ enum class API(val path: String) {
     LOCAL_API("http://192.168.1.45:5000")
 }
 
-const val BASE_URL = "http://198.18.9.114:5000"
+const val BASE_URL = "http://192.168.1.45:5000"
 const val LOGIN_URL = "/user/login"
 const val MEETING_REQUEST_URL = "/meeting-request/request"
 const val MEETING_RESPOND_URL = "/meeting-request/respond"
@@ -18,3 +18,5 @@ const val FRIENDS_RESPOND = "/friends/respond"
 const val MEETING_REQUEST_LIST = "/meeting-request/all"
 const val MEETING_REQUEST_DELETE = "/meeting-request/delete"
 const val MEETING_REQUEST_DECLINE = "/meeting-request/decline"
+const val LOGIN = "/user/login"
+const val REGISTER = "/user/register"

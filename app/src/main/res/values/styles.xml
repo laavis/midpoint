@@ -18,8 +18,6 @@
     </style>
 
 
-
-
     <!-- DIALOG -->
     <style name="DialogFriendRequest" parent="ThemeOverlay.MaterialComponents.MaterialAlertDialog">
         <item name="buttonBarPositiveButtonStyle">@style/PositiveButtonStyle</item>

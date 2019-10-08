@@ -11,12 +11,11 @@ class ServiceVolley : ServiceInterface {
     val TAG = ServiceVolley::class.java.simpleName
 
     override fun post(
-        api: API,
         path: String,
         params: JSONObject,
         completionHandler: (response: JSONObject?) -> Unit
     ) {
-        val url = "${api.path}$path"
+        val url = "$BASE_URL$path"
         Log.d("URL", url)
         val jsonObjReq = object : JsonObjectRequest(Method.POST, url, params,
             Response.Listener<JSONObject> { response ->

@@ -4,6 +4,8 @@ import android.content.Intent
 import android.graphics.Typeface
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.DisplayMetrics
+import android.util.Log
 import android.widget.RelativeLayout
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
@@ -32,6 +34,8 @@ class EntryActivity : AppCompatActivity() {
             startActivity(intent)
             finish()
         }
+
+
         fManager = supportFragmentManager
         fTransaction = fManager.beginTransaction()
 
@@ -41,6 +45,7 @@ class EntryActivity : AppCompatActivity() {
         getLoginFragment()
 
         isLogin = true
+
         toggleTextStyle(textbutton_show_login, textbutton_show_sign_up)
 
         textbutton_show_login.setOnClickListener {
@@ -65,6 +70,8 @@ class EntryActivity : AppCompatActivity() {
         }
     }
 
+
+
     private fun checkValidSession(): Boolean {
         return (CurrentUser.getLocalUser(this) != null)
     }
@@ -75,13 +82,23 @@ class EntryActivity : AppCompatActivity() {
     }
 
     fun getLoginFragment() {
-        fTransaction = fManager.beginTransaction()
+        fTransaction = fManager
+            .beginTransaction()
+            .setCustomAnimations(
+                R.anim.enter_left_to_right,
+                R.anim.exit_left_to_right
+            )
         fTransaction.replace(R.id.entry_fragment_container, loginFragment)
         fTransaction.commit()
     }
 
     private fun getSignUpFragment() {
-        fTransaction = fManager.beginTransaction()
+        fTransaction = fManager
+            .beginTransaction()
+            .setCustomAnimations(
+                R.anim.enter_right_to_left,
+                R.anim.exit_right_to_left
+            )
         fTransaction.replace(R.id.entry_fragment_container, signUpFragment)
         fTransaction.commit()
     }

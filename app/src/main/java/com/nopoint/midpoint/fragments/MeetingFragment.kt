@@ -93,12 +93,14 @@ class MeetingFragment : Fragment(), MeetingRequestViewListener {
                         LatLng(midpointLatLng.latitude, midpointLatLng.longitude)
                     )
                     // Respond to requester
-                    apiController.post(
+                    /*apiController.post(
                         API.LOCAL_API,
                         MEETING_RESPOND_URL,
                         body,
                         localUser.token
                     ) { response ->
+                        val asd = response
+                        Log.d("res", "$response")
                         try {
                             val map = parentFragment as MapFragment
                             map.getDirectionsToAbsoluteMidpoint(midpointURL, true)
@@ -106,15 +108,13 @@ class MeetingFragment : Fragment(), MeetingRequestViewListener {
                         } catch (e: IOException) {
                             Log.e("MEETING", "$e")
                         }
-                    }
+                    } */
                 }
             }
         }
     }
 
-    private fun asd () {
-        Log.d("DIALOG", "asd")
-    }
+
 
     /**
     apiController.get(API.PLACES, placesUrl) { placesResponse ->
@@ -205,7 +205,7 @@ class MeetingFragment : Fragment(), MeetingRequestViewListener {
         itemTouchHelper.attachToRecyclerView(view!!.requests_view)
     }
 
-    private fun sendRequest(username: String, status: Int) {
+    private fun sendRequest(username: String/*, status: Int*/) {
         val params = JSONObject()
         params.put("receiver", username)
         params.put("lat", currentLocation!!.latitude)
@@ -385,7 +385,7 @@ class MeetingFragment : Fragment(), MeetingRequestViewListener {
             dialog.cancel()
         }
         sendBtn.setOnClickListener {
-            sendRequest(selectedUser, if (dialog.location_switch.isChecked) 1 else 0)
+            // sendRequest(selectedUser, if (dialog.location_switch.isChecked) 1 else 0)
             dialog.cancel()
         }
     }
