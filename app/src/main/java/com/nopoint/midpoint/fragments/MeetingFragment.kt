@@ -256,7 +256,10 @@ class MeetingFragment : Fragment(), MeetingRequestViewListener {
                     Snackbar.LENGTH_LONG
                 ).show()
                 val adapter =view!!.requests_view.adapter as MeetingRequestsAdapter
-                adapter.removeAt(meetingRequests.indexOfFirst { it.meetingRequest == meetingRequest })
+                val index = meetingRequests.indexOfFirst { it.meetingRequest == meetingRequest }
+                if (index != -1){
+                    adapter.removeAt(index)
+                }
                 getRequests()
             } catch (e: IOException) {
                 Log.e("MEETING", "$e")

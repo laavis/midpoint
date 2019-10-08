@@ -18,7 +18,9 @@ object MeetingUtils {
         val sortedMap = map.toSortedMap(compareBy {it.ordinal}) //sorts by importance
         val requests = ArrayList<MeetingRequestRow>()
         for ((key, value) in sortedMap) {
-            requests.add(MeetingRequestRow(null, key, RowType.HEADER, false))
+            if (key != MeetingType.ACTIVE){
+                requests.add(MeetingRequestRow(null, key, RowType.HEADER, false))
+            }
             value.mapTo(requests) {
                 MeetingRequestRow(
                     meetingRequest = it,
