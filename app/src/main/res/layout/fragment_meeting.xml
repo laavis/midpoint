@@ -33,54 +33,39 @@
     </LinearLayout>
 
 
-
-    <LinearLayout
-        android:id="@+id/friend_thing"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/peek_content"
-        android:orientation="horizontal">
-
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/sign_up_input_layout_username"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:hint="@string/hint_username">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/meeting_username_input"
-                style="@style/InputEditText"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="8dp"/>
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/refresh_btn"
-                style="@style/Widget.MaterialComponents.Button.Icon"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Refresh"
-                app:icon="@drawable/ic_refresh" />
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/request_btn"
-            style="@style/ButtonPrimary"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1.5"
-            android:text="@string/send_request"
-            android:textColor="@color/color_white"
-            app:cornerRadius="0dp" />
-    </LinearLayout>
-
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/requests_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/friend_thing"
-        android:layout_marginTop="16dp" />
+        android:layout_below="@+id/peek_content">
+
+    </androidx.recyclerview.widget.RecyclerView>
+
+    <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+        android:id="@+id/new_request_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/requests_view"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="16dp"
+        android:backgroundTint="@color/color_primary"
+        android:contentDescription=""
+        android:text="@string/new_request"
+        android:textColor="@color/color_white"
+        app:icon="@drawable/ic_plus"
+        app:iconSize="16dp"
+        app:iconTint="@color/color_white" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/refresh_btn"
+        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+        android:layout_width="40dp"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/requests_view"
+        android:layout_alignEnd="@+id/peek_content"
+        app:icon="@drawable/ic_refresh"
+        app:iconGravity="textStart"
+        app:iconPadding="0dp" />
 
 
 </RelativeLayout>
