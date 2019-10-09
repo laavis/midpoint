@@ -26,6 +26,7 @@ import com.nopoint.midpoint.adapters.MeetingRequestsAdapter
 import com.nopoint.midpoint.map.DirectionsUtils
 import com.nopoint.midpoint.map.MeetingUtils
 import com.nopoint.midpoint.map.MeetingsSingleton
+import com.nopoint.midpoint.map.PlacesUtils
 import com.nopoint.midpoint.map.models.Direction
 import com.nopoint.midpoint.models.*
 import com.nopoint.midpoint.networking.API
@@ -83,26 +84,56 @@ class MeetingFragment : Fragment(), MeetingRequestViewListener {
                 val midpointLatLng: LatLng? = DirectionsUtils.getAbsoluteMidpoint(result)
                 // Midpoint calculation success
                 if (midpointLatLng != null) {
-                    val body = DirectionsUtils.buildResponseBody(
-                        meetingRequest,
-                        latestLocation,
-                        midpointLatLng
-                    )
-                    val midpointURL = DirectionsUtils.buildUrlFromLatLng(
-                        LatLng(latestLocation.latitude, latestLocation.longitude),
-                        LatLng(midpointLatLng.latitude, midpointLatLng.longitude)
-                    )
-                    // Respond to requester
-                    apiController.post(MEETING_RESPOND_URL, body, localUser.token) {
-                        try {
-                            val map = parentFragment as MapFragment
-                            map.getDirectionsToAbsoluteMidpoint(midpointURL, true)
-                            getRequests()
-                        } catch (e: IOException) {
-                            Log.e("MEETING", "$e")
+                    val body = JSONObject()
+                    body.put("requestId", meetingRequest.id)
+                    body.put("lat", latestLocation.latitude)
+                    body.put("lng", latestLocation.longitude)
+                    body.put("response", 1) //TODO allow setting different response types
+                    // Hardcoded for meeting at a cafe
+                    if (meetingRequest.status == 3) {
+                        val placesUrl = PlacesUtils.buildUrl(midpointLatLng)
+                        apiController.get(API.PLACES, placesUrl) { placesResponse ->
+                            Log.d("PLACES", placesResponse.toString())
+                            val places =
+                                Gson().fromJson(placesResponse.toString(), Places::class.java)
+                            if (places.results.isNotEmpty()) {
+                                val best = places.results[0]
+                                body.put("middleLat", best.geometry.location.lat)
+                                body.put("middleLng", best.geometry.location.lng)
+                                body.put("middlePointName", best.name)
+                            }
+                            sendMeetingRequestResponse(body)
                         }
+                    } else {
+                        body.put("middleLat", midpointLatLng.latitude)
+                        body.put("middleLng", midpointLatLng.longitude)
+                        sendMeetingRequestResponse(body)
                     }
                 }
+            }
+        }
+    }
+
+    private fun sendMeetingRequestResponse(body: JSONObject) {
+        // Respond to requester
+        apiController.post(MEETING_RESPOND_URL, body, localUser.token) {
+            try {
+                if (!it?.optString("msg").isNullOrEmpty()) {
+                    val newMeeting = Gson().fromJson(it.toString(), MidpointResponse::class.java)
+                    val midpointURL = DirectionsUtils.buildUrlFromLatLng(
+                        LatLng(currentLocation!!.latitude, currentLocation!!.longitude),
+                        LatLng(newMeeting.meetingPointLat, newMeeting.meetingPointLng)
+                    )
+                    val map = parentFragment as MapFragment
+                    map.getDirectionsToAbsoluteMidpoint(
+                        midpointURL,
+                        true,
+                        newMeeting.middlePointName
+                    )
+                    getRequests()
+                }
+            } catch (e: IOException) {
+                Log.e("MEETING", "$e")
             }
         }
     }
@@ -124,43 +155,17 @@ class MeetingFragment : Fragment(), MeetingRequestViewListener {
         }
     }
 
-    /**
-    apiController.get(API.PLACES, placesUrl) { placesResponse ->
-    Log.d("PLACES", placesResponse.toString())
-    val places = Gson().fromJson(placesResponse.toString(), Places::class.java)
-    body.put("requestId", meetingRequest.id)
-    body.put("lat", latestLocation.latitude)
-    body.put("lng", latestLocation.longitude)
-    var name = result.routes[0].legs[0].end_address
-    if (places.results.isNotEmpty()) {
-    val best = places.results[0]
-    body.put("middleLat", best.geometry.location.lat)
-    body.put("middleLng", best.geometry.location.lng)
-    body.put("middlePointName", best.name)
-    name = best.name
-    } else {
-    body.put("middleLat", midpointLatLng.latitude)
-    body.put("middleLng", midpointLatLng.longitude)
-    body.put("middlePointName", name)
-    }
-
-    body.put("response", 1) //TODO allow setting different response types
-
-    Log.d("MEETING", "$body")
-
-    val midpointURL = DirectionsUtils.buildUrlFromLatLng(
-    LatLng(latestLocation.latitude, latestLocation.longitude),
-    LatLng(midpointLatLng.latitude, midpointLatLng.longitude)
-    )
-     */
-
     override fun showOnMap(meetingRequest: MeetingRequest) {
         val midpointURL = DirectionsUtils.buildUrlFromLatLng(
             LatLng(currentLocation!!.latitude, currentLocation!!.longitude),
             LatLng(meetingRequest.meetingPointLatitude!!, meetingRequest.meetingPointLongitude!!)
         )
         val map = parentFragment as MapFragment
-        map.getDirectionsToAbsoluteMidpoint(midpointURL, clearPrevious = true)
+        map.getDirectionsToAbsoluteMidpoint(
+            midpointURL,
+            clearPrevious = true,
+            meetingPointName = meetingRequest.meetingPointName
+        )
 /*        if (localUser.user.id == meetingRequest.receiver) {
             val otherPersonUrl = DirectionsUtils.buildUrlFromLatLng(
                 LatLng(meetingRequest.requesterLatitude, meetingRequest.requesterLongitude),
@@ -184,7 +189,8 @@ class MeetingFragment : Fragment(), MeetingRequestViewListener {
                     throw Exception("Response is empty")
                 }
 
-                val meetingResponse = Gson().fromJson(response.toString(), MeetingRequestResponse::class.java)
+                val meetingResponse =
+                    Gson().fromJson(response.toString(), MeetingRequestResponse::class.java)
                 MeetingsSingleton.updateMeetingRequests(meetingResponse.requests)
                 MeetingsSingleton.updateMeetingRequestRows(
                     MeetingUtils.sortRequests(
@@ -222,7 +228,9 @@ class MeetingFragment : Fragment(), MeetingRequestViewListener {
         body.put("receiver", username)
         body.put("lat", currentLocation!!.latitude)
         body.put("lng", currentLocation!!.longitude)
-        apiController.post(MEETING_REQUEST_URL, body, localUser.token
+        body.put("status", status)
+        apiController.post(
+            MEETING_REQUEST_URL, body, localUser.token
         ) { response ->
             try {
                 Log.d("RES", "$response")
@@ -245,7 +253,8 @@ class MeetingFragment : Fragment(), MeetingRequestViewListener {
     override fun deleteRequest(meetingRequest: MeetingRequest) {
         val body = JSONObject()
         body.put("requestId", meetingRequest.id)
-        apiController.post(MEETING_REQUEST_DELETE, body, localUser.token
+        apiController.post(
+            MEETING_REQUEST_DELETE, body, localUser.token
         ) { response ->
             try {
                 Log.d("RES", "$response")
@@ -274,7 +283,8 @@ class MeetingFragment : Fragment(), MeetingRequestViewListener {
     override fun declineRequest(meetingRequest: MeetingRequest) {
         val body = JSONObject()
         body.put("requestId", meetingRequest.id)
-        apiController.post(MEETING_REQUEST_DECLINE, body, localUser.token
+        apiController.post(
+            MEETING_REQUEST_DECLINE, body, localUser.token
         ) { response ->
             try {
                 val msg =
@@ -349,11 +359,17 @@ class MeetingFragment : Fragment(), MeetingRequestViewListener {
         val friends = mutableListOf<Chip>()
         apiController.get(FRIENDS_LIST, localUser.token) { res ->
             try {
+                if (res == null) {
+                    throw Exception("Failed to connect")
+                }
                 val friendsRes = Gson().fromJson(res.toString(), Friends::class.java)
-                friendsRes.friends?.forEach {
-                    val chip = createChip(it.username)
-                    friends.add(chip)
-                    chipGroup.addView(chip)
+                Log.d("HMM", friendsRes.toString())
+                if (friendsRes.friends != null) {
+                    friendsRes.friends.forEach {
+                        val chip = createChip(it.username)
+                        friends.add(chip)
+                        chipGroup.addView(chip)
+                    }
                 }
             } catch (e: IOException) {
                 Log.e("FRIENDS", "$e")
@@ -383,7 +399,8 @@ class MeetingFragment : Fragment(), MeetingRequestViewListener {
             dialog.cancel()
         }
         sendBtn.setOnClickListener {
-            sendRequest(selectedUser, if (dialog.location_switch.isChecked) 1 else 0)
+            Log.d("SWITCH", dialog.location_switch.isChecked.toString())
+            sendRequest(selectedUser, if (dialog.location_switch.isChecked) 3 else 0)
             dialog.cancel()
         }
     }

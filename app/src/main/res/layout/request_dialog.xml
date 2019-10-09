@@ -11,7 +11,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:fontFamily="@font/roboto"
-        android:text="New"
+        android:text="@string/new_title"
         android:textColor="@color/color_primary"
         android:textSize="16sp"
         android:textStyle="bold" />
@@ -23,7 +23,7 @@
         android:layout_marginStart="4dp"
         android:layout_toEndOf="@+id/textView"
         android:fontFamily="@font/roboto"
-        android:text="meeting request"
+        android:text="@string/meeting_request"
         android:textSize="16sp"
         android:textStyle="bold" />
 
@@ -32,7 +32,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/textView"
-        android:hint="Filter friends"
+        android:hint="@string/filter_friends"
         app:errorEnabled="true">
 
         <com.google.android.material.textfield.TextInputEditText
@@ -72,7 +72,7 @@
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="16dp"
         android:checked="false"
-        android:text="Share my location" />
+        android:text="@string/cafe_switch" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/send_btn"
@@ -81,7 +81,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/location_switch"
         android:layout_alignParentEnd="true"
-        android:text="Send meeting request"
+        android:text="@string/send_meeting_request"
         app:cornerRadius="4dp" />
 
     <com.google.android.material.button.MaterialButton
@@ -92,7 +92,7 @@
         android:layout_below="@+id/location_switch"
         android:layout_alignParentStart="true"
         android:layout_marginStart="0dp"
-        android:text="Cancel"
+        android:text="@string/cancel"
         app:cornerRadius="4dp" />
 
 
