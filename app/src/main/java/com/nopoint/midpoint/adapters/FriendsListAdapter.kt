@@ -3,25 +3,57 @@ package com.nopoint.midpoint.adapters
 import android.content.Context
 import android.util.Log
 import android.view.LayoutInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageButton
+import android.widget.PopupMenu
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.button.MaterialButton
+import com.nopoint.midpoint.MainActivity
 import com.nopoint.midpoint.R
+import com.nopoint.midpoint.fragments.FriendsFragment
 import kotlinx.android.synthetic.main.row_friend_request.view.*
 import kotlinx.android.synthetic.main.row_friends_list.view.*
+
+
 
 class FriendsListAdapter(
     private val onAcceptFriendRequestClickListener: OnRespondFriendRequestClickListener,
     private val rows: ArrayList<IRowFriend>,
-    private val context: Context) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+    val context: Context) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+
     interface IRowFriend
     class FriendRow(val username: String) : IRowFriend
     class FriendRequestRow(val username: String) : IRowFriend
 
-    class FriendVH(v: View): RecyclerView.ViewHolder(v) {
+    inner class FriendVH(v: View): RecyclerView.ViewHolder(v) {
         val username: TextView = v.friends_list_row_username
+        private val buttonAction: ImageButton = v.friends_list_row_action
+
+        fun bind(clickListener: OnRespondFriendRequestClickListener) {
+
+            buttonAction.setOnClickListener {
+                val popup = PopupMenu(context, buttonAction)
+                val inflater = popup.menuInflater
+
+                inflater.inflate(R.menu.friend_options_menu, popup.menu)
+                popup.show()
+
+                popup.setOnMenuItemClickListener { item ->
+                    when (item.itemId) {
+                        R.id.friend_delete -> {
+                            clickListener.onDeleteClicked(item, adapterPosition)
+                        }
+
+                    }
+                    false
+                }
+            }
+
+
+        }
     }
 
     inner class FriendRequestVH(v: View) : RecyclerView.ViewHolder(v) {
@@ -72,6 +104,7 @@ class FriendsListAdapter(
 
     private fun onBindFriend(holder: RecyclerView.ViewHolder, row: FriendRow) {
         val friendRow = holder as FriendVH
+        holder.bind(onAcceptFriendRequestClickListener)
         friendRow.username.text = row.username
     }
 
@@ -95,7 +128,7 @@ class FriendsListAdapter(
 interface OnRespondFriendRequestClickListener {
     fun onAcceptClicked(button: MaterialButton, position: Int)
     fun onDenyClicked(button: MaterialButton, position: Int)
-
+    fun onDeleteClicked(menuItem: MenuItem, position: Int)
 }
 
 

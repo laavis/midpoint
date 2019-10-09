@@ -16,12 +16,14 @@ import java.util.TimerTask
 import java.util.Timer
 import android.text.Editable
 import android.util.Log
+import android.view.MenuItem
 import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.snackbar.Snackbar
 import com.google.gson.Gson
+import com.google.gson.annotations.SerializedName
 import com.nopoint.midpoint.QRActivity
 import com.nopoint.midpoint.adapters.FriendSearchAdapter
 import com.nopoint.midpoint.adapters.FriendsListAdapter
@@ -124,11 +126,7 @@ class FriendsFragment :
         friendRequestsList.clear()
         apiController.get(FRIENDS_LIST, token) { res ->
             try {
-                val friendsRes = Gson().fromJson(res.toString(), Friends::class.java)
-
-                if (friendsRes == null) {
-                    throw Exception("Failed to connect")
-                }
+                val friendsRes = Gson().fromJson(res.toString(), Friends::class.java) ?: throw Exception("Failed to connect")
 
                 // If user has friends
                 if(friendsRes.friends != null) {
@@ -175,6 +173,34 @@ class FriendsFragment :
         return rows
     }
 
+    data class DeleteFriend(
+        @SerializedName("error")val error: String?
+    )
+
+    private fun deleteFriend(position: Int) {
+        val body = JSONObject()
+        val friendToBeDeleted = friendList[position].username
+
+        body.put("friend_username", friendToBeDeleted)
+
+        apiController.post(DELETE_FRIEND, body, token) { res ->
+            try {
+                val deleteRes = Gson().fromJson(res.toString(), DeleteFriend::class.java)
+
+                if (deleteRes.error != null) {
+                    throw Exception("${deleteRes.error}")
+                }
+
+                getFriends()
+
+            } catch (e: Exception) {
+                Toast.makeText(context, "${e.message}", Toast.LENGTH_SHORT).show()
+                Log.e("FRIENDS", "$e")
+            }
+        }
+    }
+
+
 
     private fun respondToFriendRequest(position: Int, status: Int, msg: String) {
         val body = JSONObject()
@@ -210,6 +236,11 @@ class FriendsFragment :
         val msg = "You denied friend request from ${friendRequestsList[position].req_username}"
         respondToFriendRequest(position, 2, msg)
     }
+
+    override fun onDeleteClicked(menuItem: MenuItem, position: Int) {
+        deleteFriend(position)
+    }
+
 
     // Send friend request
     override fun onItemClicked(button: ImageButton, statusIcon: ImageView, position: Int) {

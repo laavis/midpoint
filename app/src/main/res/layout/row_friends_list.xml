@@ -29,7 +29,8 @@
         style="@style/ButtonImage"
         android:id="@+id/friends_list_row_action"
         android:layout_alignParentEnd="true"
-        android:src="@drawable/ic_add"
-        android:tint="@color/color_light_grey"/>
+        android:src="@drawable/ic_more_vertical"
+        android:tint="@color/color_dark_grey"
+        android:textAppearance="?android:textAppearanceLarge"/>
 
 </RelativeLayout>
