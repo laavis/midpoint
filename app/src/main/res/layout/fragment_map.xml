@@ -7,7 +7,20 @@
 
     <!-- Remove later -->
 
-
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fab_map_intent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="64dp"
+        android:visibility="gone"
+        app:backgroundTint="@color/orange"
+        app:layout_anchor="@+id/bottom_sheet"
+        app:layout_anchorGravity="top|end"
+        app:layout_dodgeInsetEdges="bottom"
+        app:srcCompat="@drawable/ic_directions"
+        app:tint="@color/color_white" />
     <!--Map content-->
     <Button
         android:id="@+id/btn"
@@ -17,22 +30,6 @@
 
     <include layout="@layout/map_content" />
 
-
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fab_map_intent"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
-        android:layout_marginEnd="16dp"
-        android:layout_marginBottom="64dp"
-        app:tint="@color/color_white"
-        app:srcCompat="@drawable/ic_directions"
-        app:backgroundTint="@color/orange"
-        app:layout_anchor="@id/bottom_sheet"
-        app:layout_dodgeInsetEdges="bottom"
-        app:layout_anchorGravity="top|end"
-        android:visibility="gone"
-        />
 
     <!-- Adding bottom sheet after main content -->
     <include

@@ -1,6 +1,5 @@
 package com.nopoint.midpoint.fragments
 
-import android.content.ContentValues.TAG
 import android.content.Intent
 import android.location.Location
 import android.net.Uri
@@ -28,17 +27,13 @@ import com.nopoint.midpoint.networking.APIController
 import com.nopoint.midpoint.networking.ServiceVolley
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import kotlinx.android.synthetic.main.bottom_sheet.view.*
-import kotlinx.android.synthetic.main.fragment_map.*
 import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.tasks.OnCompleteListener
 import com.google.android.material.floatingactionbutton.FloatingActionButton
-import com.google.firebase.iid.FirebaseInstanceId
 import com.nopoint.midpoint.map.MeetingUtils
 import com.nopoint.midpoint.map.MeetingsSingleton
 import com.nopoint.midpoint.models.CurrentUser
 import com.nopoint.midpoint.models.LocalUser
 import kotlinx.android.synthetic.main.fragment_map.view.*
-import org.json.JSONObject
 import java.lang.NullPointerException
 
 
@@ -186,7 +181,6 @@ class MapFragment : Fragment(), OnMapReadyCallback {
                     } else {
                         val active = MeetingsSingleton.getActiveMeeting()
                         if ( active != null){
-                            Log.d("ACTIVE", active.toString())
                             if (MeetingUtils.reachedLocation(active, location)) {
                                 sheetFragment.arrived(active)
                             }

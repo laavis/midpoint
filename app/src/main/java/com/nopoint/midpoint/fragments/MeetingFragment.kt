@@ -48,8 +48,6 @@ class MeetingFragment : Fragment(), MeetingRequestViewListener {
     var currentLocation: LatLng? = null
     private lateinit var localUser: LocalUser
 
-    private lateinit var meetingUsernameInput: TextInputEditText
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
@@ -58,6 +56,8 @@ class MeetingFragment : Fragment(), MeetingRequestViewListener {
         // view.request_btn.setOnClickListener { sendRequest(view.friend_username.text.toString()) }
         view.refresh_btn.setOnClickListener { getRequests() }
         view.new_request_btn.setOnClickListener { createDialog() }
+        LocalBroadcastManager.getInstance(context!!.applicationContext)
+            .registerReceiver(mLocalBroadcastReceiver, getLocalIntentFilter())
         return view
     }
 
@@ -67,9 +67,8 @@ class MeetingFragment : Fragment(), MeetingRequestViewListener {
         getRequests()
     }
 
-
     // RESPOND TO MEETING REQUEST
-    override fun acceptRequest(meetingRequest: MeetingRequest) {
+    private fun sendResponse(meetingRequest: MeetingRequest) {
         val latestLocation = currentLocation
         val fullRouteURL = DirectionsUtils.buildUrlFromLatLng(
             LatLng(latestLocation!!.latitude, latestLocation.longitude),
@@ -99,7 +98,7 @@ class MeetingFragment : Fragment(), MeetingRequestViewListener {
                         MEETING_RESPOND_URL,
                         body,
                         localUser.token
-                    ) { response ->
+                    ) {
                         try {
                             val map = parentFragment as MapFragment
                             map.getDirectionsToAbsoluteMidpoint(midpointURL, true)
@@ -110,6 +109,23 @@ class MeetingFragment : Fragment(), MeetingRequestViewListener {
                     }
                 }
             }
+        }
+    }
+
+    override fun acceptRequest(meetingRequest: MeetingRequest) {
+        val active = MeetingsSingleton.getActiveMeeting()
+        if (active != null) {
+            MaterialAlertDialogBuilder(activity)
+                .setTitle("Warning")
+                .setMessage("You already have an active meeting, want to delete it?")
+                .setPositiveButton("Delete") { _, _ ->
+                    deleteRequest(active)
+                    sendResponse(meetingRequest)
+                }
+                .setNegativeButton("Cancel", null)
+                .show()
+        } else {
+            sendResponse(meetingRequest)
         }
     }
 
@@ -219,7 +235,6 @@ class MeetingFragment : Fragment(), MeetingRequestViewListener {
             localUser.token
         ) { response ->
             try {
-                //TODO Refresh recycler view with new request
                 Log.d("RES", "$response")
                 val msg =
                     if (response?.optString("msg").isNullOrEmpty()) {
@@ -254,7 +269,7 @@ class MeetingFragment : Fragment(), MeetingRequestViewListener {
                     } else response?.getString("msg")
                 Snackbar.make(
                     activity!!.findViewById(android.R.id.content),
-                    msg!!,
+                    msg ?: "Bug",
                     Snackbar.LENGTH_LONG
                 ).show()
                 val adapter = view!!.requests_view.adapter as MeetingRequestsAdapter
@@ -306,8 +321,7 @@ class MeetingFragment : Fragment(), MeetingRequestViewListener {
                         try {
                             val meetingRequest =
                                 Gson().fromJson(request, MeetingRequest::class.java)
-                            this@MeetingFragment.acceptRequest(meetingRequest)
-                            Log.d("MEETING", "accepted")
+                            acceptRequest(meetingRequest)
                         } catch (throwable: Throwable) {
                             throwable.printStackTrace()
                         }
@@ -416,33 +430,32 @@ class MeetingFragment : Fragment(), MeetingRequestViewListener {
         MaterialAlertDialogBuilder(context)
             .setTitle("You arrived!")
             .setMessage("Send notification to ${username}?")
-            .setPositiveButton("Yes", sendArrived(meetingRequest))
-            .setNegativeButton("No", sendArrived(meetingRequest))
+            .setPositiveButton("Yes", sendArrivedListener(meetingRequest))
+            .setNegativeButton("No", sendArrivedListener(meetingRequest))
             .show()
     }
 
-    private fun sendArrived(meetingRequest: MeetingRequest): DialogInterface.OnClickListener {
+    private fun sendArrivedListener(meetingRequest: MeetingRequest): DialogInterface.OnClickListener {
         return DialogInterface.OnClickListener { p0, p1 ->
             val sendNotification = if (p1 == -1) 1 else 0
-            val body = JSONObject()
-            body.put("requestId", meetingRequest.id)
-            body.put("notify", sendNotification)
-            apiController.post(
-                API.LOCAL_API,
-                MEETING_ARRIVED,
-                body,
-                localUser.token
-            ) { resp ->
-                if (!resp?.getString("msg").isNullOrEmpty()) {
-                    if (sendNotification == 1) {
-                        Snackbar.make(
-                            activity!!.findViewById<View>(android.R.id.content),
-                            "Notification sent!",
-                            Snackbar.LENGTH_LONG
-                        ).show()
-                    }
-                    getRequests()
+            sendArrived(meetingRequest.id, sendNotification)
+        }
+    }
+
+    private fun sendArrived(id: String, notify: Int) {
+        val body = JSONObject()
+        body.put("requestId", id)
+        body.put("notify", notify)
+        apiController.post(API.LOCAL_API, MEETING_ARRIVED, body, localUser.token) { resp ->
+            if (!resp?.getString("msg").isNullOrEmpty()) {
+                if (notify == 1) {
+                    Snackbar.make(
+                        activity!!.findViewById<View>(android.R.id.content),
+                        "Notification sent!",
+                        Snackbar.LENGTH_LONG
+                    ).show()
                 }
+                getRequests()
             }
         }
     }
