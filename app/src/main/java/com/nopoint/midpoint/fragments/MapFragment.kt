@@ -1,6 +1,5 @@
 package com.nopoint.midpoint.fragments
 
-import android.content.ContentValues.TAG
 import android.content.Intent
 import android.location.Location
 import android.net.Uri
@@ -28,14 +27,13 @@ import com.nopoint.midpoint.networking.APIController
 import com.nopoint.midpoint.networking.ServiceVolley
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import kotlinx.android.synthetic.main.bottom_sheet.view.*
-import kotlinx.android.synthetic.main.fragment_map.*
 import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.tasks.OnCompleteListener
 import com.google.android.material.floatingactionbutton.FloatingActionButton
-import com.google.firebase.iid.FirebaseInstanceId
+import com.nopoint.midpoint.map.MeetingUtils
+import com.nopoint.midpoint.map.MeetingsSingleton
 import com.nopoint.midpoint.models.CurrentUser
 import com.nopoint.midpoint.models.LocalUser
-import org.json.JSONObject
+import kotlinx.android.synthetic.main.fragment_map.view.*
 import java.lang.NullPointerException
 
 
@@ -80,7 +78,10 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         sheetBehavior = BottomSheetBehavior.from(view.bottom_sheet)
         sheetBehavior!!.bottomSheetCallback = createBottomSheetCb()
 
-
+        view.btn.setOnClickListener {
+            val active = MeetingsSingleton.getActiveMeeting()
+            sheetFragment.arrived(active!!)
+        }
         fabMapIntent = view.findViewById(R.id.fab_map_intent)
 
         return view
@@ -177,6 +178,13 @@ class MapFragment : Fragment(), OnMapReadyCallback {
                             LatLng(location.latitude, location.longitude)
                         currentLocation = location
                         mMap.animateCamera(cam)
+                    } else {
+                        val active = MeetingsSingleton.getActiveMeeting()
+                        if ( active != null){
+                            if (MeetingUtils.reachedLocation(active, location)) {
+                                sheetFragment.arrived(active)
+                            }
+                        }
                     }
                     requestingLocationUpdates = true
                 }

@@ -22,7 +22,9 @@ data class MeetingRequest(
     @SerializedName("meetingPointLat") val meetingPointLatitude: Double?,
     @SerializedName("meetingPointLng") val meetingPointLongitude: Double?,
     @SerializedName("meetingPointName") val meetingPointName: String?,
-    @SerializedName("timestamp") val timestamp: Date
+    @SerializedName("timestamp") val timestamp: Date,
+    @SerializedName("requesterArrived") val requesterArrived: Boolean,
+    @SerializedName("receiverArrived") val receiverArrived: Boolean
 )
 
 data class MeetingRequestRow(val meetingRequest: MeetingRequest?, val type: MeetingType?, val rowType: RowType, var expanded: Boolean)
