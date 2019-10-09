@@ -2,7 +2,6 @@ package com.nopoint.midpoint.map
 
 import com.nopoint.midpoint.models.MeetingRequest
 import com.nopoint.midpoint.models.MeetingRequestRow
-import com.nopoint.midpoint.models.MeetingType
 
 object MeetingsSingleton {
     val meetingRequests: MutableList<MeetingRequest> = mutableListOf()
@@ -10,7 +9,7 @@ object MeetingsSingleton {
 
 
     fun getActiveMeeting(): MeetingRequest?{
-        return meetingRequests.find { it.status == MeetingType.ACTIVE.ordinal }
+        return meetingRequests.find { it.status == 1 }
     }
 
     fun updateMeetingRequestRows(newRows: MutableList<MeetingRequestRow>) {

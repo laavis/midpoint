@@ -33,8 +33,11 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.firebase.iid.FirebaseInstanceId
+import com.nopoint.midpoint.map.MeetingUtils
+import com.nopoint.midpoint.map.MeetingsSingleton
 import com.nopoint.midpoint.models.CurrentUser
 import com.nopoint.midpoint.models.LocalUser
+import kotlinx.android.synthetic.main.fragment_map.view.*
 import org.json.JSONObject
 import java.lang.NullPointerException
 
@@ -80,7 +83,10 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         sheetBehavior = BottomSheetBehavior.from(view.bottom_sheet)
         sheetBehavior!!.bottomSheetCallback = createBottomSheetCb()
 
-
+        view.btn.setOnClickListener {
+            val active = MeetingsSingleton.getActiveMeeting()
+            sheetFragment.arrived(active!!)
+        }
         fabMapIntent = view.findViewById(R.id.fab_map_intent)
 
         return view
@@ -177,6 +183,14 @@ class MapFragment : Fragment(), OnMapReadyCallback {
                             LatLng(location.latitude, location.longitude)
                         currentLocation = location
                         mMap.animateCamera(cam)
+                    } else {
+                        val active = MeetingsSingleton.getActiveMeeting()
+                        if ( active != null){
+                            Log.d("ACTIVE", active.toString())
+                            if (MeetingUtils.reachedLocation(active, location)) {
+                                sheetFragment.arrived(active)
+                            }
+                        }
                     }
                     requestingLocationUpdates = true
                 }

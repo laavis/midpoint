@@ -17,6 +17,7 @@ import com.google.android.gms.maps.model.LatLng
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipDrawable
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textfield.TextInputEditText
 import com.google.gson.Gson
@@ -112,7 +113,7 @@ class MeetingFragment : Fragment(), MeetingRequestViewListener {
         }
     }
 
-    private fun asd () {
+    private fun asd() {
         Log.d("DIALOG", "asd")
     }
 
@@ -174,7 +175,13 @@ class MeetingFragment : Fragment(), MeetingRequestViewListener {
                 Log.d("RES", "$response")
                 val meetingResponse =
                     Gson().fromJson(response.toString(), MeetingRequestResponse::class.java)
-                MeetingsSingleton.updateMeetingRequestRows(MeetingUtils.sortRequests(meetingResponse.requests, localUser.user))
+                MeetingsSingleton.updateMeetingRequests(meetingResponse.requests)
+                MeetingsSingleton.updateMeetingRequestRows(
+                    MeetingUtils.sortRequests(
+                        meetingResponse.requests,
+                        localUser.user
+                    )
+                )
                 initializeRecyclerView()
             } catch (e: IOException) {
                 Log.e("MEETING", "$e")
@@ -250,9 +257,10 @@ class MeetingFragment : Fragment(), MeetingRequestViewListener {
                     msg!!,
                     Snackbar.LENGTH_LONG
                 ).show()
-                val adapter =view!!.requests_view.adapter as MeetingRequestsAdapter
-                val index = MeetingsSingleton.meetingRequestRows.indexOfFirst { it.meetingRequest == meetingRequest }
-                if (index != -1){
+                val adapter = view!!.requests_view.adapter as MeetingRequestsAdapter
+                val index =
+                    MeetingsSingleton.meetingRequestRows.indexOfFirst { it.meetingRequest == meetingRequest }
+                if (index != -1) {
                     adapter.removeAt(index)
                 }
                 getRequests()
@@ -400,5 +408,42 @@ class MeetingFragment : Fragment(), MeetingRequestViewListener {
         chip.chipBackgroundColor = activity!!.getColorStateList(R.color.chip_bg_color)
         chip.isCheckable = true
         return chip
+    }
+
+    fun arrived(meetingRequest: MeetingRequest) {
+        val username =
+            if (meetingRequest.requester == localUser.user.id) meetingRequest.receiverUsername else meetingRequest.requesterUsername
+        MaterialAlertDialogBuilder(context)
+            .setTitle("You arrived!")
+            .setMessage("Send notification to ${username}?")
+            .setPositiveButton("Yes", sendArrived(meetingRequest))
+            .setNegativeButton("No", sendArrived(meetingRequest))
+            .show()
+    }
+
+    private fun sendArrived(meetingRequest: MeetingRequest): DialogInterface.OnClickListener {
+        return DialogInterface.OnClickListener { p0, p1 ->
+            val sendNotification = if (p1 == -1) 1 else 0
+            val body = JSONObject()
+            body.put("requestId", meetingRequest.id)
+            body.put("notify", sendNotification)
+            apiController.post(
+                API.LOCAL_API,
+                MEETING_ARRIVED,
+                body,
+                localUser.token
+            ) { resp ->
+                if (!resp?.getString("msg").isNullOrEmpty()) {
+                    if (sendNotification == 1) {
+                        Snackbar.make(
+                            activity!!.findViewById<View>(android.R.id.content),
+                            "Notification sent!",
+                            Snackbar.LENGTH_LONG
+                        ).show()
+                    }
+                    getRequests()
+                }
+            }
+        }
     }
 }
