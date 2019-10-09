@@ -25,6 +25,7 @@ import com.nopoint.midpoint.adapters.MeetingRequestViewListener
 import com.nopoint.midpoint.adapters.MeetingRequestsAdapter
 import com.nopoint.midpoint.map.DirectionsUtils
 import com.nopoint.midpoint.map.MeetingUtils
+import com.nopoint.midpoint.map.MeetingsSingleton
 import com.nopoint.midpoint.map.models.Direction
 import com.nopoint.midpoint.models.*
 import com.nopoint.midpoint.networking.API
@@ -44,7 +45,6 @@ class MeetingFragment : Fragment(), MeetingRequestViewListener {
     private val service = ServiceVolley()
     private val apiController = APIController(service)
     var currentLocation: LatLng? = null
-    private var meetingRequests = mutableListOf<MeetingRequestRow>()
     private lateinit var localUser: LocalUser
 
     private lateinit var meetingUsernameInput: TextInputEditText
@@ -174,12 +174,8 @@ class MeetingFragment : Fragment(), MeetingRequestViewListener {
                 Log.d("RES", "$response")
                 val meetingResponse =
                     Gson().fromJson(response.toString(), MeetingRequestResponse::class.java)
-                meetingRequests =
-                    MeetingUtils.sortRequests(meetingResponse.requests, localUser.user)
-                // Was causing a crash
-                if (view != null && activity != null) {
-                    initializeRecyclerView()
-                }
+                MeetingsSingleton.updateMeetingRequestRows(MeetingUtils.sortRequests(meetingResponse.requests, localUser.user))
+                initializeRecyclerView()
             } catch (e: IOException) {
                 Log.e("MEETING", "$e")
             }
@@ -189,7 +185,6 @@ class MeetingFragment : Fragment(), MeetingRequestViewListener {
     private fun initializeRecyclerView() {
         view!!.requests_view.adapter =
             MeetingRequestsAdapter(
-                meetingRequests,
                 (activity as MainActivity),
                 this
             )
@@ -256,7 +251,7 @@ class MeetingFragment : Fragment(), MeetingRequestViewListener {
                     Snackbar.LENGTH_LONG
                 ).show()
                 val adapter =view!!.requests_view.adapter as MeetingRequestsAdapter
-                val index = meetingRequests.indexOfFirst { it.meetingRequest == meetingRequest }
+                val index = MeetingsSingleton.meetingRequestRows.indexOfFirst { it.meetingRequest == meetingRequest }
                 if (index != -1){
                     adapter.removeAt(index)
                 }

@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.card.MaterialCardView
 import com.nopoint.midpoint.R
+import com.nopoint.midpoint.map.MeetingsSingleton
 import com.nopoint.midpoint.models.*
 import kotlinx.android.synthetic.main.request_header.view.*
 import kotlinx.android.synthetic.main.request_row.view.*
@@ -22,11 +23,10 @@ import org.jetbrains.anko.backgroundColor
 
 
 class MeetingRequestsAdapter(
-    private val requests: MutableList<MeetingRequestRow>,
     private val context: Context,
     private val listener: MeetingRequestViewListener
 ) : RecyclerView.Adapter<ViewHolder>() {
-    override fun getItemCount(): Int = requests.size
+    override fun getItemCount(): Int = MeetingsSingleton.meetingRequestRows.size
 
     // Inflates the item views
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -43,7 +43,7 @@ class MeetingRequestsAdapter(
         if (position == 0){
             holder.topDivider?.visibility = View.GONE
         }
-        val request = requests[position]
+        val request = MeetingsSingleton.meetingRequestRows[position]
         if (request.rowType != RowType.HEADER) {
             if (request.type == MeetingType.OUTGOING || request.type == MeetingType.INCOMING) {
                 holder.itemView.setOnClickListener {
@@ -134,16 +134,16 @@ class MeetingRequestsAdapter(
         }
     }
 
-    override fun getItemViewType(position: Int) = requests[position].rowType.ordinal
+    override fun getItemViewType(position: Int) = MeetingsSingleton.meetingRequestRows[position].rowType.ordinal
 
     fun removeAt(position: Int): MeetingRequestRow {
-        val removed = requests.removeAt(position)
+        val removed = MeetingsSingleton.meetingRequestRows.removeAt(position)
         notifyItemRemoved(position)
         return removed
     }
 
     fun addItem(row: MeetingRequestRow, position: Int) {
-        requests.add(position, row)
+        MeetingsSingleton.meetingRequestRows.add(position, row)
         notifyItemInserted(position)
     }
 }

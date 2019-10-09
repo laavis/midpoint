@@ -5,7 +5,7 @@ enum class API(val path: String) {
     DIRECTIONS("https://maps.googleapis.com/maps/api/directions/json"),
     BASE("http://localhost:5000"),//TODO Set real API endpoint
     TEST("https://postman-echo.com/"),
-    LOCAL_API("http://192.168.1.45:5000")
+    LOCAL_API("http://192.168.1.107:5000")
 }
 
 const val BASE_URL = "http://198.18.9.114:5000"
