@@ -29,6 +29,13 @@ data class MeetingRequest(
 
 data class MeetingRequestRow(val meetingRequest: MeetingRequest?, val type: MeetingType?, val rowType: RowType, var expanded: Boolean)
 
+data class MidpointResponse(
+    @SerializedName("msg") val message: String,
+    @SerializedName("accepted") val accepted: Boolean,
+    @SerializedName("middlePointLat")val meetingPointLat:Double,
+    @SerializedName("middlePointLng") val meetingPointLng:Double,
+    @SerializedName("middlePointName")val middlePointName:String
+)
 enum class MeetingType(val type: Int){
     ACTIVE(0),
     INCOMING(1),

@@ -55,5 +55,10 @@
     <string name="qr_friends_with">You are now friends with</string>
 
     <string name="error_server_connection">Failed to connect</string>
+    <string name="send_meeting_request">Send meeting request</string>
+    <string name="cafe_switch">Meet at a cafe?</string>
+    <string name="filter_friends">Filter friends</string>
+    <string name="meeting_request">meeting request</string>
+    <string name="new_title">New</string>
 
 </resources>
