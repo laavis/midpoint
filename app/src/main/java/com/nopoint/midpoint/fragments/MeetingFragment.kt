@@ -37,6 +37,7 @@ import kotlinx.android.synthetic.main.request_dialog.*
 import kotlinx.android.synthetic.main.request_dialog.view.*
 import org.json.JSONObject
 import java.io.IOException
+import java.lang.Exception
 
 /**
  * Fragment for meeting requests
@@ -178,9 +179,12 @@ class MeetingFragment : Fragment(), MeetingRequestViewListener {
     private fun getRequests() {
         apiController.get(MEETING_REQUEST_LIST, localUser.token) { response ->
             try {
-                Log.d("RES", "$response")
-                val meetingResponse =
-                    Gson().fromJson(response.toString(), MeetingRequestResponse::class.java)
+                // todo handle empty response
+                if (response == null) {
+                    throw Exception("Response is empty")
+                }
+
+                val meetingResponse = Gson().fromJson(response.toString(), MeetingRequestResponse::class.java)
                 MeetingsSingleton.updateMeetingRequests(meetingResponse.requests)
                 MeetingsSingleton.updateMeetingRequestRows(
                     MeetingUtils.sortRequests(
@@ -189,7 +193,7 @@ class MeetingFragment : Fragment(), MeetingRequestViewListener {
                     )
                 )
                 initializeRecyclerView()
-            } catch (e: IOException) {
+            } catch (e: Exception) {
                 Log.e("MEETING", "$e")
             }
         }

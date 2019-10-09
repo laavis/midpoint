@@ -2,12 +2,12 @@ package com.nopoint.midpoint.models
 
 import com.google.gson.annotations.SerializedName
 
-class QRScanObject(val token: String, val username: String)
 
-data class QRStuff(
-    @SerializedName("token")val token: String,
-    @SerializedName("user")val user: User
+data class FriendToken(
+    @SerializedName("token")val token: String
 )
+
+
 
 data class FriendRequest(
     @SerializedName("_id") val _id: String,

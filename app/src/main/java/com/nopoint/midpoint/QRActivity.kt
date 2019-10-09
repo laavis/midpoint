@@ -3,67 +3,77 @@ package com.nopoint.midpoint
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.google.gson.Gson
 import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel
-import com.nopoint.midpoint.helpers.EncryptionHelper
 import com.nopoint.midpoint.helpers.QRCodeHelper
 import com.nopoint.midpoint.models.CurrentUser
-import com.nopoint.midpoint.models.QRScanObject
-import com.nopoint.midpoint.models.User
+import com.nopoint.midpoint.models.FriendToken
+import com.nopoint.midpoint.networking.APIController
+import com.nopoint.midpoint.networking.QR_CREATE
+import com.nopoint.midpoint.networking.ServiceVolley
 import kotlinx.android.synthetic.main.activity_qr.*
+import java.lang.Exception
 
 class QRActivity : AppCompatActivity() {
 
-    private var user: User? = null
+    private val service = ServiceVolley()
+    private val apiController = APIController(service)
+
+    private lateinit var authToken: String
+    private lateinit var username: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_qr)
 
-        user = CurrentUser.getCurrentUser(this)
-        Log.d("QR", "current user: $user")
 
-        val qrToken = generateQRToken()
-        Log.d("QR", "qr token: $qrToken")
+        authToken = CurrentUser.getLocalUser(this)!!.token
+        createQRToken()
 
-
-
-        generateQRCode()
 
         qr_button_scan.setOnClickListener {
             val intent = Intent(this, QRScanActivity::class.java)
             startActivity(intent)
             this.finish()
         }
+
+        qr_btn_close_activity.setOnClickListener {
+            val intent = Intent(this, MainActivity::class.java)
+            startActivity(intent)
+            this.finish()
+        }
     }
 
-    private fun generateQRCode() {
-        val qrToken = generateQRToken()
-        val username = user!!.username
+    // Get unique friend token and generate QR code from it
+    private fun createQRToken() {
+        apiController.get(QR_CREATE, authToken) { res ->
+            try {
+                if (res == null) throw Exception("No server response")
 
-        val asd = QRScanObject(qrToken, username)
+                val tokenRes = Gson().fromJson(res.toString(), FriendToken::class.java)
 
-        val serializedString = Gson().toJson(asd)
-        val encryptedString = EncryptionHelper.instance.encryptionString(serializedString)!!.encryptMsg()
+                Log.d("QR", "asd ${tokenRes.token}")
 
+                generateQRCode(tokenRes.token)
+
+            } catch (e: Exception) {
+                Log.e("QR", "$e")
+                Toast.makeText(this, "${e.message}", Toast.LENGTH_SHORT).show()
+            }
+        }
+
+    }
+
+    private fun generateQRCode(friendToken: String) {
         val bitmap = QRCodeHelper
             .newInstance(this)
-            .setContent(encryptedString)
+            .setContent(friendToken)
             .setErrorCorrenctionLevel(ErrorCorrectionLevel.Q)
             .setMargin(2)
             .getQRCOde()
 
         qr_image_view_code.setImageBitmap(bitmap)
-
     }
-
-    private fun generateQRToken(): String {
-        val allowedChars = "ABCDEFGHIJKLMNOPQRSTUVWXTZabcdefghiklmnopqrstuvwxyz123456789?!&/()}{?"
-        return (1..64)
-            .map { allowedChars.random() }
-            .joinToString("")
-    }
-
-
 }

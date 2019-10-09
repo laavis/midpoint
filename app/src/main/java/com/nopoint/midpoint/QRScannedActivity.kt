@@ -4,36 +4,124 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.FragmentTransaction
 import com.google.gson.Gson
-import com.nopoint.midpoint.helpers.EncryptionHelper
-import com.nopoint.midpoint.models.QRScanObject
-import kotlinx.android.synthetic.main.activity_qr_scanned.*
+import com.google.gson.annotations.SerializedName
+import com.nopoint.midpoint.fragments.QRFailFragment
+import com.nopoint.midpoint.fragments.QRSuccessFragment
+import com.nopoint.midpoint.models.CurrentUser
+import com.nopoint.midpoint.networking.APIController
+import com.nopoint.midpoint.networking.QR_REDEEM
+import com.nopoint.midpoint.networking.ServiceVolley
+import org.json.JSONObject
+import java.lang.Exception
 
 class QRScannedActivity : AppCompatActivity() {
+
+    private val service = ServiceVolley()
+    private val apiController = APIController(service)
+
+    private lateinit var authToken: String
+    private lateinit var friendToken: String
+
+    private lateinit var fTransaction: FragmentTransaction
+    private lateinit var fManager: FragmentManager
+    private lateinit var successFragment: QRSuccessFragment
+    private lateinit var failFragment: QRFailFragment
+
+    private var errorMsg: String = ""
+    private var reqUsername: String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_qr_scanned)
 
+        fManager = supportFragmentManager
+        fTransaction = fManager.beginTransaction()
+
+        successFragment = QRSuccessFragment()
+        failFragment = QRFailFragment()
+
+        authToken = CurrentUser.getLocalUser(this)!!.token
+
         if (intent.getSerializableExtra(SCANNED_STRING) == null) {
             throw RuntimeException("No encrypted String found in intent")
         }
 
-        val decryptedString = EncryptionHelper.instance.getDecryptionString(intent.getStringExtra(SCANNED_STRING))
-        Log.d("QR", "decrypted: $decryptedString")
 
-        val qrScanObject = Gson().fromJson(decryptedString, QRScanObject::class.java)
+        friendToken = intent.getStringExtra(SCANNED_STRING)
 
-        qr_scanned_username.text = qrScanObject.username
 
-        qr_scanned_btn_ok.setOnClickListener {
+        redeemQrToken()
+
+        /*qr_scanned_btn_ok.setOnClickListener {
             Log.d("QR", "bacccc")
             val intent = Intent(this, MainActivity::class.java)
             startActivity(intent)
             this.finish()
+        }*/
+    }
+
+    data class RedeemToken(
+        @SerializedName("error")val error: String?,
+        @SerializedName("requester_username")val requester_username: String?
+    )
+
+    //
+    private fun redeemQrToken() {
+        val body = JSONObject()
+        body.put("token", friendToken)
+
+        apiController.post(QR_REDEEM, body, authToken) { res ->
+            try {
+                if (res == null) {
+                    throw Exception("Failed to connect")
+                }
+
+                val redeemRes = Gson().fromJson(res.toString(), RedeemToken::class.java)
+
+                Log.d("QR", "redeemres: $redeemRes")
+
+
+                if (redeemRes.error != null) {
+                    errorMsg = redeemRes.run { error.toString() }
+                    val fragment = QRFailFragment.newInstance(errorMsg)
+                    getFailFragment(fragment)
+                    throw Exception("${redeemRes.error}")
+                } else {
+                    reqUsername = redeemRes.requester_username.toString()
+
+                    Log.d("QR", "requsern $reqUsername")
+                    val fragment = QRSuccessFragment.newInstance(reqUsername)
+                    geSuccessFragment(fragment)
+                }
+
+            } catch (e: Exception) {
+                Log.e("QR", "$e")
+                Toast.makeText(this, "${e.message}", Toast.LENGTH_SHORT).show()
+            }
         }
     }
+
+    fun geSuccessFragment(f: QRSuccessFragment) {
+        fTransaction = fManager
+            .beginTransaction()
+            .addToBackStack(null)
+        fTransaction.replace(R.id.qr_outcome_container, f)
+        fTransaction.commit()
+    }
+
+    private fun getFailFragment(f: QRFailFragment) {
+        fTransaction = fManager
+            .beginTransaction()
+            .addToBackStack(null)
+        fTransaction.replace(R.id.qr_outcome_container, f)
+        fTransaction.commit()
+    }
+
 
     companion object {
         private const val SCANNED_STRING = "scanned_string"

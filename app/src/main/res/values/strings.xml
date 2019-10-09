@@ -50,6 +50,9 @@
     <!-- QR -->
     <string name="qr_scan">Scan QR code</string>
     <string name="qr_code_imgview">Your QR code</string>
+    <string name="qr_go_back">Go Back</string>
+    <string name="qr_continue">Continue</string>
+    <string name="qr_friends_with">You are now friends with</string>
 
     <string name="error_server_connection">Failed to connect</string>
 

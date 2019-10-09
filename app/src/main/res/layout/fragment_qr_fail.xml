@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:background="@color/orange"
+    android:paddingStart="48dp"
+    android:paddingEnd="48dp"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/qr_fail_message"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_centerInParent="true"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:textColor="@color/color_white"
+        android:text="message"
+        android:textAlignment="center" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/qr_fail_btn_return"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:layout_below="@+id/qr_fail_message"
+        android:layout_centerInParent="true"
+        android:backgroundTint="@color/color_dark"
+        android:text="@string/qr_go_back"
+        />
+
+</RelativeLayout>

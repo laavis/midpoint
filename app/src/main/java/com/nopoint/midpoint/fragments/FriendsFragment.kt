@@ -33,6 +33,7 @@ import kotlinx.android.synthetic.main.row_friend_search_results.*
 import kotlinx.android.synthetic.main.view_search.view.*
 import org.json.JSONObject
 import java.io.IOException
+import java.lang.Exception
 
 class FriendsFragment :
     Fragment(),
@@ -121,9 +122,13 @@ class FriendsFragment :
         refreshLayout.isRefreshing = true
         friendList.clear()
         friendRequestsList.clear()
-        apiController.get(FRIENDS_LIST, token) {res ->
+        apiController.get(FRIENDS_LIST, token) { res ->
             try {
                 val friendsRes = Gson().fromJson(res.toString(), Friends::class.java)
+
+                if (friendsRes == null) {
+                    throw Exception("Failed to connect")
+                }
 
                 // If user has friends
                 if(friendsRes.friends != null) {
@@ -149,7 +154,7 @@ class FriendsFragment :
 
                 initFLRecyclerView(rows)
 
-            } catch (e: IOException) {
+            } catch (e: Exception) {
                 refreshLayout.isRefreshing = false
                 Log.e("FRIENDS", "$e")
             }
