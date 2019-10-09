@@ -4,10 +4,12 @@ import android.content.Context
 import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel
 import com.google.zxing.WriterException
 import android.graphics.Bitmap
+import android.graphics.Color
 import android.util.Log
 import com.google.zxing.BarcodeFormat
 import com.google.zxing.qrcode.QRCodeWriter
 import com.google.zxing.EncodeHintType
+import com.nopoint.midpoint.R
 
 
 class QRCodeHelper private constructor(context: Context) {
@@ -21,16 +23,13 @@ class QRCodeHelper private constructor(context: Context) {
         get() = generate()
 
     init {
-        width = (context.resources.displayMetrics.widthPixels / 1.3).toInt()
-        height = (context.resources.displayMetrics.heightPixels / 2.4).toInt()
-        Log.d("QR = %s", width.toString() + "")
-        Log.d("QR = %s", height.toString() + "")
+        width = 600
+        height = 600
     }
 
     fun getQRCOde(): Bitmap? {
         return generate()
     }
-
 
     // Set correction level to QR code
     fun setErrorCorrenctionLevel(level: ErrorCorrectionLevel): QRCodeHelper {
@@ -40,13 +39,6 @@ class QRCodeHelper private constructor(context: Context) {
 
     fun setContent(content: String): QRCodeHelper {
         this.content = content
-        return this
-    }
-
-    fun asd(width: Int, height: Int): QRCodeHelper{
-        this.width = width
-        this.height = height
-
         return this
     }
 
@@ -74,12 +66,13 @@ class QRCodeHelper private constructor(context: Context) {
             for (i in 0 until height) {
                 for (j in 0 until width) {
                     if (bitMatrix.get(j, i)) {
-                        pixels[i * width + j] = -0x1
+                        pixels[i * width + j] = Color.BLACK
                     } else {
-                        pixels[i * width + j] = 0x282946
+                        pixels[i * width + j] = Color.WHITE
                     }
                 }
             }
+
             return Bitmap.createBitmap(pixels, width, height, Bitmap.Config.ARGB_8888)
 
         } catch (e: WriterException) {

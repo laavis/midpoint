@@ -35,7 +35,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".QRActivity"/>
+        <activity
+            android:name=".QRActivity"
+            android:theme="@style/MidpointFullscreen"/>
         <activity
             android:name=".QRScanActivity"
             android:theme="@style/MidpointFullscreen"/>

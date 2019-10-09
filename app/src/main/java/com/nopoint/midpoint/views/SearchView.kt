@@ -10,11 +10,15 @@ import android.widget.FrameLayout
 import com.nopoint.midpoint.R
 import kotlinx.android.synthetic.main.view_search.view.*
 import android.hardware.input.InputManager
+import android.view.inputmethod.InputMethodManager
+import com.nopoint.midpoint.MainActivity
+import org.jetbrains.anko.view
 
 
 class SearchView(context: Context, attrs: AttributeSet) : FrameLayout(context, attrs) {
 
     private val duration: Long = 200
+    private val im = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
 
     init {
         LayoutInflater.from(context).inflate(R.layout.view_search, this, true)
@@ -35,11 +39,15 @@ class SearchView(context: Context, attrs: AttributeSet) : FrameLayout(context, a
         circularReveal.duration = duration
         circularReveal.start()
         search_input.requestFocus()
-        //todo open keyboard
-        // val inputManager = context.getSystemService(Context) as InputManager
+
+        if (search_input.requestFocus()) {
+            im.showSoftInput(search_input, InputMethodManager.SHOW_IMPLICIT)
+        }
     }
 
-    private fun closeSearch() {
+    fun closeSearch() {
+        im.hideSoftInputFromWindow(search_input.windowToken, InputMethodManager.HIDE_IMPLICIT_ONLY)
+
         val circularConceal = ViewAnimationUtils.createCircularReveal(
             search_open_view,
             (search_button_open.right + search_button_open.left) / 2,
@@ -60,5 +68,4 @@ class SearchView(context: Context, attrs: AttributeSet) : FrameLayout(context, a
             }
         })
     }
-
 }

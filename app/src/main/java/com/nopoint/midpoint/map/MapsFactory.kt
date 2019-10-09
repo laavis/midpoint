@@ -61,7 +61,7 @@ object MapsFactory {
     }
 
     fun drawEndMarker(context: Context, text: String): Bitmap {
-        val drawable = context.resources.getDrawable(R.drawable.ic_logo, context.theme)
+        val drawable = context.resources.getDrawable(R.drawable.ic_black_marker, context.theme)
         val bitmap = Bitmap.createBitmap(
             drawable.intrinsicWidth,
             drawable.intrinsicHeight,

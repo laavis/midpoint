@@ -8,4 +8,19 @@
         android:toYDelta="0"
         android:duration="300"/>
 
+    <alpha android:fromAlpha="0.0"
+        android:toAlpha="1.0"
+        android:duration="300" />
+
+    <scale
+        android:duration="200"
+        android:fromXScale="90%"
+        android:fromYScale="90%"
+        android:toXScale="100%"
+        android:toYScale="100%"
+        android:pivotX="50%"
+        android:pivotY="50%"
+        android:interpolator="@android:anim/decelerate_interpolator"
+        />
+
 </set>

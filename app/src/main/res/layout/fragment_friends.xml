@@ -12,7 +12,7 @@
         android:layout_height="match_parent"
         android:background="@color/color_white_accent"
         android:layout_gravity="bottom|end"
-        android:visibility="visible"
+        android:visibility="invisible"
         android:elevation="1dp"
         app:layout_behavior="com.google.android.material.transformation.FabTransformationSheetBehavior">
 
@@ -45,7 +45,8 @@
                         android:id="@+id/friends_open_qr"
                         android:layout_marginEnd="16dp"
                         android:layout_marginTop="16dp"
-                        android:src="@drawable/ic_key"
+                        android:src="@drawable/ic_qr"
+                        android:tint="@color/color_white"
                         android:layout_alignParentEnd="true"
                         android:background="@color/trans"
                         />

@@ -21,8 +21,6 @@ class QRActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_qr)
 
-
-
         user = CurrentUser.getCurrentUser(this)
         Log.d("QR", "current user: $user")
 

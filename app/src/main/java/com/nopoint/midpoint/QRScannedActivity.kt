@@ -26,6 +26,13 @@ class QRScannedActivity : AppCompatActivity() {
         val qrScanObject = Gson().fromJson(decryptedString, QRScanObject::class.java)
 
         qr_scanned_username.text = qrScanObject.username
+
+        qr_scanned_btn_ok.setOnClickListener {
+            Log.d("QR", "bacccc")
+            val intent = Intent(this, MainActivity::class.java)
+            startActivity(intent)
+            this.finish()
+        }
     }
 
     companion object {

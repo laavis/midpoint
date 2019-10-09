@@ -3,18 +3,52 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/orange">
+    android:paddingTop="128dp"
+    android:background="@color/color_white_accent">
 
-    <TextView
-        android:id="@+id/qr_scanned_username"
+    <LinearLayout
+        android:id="@+id/qr_scanned_friend_container"
+        android:orientation="vertical"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+        android:gravity="center_horizontal|center_vertical"
         android:layout_centerHorizontal="true"
-        android:textSize="30sp"
-        android:textStyle="bold"
-        android:text="Username"
-        android:textColor="@color/color_white"/>
+        >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="You are now friends with"
+            android:textSize="24sp" />
+
+        <ImageView
+            android:id="@+id/friends_list_row_avatar"
+            android:layout_width="128dp"
+            android:layout_height="128dp"
+            android:layout_marginTop="24dp"
+            android:src="@drawable/ic_avatar_ph"/>
+
+        <TextView
+            android:id="@+id/qr_scanned_username"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:textSize="30sp"
+            android:textStyle="bold"
+            android:text="Username"
+            android:textColor="@color/orange"/>
+    </LinearLayout>
+
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/qr_scanned_btn_ok"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="48dp"
+        android:layout_below="@+id/qr_scanned_friend_container"
+        android:layout_centerHorizontal="true"
+        android:text="ok"
+        />
 
 
 </RelativeLayout>

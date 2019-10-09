@@ -86,8 +86,11 @@ class EntryActivity : AppCompatActivity() {
             .beginTransaction()
             .setCustomAnimations(
                 R.anim.enter_left_to_right,
-                R.anim.exit_left_to_right
+                R.anim.exit_left_to_right,
+                R.anim.enter_right_to_left,
+                R.anim.exit_right_to_left
             )
+            .addToBackStack(null)
         fTransaction.replace(R.id.entry_fragment_container, loginFragment)
         fTransaction.commit()
     }
@@ -97,8 +100,11 @@ class EntryActivity : AppCompatActivity() {
             .beginTransaction()
             .setCustomAnimations(
                 R.anim.enter_right_to_left,
-                R.anim.exit_right_to_left
+                R.anim.exit_right_to_left,
+                R.anim.enter_left_to_right,
+                R.anim.exit_left_to_right
             )
+            .addToBackStack(null)
         fTransaction.replace(R.id.entry_fragment_container, signUpFragment)
         fTransaction.commit()
     }

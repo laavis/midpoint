@@ -16,6 +16,7 @@ import java.util.TimerTask
 import java.util.Timer
 import android.text.Editable
 import android.util.Log
+import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.button.MaterialButton
@@ -29,6 +30,7 @@ import com.nopoint.midpoint.adapters.OnSendFriendReqBtnClickListener
 import com.nopoint.midpoint.models.*
 import com.nopoint.midpoint.networking.*
 import kotlinx.android.synthetic.main.row_friend_search_results.*
+import kotlinx.android.synthetic.main.view_search.view.*
 import org.json.JSONObject
 import java.io.IOException
 
@@ -44,7 +46,6 @@ class FriendsFragment :
     private var friendList = ArrayList<Friend>()
     private val friendRequestsList = ArrayList<FriendRequest>()
     private var searchResults = ArrayList<UserSearchResponseUser>()
-
 
     private lateinit var token: String
     private lateinit var searchInput: EditText
@@ -90,6 +91,12 @@ class FriendsFragment :
 
         friends_add_return.setOnClickListener {
             friends_fab_add.isExpanded = false
+
+            if (searchInput.requestFocus()) {
+                val im = context!!.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                im.hideSoftInputFromWindow(searchInput.windowToken, InputMethodManager.HIDE_IMPLICIT_ONLY)
+            }
+
         }
 
         friends_open_qr.setOnClickListener {
