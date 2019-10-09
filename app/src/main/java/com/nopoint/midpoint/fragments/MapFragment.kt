@@ -126,6 +126,8 @@ class MapFragment : Fragment(), OnMapReadyCallback {
 
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
+        mMap.setMapStyle(
+            MapStyleOptions.loadRawResourceStyle(activity, R.raw.map_style))
         if (!requestingLocationUpdates) {
             mMap.isMyLocationEnabled = true
             // Starting location over Helsinki

@@ -87,7 +87,7 @@ object MapsFactory {
 
     fun drawRoute(context: Context): PolylineOptions {
         val polylineOptions = PolylineOptions()
-        polylineOptions.width(px2dip(context, 72.toFloat()).toFloat())
+        polylineOptions.width(px2dip(context, 48.0f).toFloat())
         polylineOptions.geodesic(true)
         polylineOptions.color(context.resources.getColor(R.color.color_primary, context.theme))
         return polylineOptions
