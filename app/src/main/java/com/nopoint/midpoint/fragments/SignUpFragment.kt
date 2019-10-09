@@ -15,10 +15,8 @@ import com.nopoint.midpoint.R
 import com.nopoint.midpoint.models.SignUpErrorResponse
 import com.nopoint.midpoint.models.SignUpResponse
 import com.nopoint.midpoint.networking.APIController
-import com.nopoint.midpoint.networking.API
 import com.nopoint.midpoint.networking.REGISTER
 import com.nopoint.midpoint.networking.ServiceVolley
-import kotlinx.android.synthetic.main.fragment_login.*
 import kotlinx.android.synthetic.main.fragment_sign_up.*
 import org.json.JSONObject
 import java.io.IOException
@@ -78,15 +76,15 @@ class SignUpFragment : Fragment() {
     }
 
     private fun signUp() {
-        val params = JSONObject()
+        val body = JSONObject()
 
-        params.put("username", usernameField.text.toString())
-        params.put("email", emailField.text.toString())
-        params.put("password", passwordField.text.toString())
-        params.put("confirm_password", confirmPasswordField.text.toString())
+        body.put("username", usernameField.text.toString())
+        body.put("email", emailField.text.toString())
+        body.put("password", passwordField.text.toString())
+        body.put("confirm_password", confirmPasswordField.text.toString())
 
 
-        apiController.post(REGISTER, params) { response ->
+        apiController.post(REGISTER, body) { response ->
             try {
                 val signUpRes = Gson().fromJson(response.toString(), SignUpResponse::class.java)
 

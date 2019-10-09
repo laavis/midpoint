@@ -19,7 +19,6 @@ import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipDrawable
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
-import com.google.android.material.textfield.TextInputEditText
 import com.google.gson.Gson
 import com.nopoint.midpoint.*
 import com.nopoint.midpoint.adapters.MeetingRequestViewListener
@@ -93,12 +92,7 @@ class MeetingFragment : Fragment(), MeetingRequestViewListener {
                         LatLng(midpointLatLng.latitude, midpointLatLng.longitude)
                     )
                     // Respond to requester
-                    apiController.post(
-                        API.LOCAL_API,
-                        MEETING_RESPOND_URL,
-                        body,
-                        localUser.token
-                    ) {
+                    apiController.post(MEETING_RESPOND_URL, body, localUser.token) {
                         try {
                             val map = parentFragment as MapFragment
                             map.getDirectionsToAbsoluteMidpoint(midpointURL, true)
@@ -127,10 +121,6 @@ class MeetingFragment : Fragment(), MeetingRequestViewListener {
         } else {
             sendResponse(meetingRequest)
         }
-    }
-
-    private fun asd() {
-        Log.d("DIALOG", "asd")
     }
 
     /**
@@ -186,7 +176,7 @@ class MeetingFragment : Fragment(), MeetingRequestViewListener {
     }
 
     private fun getRequests() {
-        apiController.get(API.LOCAL_API, MEETING_REQUEST_LIST, localUser.token) { response ->
+        apiController.get(MEETING_REQUEST_LIST, localUser.token) { response ->
             try {
                 Log.d("RES", "$response")
                 val meetingResponse =
@@ -224,15 +214,11 @@ class MeetingFragment : Fragment(), MeetingRequestViewListener {
     }
 
     private fun sendRequest(username: String, status: Int) {
-        val params = JSONObject()
-        params.put("receiver", username)
-        params.put("lat", currentLocation!!.latitude)
-        params.put("lng", currentLocation!!.longitude)
-        apiController.post(
-            API.LOCAL_API,
-            MEETING_REQUEST_URL,
-            params,
-            localUser.token
+        val body = JSONObject()
+        body.put("receiver", username)
+        body.put("lat", currentLocation!!.latitude)
+        body.put("lng", currentLocation!!.longitude)
+        apiController.post(MEETING_REQUEST_URL, body, localUser.token
         ) { response ->
             try {
                 Log.d("RES", "$response")
@@ -253,13 +239,9 @@ class MeetingFragment : Fragment(), MeetingRequestViewListener {
     }
 
     override fun deleteRequest(meetingRequest: MeetingRequest) {
-        val params = JSONObject()
-        params.put("requestId", meetingRequest.id)
-        apiController.post(
-            API.LOCAL_API,
-            MEETING_REQUEST_DELETE,
-            params,
-            localUser.token
+        val body = JSONObject()
+        body.put("requestId", meetingRequest.id)
+        apiController.post(MEETING_REQUEST_DELETE, body, localUser.token
         ) { response ->
             try {
                 Log.d("RES", "$response")
@@ -286,16 +268,11 @@ class MeetingFragment : Fragment(), MeetingRequestViewListener {
     }
 
     override fun declineRequest(meetingRequest: MeetingRequest) {
-        val params = JSONObject()
-        params.put("requestId", meetingRequest.id)
-        apiController.post(
-            API.LOCAL_API,
-            MEETING_REQUEST_DECLINE,
-            params,
-            localUser.token
+        val body = JSONObject()
+        body.put("requestId", meetingRequest.id)
+        apiController.post(MEETING_REQUEST_DECLINE, body, localUser.token
         ) { response ->
             try {
-                Log.d("RES", "$response")
                 val msg =
                     if (response?.optString("msg").isNullOrEmpty()) {
                         response?.getString("errors")
@@ -366,7 +343,7 @@ class MeetingFragment : Fragment(), MeetingRequestViewListener {
         val filterInput = dialogView.input_filter_friends
         sendBtn.isEnabled = false
         val friends = mutableListOf<Chip>()
-        apiController.get(API.LOCAL_API, FRIENDS_LIST, localUser.token) { res ->
+        apiController.get(FRIENDS_LIST, localUser.token) { res ->
             try {
                 val friendsRes = Gson().fromJson(res.toString(), Friends::class.java)
                 friendsRes.friends?.forEach {
@@ -446,7 +423,7 @@ class MeetingFragment : Fragment(), MeetingRequestViewListener {
         val body = JSONObject()
         body.put("requestId", id)
         body.put("notify", notify)
-        apiController.post(API.LOCAL_API, MEETING_ARRIVED, body, localUser.token) { resp ->
+        apiController.post(MEETING_ARRIVED, body, localUser.token) { resp ->
             if (!resp?.getString("msg").isNullOrEmpty()) {
                 if (notify == 1) {
                     Snackbar.make(

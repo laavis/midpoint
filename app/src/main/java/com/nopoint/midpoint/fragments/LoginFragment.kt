@@ -131,7 +131,7 @@ class LoginFragment : Fragment() {
                 body.put("firebaseToken", token)
                 Log.d("FIRE", "TOKEN ON TÄSÄ: $token")
 
-                apiController.post(API.LOCAL_API, path, body, userToken) { response ->
+                apiController.post(path, body, userToken) { response ->
                     Log.d("FIRE", "$response")
                     val message = response?.optString("msg") ?: response?.optString("errors")
                     Log.d("FIRBASE TOKEN MAP", "$message")

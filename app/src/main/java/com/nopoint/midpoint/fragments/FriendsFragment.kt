@@ -121,7 +121,7 @@ class FriendsFragment :
         refreshLayout.isRefreshing = true
         friendList.clear()
         friendRequestsList.clear()
-        apiController.get(API.LOCAL_API, FRIENDS_LIST, token) {res ->
+        apiController.get(FRIENDS_LIST, token) {res ->
             try {
                 val friendsRes = Gson().fromJson(res.toString(), Friends::class.java)
 
@@ -177,7 +177,7 @@ class FriendsFragment :
         body.put("status", status)
         body.put("request_id", friendRequestsList[position]._id)
 
-        apiController.post(API.LOCAL_API, FRIENDS_RESPOND, body, token) { res ->
+        apiController.post(FRIENDS_RESPOND, body, token) { res ->
             try {
                 val respond = Gson().fromJson(res.toString(), FriendRequestRespond::class.java)
 
@@ -212,7 +212,7 @@ class FriendsFragment :
 
         body.put("receiver", searchResults[position].username)
 
-        apiController.post(API.LOCAL_API, FRIEND_SEND_REQUEST_URL, body, token) { res ->
+        apiController.post(FRIEND_SEND_REQUEST_URL, body, token) { res ->
             try {
                 val parsedRes = Gson().fromJson(res.toString(), SentFriendReqRes::class.java)
 
@@ -237,7 +237,7 @@ class FriendsFragment :
 
         val path = "/search/users?username=${searchInput.text}"
 
-        apiController.get(API.LOCAL_API, path, token) { response ->
+        apiController.get(path, token) { response ->
             try {
                 Log.d("FRIENDS | ORIGINAL RESPONSE", response.toString())
                 searchResults.clear()

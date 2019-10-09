@@ -10,14 +10,10 @@ import org.json.JSONObject
 class ServiceVolley : ServiceInterface {
     val TAG = ServiceVolley::class.java.simpleName
 
-    override fun post(
-        path: String,
-        params: JSONObject,
-        completionHandler: (response: JSONObject?) -> Unit
-    ) {
+    override fun post(path: String, body: JSONObject, completionHandler: (response: JSONObject?) -> Unit) {
         val url = "$BASE_URL$path"
         Log.d("URL", url)
-        val jsonObjReq = object : JsonObjectRequest(Method.POST, url, params,
+        val jsonObjReq = object : JsonObjectRequest(Method.POST, url, body,
             Response.Listener<JSONObject> { response ->
                 completionHandler(response)
             },
@@ -56,14 +52,9 @@ class ServiceVolley : ServiceInterface {
         BackendVolley.instance?.addToRequestQueue(jsonObjReq, TAG)
     }
 
-    override fun post(
-        api: API,
-        path: String,
-        params: JSONObject,
-        auth: String,
-        completionHandler: (response: JSONObject?) -> Unit
-    ) {
-        val url = "${api.path}$path"
+    override fun post(path: String, params: JSONObject, auth: String, completionHandler: (response: JSONObject?) -> Unit) {
+        val url = "$BASE_URL$path"
+
         Log.d("URL", url)
         val jsonObjReq = object : JsonObjectRequest(Method.POST, url, params,
             Response.Listener<JSONObject> { response ->
@@ -84,13 +75,9 @@ class ServiceVolley : ServiceInterface {
         BackendVolley.instance?.addToRequestQueue(jsonObjReq, TAG)
     }
 
-    override fun get(
-        api: API,
-        path: String,
-        auth: String,
-        completionHandler: (response: JSONObject?) -> Unit
-    ) {
-        val url = "${api.path}$path"
+    override fun get(path: String, auth: String, completionHandler: (response: JSONObject?) -> Unit) {
+        val url = "$BASE_URL$path"
+
         val jsonObjReq = object : JsonObjectRequest(Method.GET, url, null,
             Response.Listener<JSONObject> { response ->
                 Log.d(TAG, "/get request OK! Response: $response")
