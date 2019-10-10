@@ -9,13 +9,22 @@ data class FriendToken(
 
 
 
-data class FriendRequest(
+data class ReceivedFriendRequest(
     @SerializedName("_id") val _id: String,
     @SerializedName("requester") val requester: String,
     @SerializedName("receiver") val receiver: String,
     @SerializedName("status") val status: Int,
     @SerializedName("requester_username") val req_username: String
 )
+
+data class SentFriendRequest(
+    @SerializedName("_id") val _id: String,
+    @SerializedName("requester") val requester: String,
+    @SerializedName("receiver") val receiver: String,
+    @SerializedName("status") val status: Int,
+    @SerializedName("receiver_username") val rec_username: String
+)
+
 
 data class FriendRequestRespond(
     @SerializedName("success") val success: Boolean
@@ -31,8 +40,8 @@ data class SentFriendReqRes(
 
 data class Friends(
     @SerializedName("friends")val friends: ArrayList<Friend>?,
-    @SerializedName("received_requests")val received_requests: ArrayList<FriendRequest>?,
-    @SerializedName("sent_requests")val sent_requests: ArrayList<FriendRequest>?
+    @SerializedName("received_requests")val received_requests: ArrayList<ReceivedFriendRequest>?,
+    @SerializedName("sent_requests")val sent_requests: ArrayList<SentFriendRequest>?
 )
 
 data class Friend(

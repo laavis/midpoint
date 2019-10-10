@@ -25,32 +25,40 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:background="@color/orange"
-                >
+                android:background="@color/orange">
 
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
 
-                    <ImageButton
-                        style="@style/ButtonImage"
+                    <com.google.android.material.button.MaterialButton
+                        style="@style/RoundImageButton"
                         android:id="@+id/friends_add_return"
+                        app:icon="@drawable/ic_arrow_left"
+                        app:iconGravity="textStart"
+                        app:iconTint="@color/color_white_accent"
+                        app:iconPadding="0dp"
+                        app:cornerRadius="40dp"
+                        app:rippleColor="@color/color_primary_dark"
+                        android:layout_alignParentStart="true"
                         android:layout_marginStart="16dp"
                         android:layout_marginTop="16dp"
-                        android:src="@drawable/ic_arrow_left"
-                        android:background="@color/trans"
                         />
 
-                    <ImageButton
-                        style="@style/ButtonImage"
+                    <com.google.android.material.button.MaterialButton
+                        style="@style/RoundImageButton"
                         android:id="@+id/friends_open_qr"
+                        app:icon="@drawable/ic_qr"
+                        app:iconGravity="textStart"
+                        app:iconTint="@color/color_white_accent"
+                        app:iconPadding="0dp"
+                        app:cornerRadius="40dp"
+                        app:rippleColor="@color/color_primary_dark"
+                        android:layout_alignParentEnd="true"
                         android:layout_marginEnd="16dp"
                         android:layout_marginTop="16dp"
-                        android:src="@drawable/ic_qr"
-                        android:tint="@color/color_white"
-                        android:layout_alignParentEnd="true"
-                        android:background="@color/trans"
                         />
+
                 </RelativeLayout>
 
 
@@ -59,7 +67,8 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
                     android:layout_marginStart="24dp"
-                    android:text="Create a Friend Request"
+                    android:fontFamily="@font/roboto"
+                    android:text="@string/friend_create"
                     android:textColor="@color/color_white"
                     android:textSize="28sp"
                     android:textStyle="bold" />

@@ -3,19 +3,23 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".QRActivity">
 
-    <ImageButton
-        style="@style/ButtonImage"
+    <com.google.android.material.button.MaterialButton
+        style="@style/RoundImageButton"
         android:id="@+id/qr_btn_close_activity"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
+        app:icon="@drawable/ic_arrow_left"
+        app:iconGravity="textStart"
+        app:iconTint="@color/color_primary"
+        app:iconPadding="0dp"
+        app:cornerRadius="40dp"
+        app:rippleColor="@color/color_white_accent"
         android:layout_alignParentStart="true"
-        android:tint="@color/color_dark"
-        android:src="@drawable/ic_arrow_left"
-        android:padding="16dp"
-        android:background="@color/trans"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
         />
+
 
     <TextView
         android:layout_width="wrap_content"

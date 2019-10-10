@@ -33,10 +33,10 @@ import com.nopoint.midpoint.adapters.OnSendFriendReqBtnClickListener
 import com.nopoint.midpoint.models.*
 import com.nopoint.midpoint.networking.*
 import kotlinx.android.synthetic.main.row_friend_search_results.*
-import org.jetbrains.anko.padding
 import org.json.JSONObject
 import java.io.IOException
 import java.lang.Exception
+import kotlin.math.log
 
 class FriendsFragment :
     Fragment(),
@@ -48,8 +48,8 @@ class FriendsFragment :
 
     private var isFriendRequestSuccess = false
     private var friendList = ArrayList<Friend>()
-    private val sentFriendRequestsList = ArrayList<FriendRequest>()
-    private val receivedFriendRequestsList = ArrayList<FriendRequest>()
+    private val sentFriendRequestsList = ArrayList<ReceivedFriendRequest>()
+    private val receivedFriendRequestsList = ArrayList<ReceivedFriendRequest>()
     private var searchResults = ArrayList<UserSearchResponseUser>()
 
     private lateinit var token: String
@@ -97,10 +97,7 @@ class FriendsFragment :
         friends_add_return.setOnClickListener {
             friends_fab_add.isExpanded = false
 
-            if (searchInput.requestFocus()) {
-                val im = context!!.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-                im.hideSoftInputFromWindow(searchInput.windowToken, InputMethodManager.HIDE_IMPLICIT_ONLY)
-            }
+            hideSearchViewKeyboard()
 
         }
 
@@ -117,6 +114,13 @@ class FriendsFragment :
         getFriends()
     }
 
+    private fun hideSearchViewKeyboard() {
+        if (searchInput.requestFocus()) {
+            val im = context!!.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            im.hideSoftInputFromWindow(searchInput.windowToken, InputMethodManager.HIDE_IMPLICIT_ONLY)
+        }
+    }
+
     override fun onAttach(context: Context) {
         super.onAttach(context)
         token = CurrentUser.getLocalUser(activity!!)!!.token
@@ -129,8 +133,6 @@ class FriendsFragment :
         apiController.get(FRIENDS_LIST, token) { res ->
             try {
                 val friendsRes = Gson().fromJson(res.toString(), Friends::class.java) ?: throw Exception("Failed to connect")
-
-                Log.d("FRIENDS", "$friendsRes")
 
                 var friendCount = 0
                 var sentReqCount = 0
@@ -147,7 +149,7 @@ class FriendsFragment :
 
                 if (friendsRes.received_requests != null) {
                     friendsRes.received_requests.forEach {
-                        receivedFriendRequestsList.add(FriendRequest(
+                        receivedFriendRequestsList.add(ReceivedFriendRequest(
                             it._id,
                             it.requester,
                             it.receiver,
@@ -160,25 +162,23 @@ class FriendsFragment :
                 }
 
                 if (friendsRes.sent_requests != null) {
-                    Log.d("FRIEND", "${friendsRes.sent_requests}")
                     friendsRes.sent_requests.forEach {
-                        sentFriendRequestsList.add(FriendRequest(
+                        sentFriendRequestsList.add(ReceivedFriendRequest(
                             it._id,
                             it.requester,
                             it.receiver,
                             it.status,
-                            it.req_username
+                            it.rec_username
                         ))
                     }
 
                     sentReqCount = friendsRes.sent_requests.size
                 }
 
-                if (sentReqCount < 0 || receivedReqCount < 0) {
+                if (sentReqCount == 0 || receivedReqCount == 0) {
                     val dp = 8
                     val scale = resources.displayMetrics.density
                     val padding = (dp * scale + 0.5f).toInt()
-                    Log.d("FRIENDS", "pad: $padding")
                     friends_list.setPadding(0, padding, 0, 0)
                 }
 
@@ -186,21 +186,12 @@ class FriendsFragment :
 
                 val friendListAnimation = AnimationUtils.loadLayoutAnimation(context, R.anim.layout_animation)
 
-
                 friends_list.layoutAnimation = friendListAnimation
-
-                Log.d("FRIENDS", "friends: $friendCount")
-                Log.d("FRIENDS", "received: $receivedReqCount")
-                Log.d("FRIENDS", "sent: $sentReqCount")
-
-
 
                 val rows = calculateRowCount(
                     friendCount,
                     receivedReqCount,
                     sentReqCount)
-
-
 
                 initFLRecyclerView(rows)
 
@@ -220,6 +211,7 @@ class FriendsFragment :
         }
 
         for (i in 0 until numSentFriendRequests) {
+            Log.d("FRIENDS", "${sentFriendRequestsList[i].req_username}")
             rows.add(FriendsListAdapter.SentFriendRequestRow(sentFriendRequestsList[i].req_username))
         }
 
@@ -270,7 +262,6 @@ class FriendsFragment :
                 val respond = Gson().fromJson(res.toString(), FriendRequestRespond::class.java)
 
                 if (respond.success) {
-                    val snackbar = Snackbar.make(activity!!.findViewById(R.id.content), msg, Snackbar.LENGTH_LONG).show()
                     getFriends()
                 } else {
                     val snackbar = Snackbar.make(activity!!.findViewById(R.id.content), "Something went wrong", Snackbar.LENGTH_LONG)
@@ -299,7 +290,7 @@ class FriendsFragment :
     }
 
     // Send friend request
-    override fun onItemClicked(button: ImageButton, statusIcon: ImageView, position: Int) {
+    override fun onButtonClicked(button: ImageButton, statusIcon: ImageView, position: Int) {
         val body = JSONObject()
 
         body.put("receiver", searchResults[position].username)
@@ -316,12 +307,14 @@ class FriendsFragment :
                     statusIcon.visibility = View.VISIBLE
                 }
 
+                hideSearchViewKeyboard()
+                friends_fab_add.isExpanded = false
+
             } catch (e: IOException) {
                 Log.e("FRIENDS | SEND REQUEST", "$e")
             }
         }
     }
-
 
     private fun getSearchResults() {
         if (searchInput.text.isNullOrEmpty()) return
@@ -330,7 +323,6 @@ class FriendsFragment :
 
         apiController.get(path, token) { response ->
             try {
-                Log.d("FRIENDS | ORIGINAL RESPONSE", response.toString())
                 searchResults.clear()
                 val searchResponse = Gson().fromJson(response.toString(), UserSearchResponse::class.java)
 
@@ -342,7 +334,6 @@ class FriendsFragment :
                 } else {
                     searchResults.clear()
                 }
-                Log.d("FRIEND", "list: $searchResults")
                 initFSRecyclerView(searchResults)
 
             } catch (e: IOException) {
