@@ -18,9 +18,6 @@ import com.google.android.material.textfield.TextInputLayout
 import com.google.firebase.iid.FirebaseInstanceId
 import com.nopoint.midpoint.MainActivity
 import com.nopoint.midpoint.R
-import com.nopoint.midpoint.networking.APIController
-import com.nopoint.midpoint.networking.API
-import com.nopoint.midpoint.networking.ServiceVolley
 import kotlinx.android.synthetic.main.fragment_login.*
 import com.google.gson.Gson
 import com.nopoint.midpoint.EntryActivity
@@ -28,7 +25,7 @@ import com.nopoint.midpoint.models.LocalUser
 import com.nopoint.midpoint.models.LoginErrorResponse
 import com.nopoint.midpoint.models.LoginResponse
 import com.nopoint.midpoint.models.User
-import com.nopoint.midpoint.networking.LOGIN
+import com.nopoint.midpoint.networking.*
 import kotlinx.android.synthetic.main.activity_entry.*
 import org.json.JSONException
 import org.json.JSONObject
@@ -92,9 +89,6 @@ class LoginFragment : Fragment() {
 
                 val loginResponse = Gson().fromJson(response.toString(), LoginResponse::class.java)
 
-                Log.d("FIRE", "$loginResponse")
-
-
                 if (loginResponse.success) {
                     saveTokenAndUser(loginResponse.token, loginResponse.user)
                     updateFirebaseToken(loginResponse.token)
@@ -114,11 +108,9 @@ class LoginFragment : Fragment() {
     }
 
     private fun updateFirebaseToken(userToken: String) {
-        Log.d("FIRE", "sakdjsak")
         FirebaseInstanceId.getInstance().instanceId
             .addOnCompleteListener(OnCompleteListener { task ->
                 if (!task.isSuccessful) {
-                    Log.w("FIRBASE", "getInstanceId failed", task.exception)
                     return@OnCompleteListener
                 }
                 // Get new Instance ID token
@@ -126,13 +118,10 @@ class LoginFragment : Fragment() {
 
                 // Log and toast
                 val msg = "TOKEN: $token"
-                val path = "/user/updateToken"
                 val body = JSONObject()
                 body.put("firebaseToken", token)
-                Log.d("FIRE", "TOKEN ON TÄSÄ: $token")
 
-                apiController.post(path, body, userToken) { response ->
-                    Log.d("FIRE", "$response")
+                apiController.post(UPDATE_TOKEN, body, userToken) { response ->
                     val message = response?.optString("msg") ?: response?.optString("errors")
                     Log.d("FIRBASE TOKEN MAP", "$message")
                 }
@@ -152,7 +141,8 @@ class LoginFragment : Fragment() {
         val sharedPrefs: SharedPreferences =
             activity!!.getSharedPreferences("userPrefs", Context.MODE_PRIVATE)
         editor = sharedPrefs.edit()
-        val expiration: Long = System.currentTimeMillis() + 3600000 //1 hour
+
+        val expiration: Long = System.currentTimeMillis() + 86400000 // 24h
 
         val localUser = LocalUser(user, token, expiration)
         try {

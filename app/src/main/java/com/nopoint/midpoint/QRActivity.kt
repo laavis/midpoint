@@ -28,10 +28,8 @@ class QRActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_qr)
 
-
         authToken = CurrentUser.getLocalUser(this)!!.token
         createQRToken()
-
 
         qr_button_scan.setOnClickListener {
             val intent = Intent(this, QRScanActivity::class.java)
@@ -45,6 +43,12 @@ class QRActivity : AppCompatActivity() {
             startActivity(intent)
             this.finish()
         }
+    }
+
+
+    override fun onBackPressed() {
+        super.onBackPressed()
+        Log.d("FIX", "back")
     }
 
     // Get unique friend token and generate QR code from it

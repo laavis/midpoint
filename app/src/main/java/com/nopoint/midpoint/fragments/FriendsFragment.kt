@@ -68,6 +68,7 @@ class FriendsFragment :
                         val friendReq = Gson().fromJson(req, ReceivedFriendRequest::class.java)
                         val id = friendReq._id
                         respondToFriendRequest(null, id, 1, null)
+                        getFriends()
                     }
                 }
                 DECLINE_FRIEND_REQUEST -> {
@@ -76,6 +77,7 @@ class FriendsFragment :
                         val friendReq = Gson().fromJson(req, ReceivedFriendRequest::class.java)
                         val id = friendReq._id
                         respondToFriendRequest(null, id, 2, null)
+                        getFriends()
                     }
                 }
             }
@@ -139,6 +141,11 @@ class FriendsFragment :
         refreshLayout.setOnRefreshListener {
             getFriends()
         }
+
+        // Init first with empty Array to avoid
+        // No adapter attached; skipping layout - error
+        initFLRecyclerView(ArrayList())
+        initFSRecyclerView(ArrayList())
 
         getFriends()
     }
@@ -246,7 +253,6 @@ class FriendsFragment :
         }
 
         for (i in 0 until numSentFriendRequests) {
-            Log.d("FRIENDS", sentFriendRequestsList[i].req_username)
             rows.add(FriendsListAdapter.SentFriendRequestRow(sentFriendRequestsList[i].req_username))
         }
 
@@ -284,15 +290,10 @@ class FriendsFragment :
         }
     }
 
-// here accept
-
-
     private fun respondToFriendRequest(position: Int?, requestId: String?, status: Int, msg: String?) {
         val body = JSONObject()
 
         var id: String
-
-        Log.d("PAL", "pos: $position, id: $requestId")
 
         if (requestId != null)
             id = requestId
@@ -304,7 +305,6 @@ class FriendsFragment :
 
         apiController.post(FRIENDS_RESPOND, body, token) { res ->
             try {
-                Log.d("PAL", res.toString())
                 val respond = Gson().fromJson(res.toString(), FriendRequestRespond::class.java)
 
                 if (respond.success) {
@@ -356,6 +356,7 @@ class FriendsFragment :
 
                 hideSearchViewKeyboard()
                 friends_fab_add.isExpanded = false
+                getFriends()
 
             } catch (e: IOException) {
                 Log.e("FRIENDS | SEND REQUEST", "$e")
@@ -389,6 +390,7 @@ class FriendsFragment :
         }
     }
 
+
     private fun initFLRecyclerView(rows: ArrayList<FriendsListAdapter.IRowFriend>) {
         friendListAdapter = FriendsListAdapter(this, rows, (activity as MainActivity))
         friends_list.layoutManager = LinearLayoutManager((activity as MainActivity))
@@ -396,11 +398,7 @@ class FriendsFragment :
     }
 
     private fun initFSRecyclerView(list: ArrayList<UserSearchResponseUser>) {
-        searchAdapter = FriendSearchAdapter(
-            list,
-            (activity as MainActivity),
-            this
-        )
+        searchAdapter = FriendSearchAdapter(list, (activity as MainActivity),this)
         friends_search_list.layoutManager = LinearLayoutManager((activity as MainActivity))
         friends_search_list.adapter = searchAdapter
     }

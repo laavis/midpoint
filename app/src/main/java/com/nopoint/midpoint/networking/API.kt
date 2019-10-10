@@ -5,7 +5,8 @@ enum class API(val path: String) {
     DIRECTIONS("https://maps.googleapis.com/maps/api/directions/json"),
 }
 
-const val BASE_URL = "http://142.93.104.120:5000"
+// const val BASE_URL = "http://142.93.104.120:5000"
+const val BASE_URL = "http://192.168.1.45:5000"
 const val MEETING_REQUEST_URL = "/meeting-request/request"
 const val MEETING_RESPOND_URL = "/meeting-request/respond"
 const val FRIEND_SEND_REQUEST_URL = "/friends/request"
@@ -20,3 +21,4 @@ const val REGISTER = "/user/register"
 const val QR_CREATE = "/friends/qr/create"
 const val QR_REDEEM = "/friends/qr/redeem"
 const val DELETE_FRIEND = "/friends/delete"
+const val UPDATE_TOKEN = "/user/update/token"

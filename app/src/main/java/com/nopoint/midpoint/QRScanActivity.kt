@@ -32,6 +32,11 @@ class QRScanActivity : AppCompatActivity(), ZXingScannerView.ResultHandler {
         setScannerProperties()
     }
 
+    override fun onBackPressed() {
+        super.onBackPressed()
+        Log.d("FIX", "back")
+    }
+
     override fun onResume() {
         super.onResume()
         if (checkSelfPermission(Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
