@@ -1,6 +1,7 @@
 package com.nopoint.midpoint.map
 
 import android.location.Location
+import android.util.Log
 import com.nopoint.midpoint.models.*
 
 
@@ -35,11 +36,11 @@ object MeetingUtils {
         return requests
     }
 
-    fun reachedLocation(meetingRequest: MeetingRequest, currentLocation: Location): Boolean{
+    fun reachedLocation(meetingRequest: MeetingRequest, currentLocation: Location, radius: Double): Boolean{
         val midpoint = Location("")
         midpoint.latitude = meetingRequest.meetingPointLatitude!!
         midpoint.longitude =  meetingRequest.meetingPointLongitude!!
-        return midpoint.distanceTo(currentLocation) < 10.0
+        return midpoint.distanceTo(currentLocation) < radius
     }
 
     private fun getHeaderTitle(req: MeetingRequest, currentUser: User): MeetingType {

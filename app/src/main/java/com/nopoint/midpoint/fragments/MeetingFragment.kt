@@ -48,12 +48,14 @@ class MeetingFragment : Fragment(), MeetingRequestViewListener {
     private val apiController = APIController(service)
     var currentLocation: LatLng? = null
     private lateinit var localUser: LocalUser
+    private lateinit var sharedPref: SharedPref
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_meeting, container, false)
+        sharedPref = SharedPref(context!!)
         // view.request_btn.setOnClickListener { sendRequest(view.friend_username.text.toString()) }
         view.refresh_btn.setOnClickListener { getRequests() }
         view.new_request_btn.setOnClickListener { createDialog() }
@@ -91,7 +93,7 @@ class MeetingFragment : Fragment(), MeetingRequestViewListener {
                     body.put("response", 1) //TODO allow setting different response types
                     // Hardcoded for meeting at a cafe
                     if (meetingRequest.status == 3) {
-                        val placesUrl = PlacesUtils.buildUrl(midpointLatLng)
+                        val placesUrl = PlacesUtils.buildUrl(midpointLatLng, sharedPref.getPlacesRadius())
                         apiController.get(API.PLACES, placesUrl) { placesResponse ->
                             Log.d("PLACES", placesResponse.toString())
                             val places =

@@ -1,5 +1,6 @@
 package com.nopoint.midpoint.fragments
 
+import android.content.Context
 import android.content.Intent
 import android.location.Location
 import android.net.Uri
@@ -57,7 +58,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
     private lateinit var sheetFragment: MeetingFragment
     private lateinit var currentLocation: Location
     private lateinit var localUser: LocalUser
-
+    private lateinit var sharedPref: SharedPref
     private lateinit var fabMapIntent: FloatingActionButton
 
     lateinit var buttonOpenMaps: Button
@@ -73,6 +74,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
             mapFragment = SupportMapFragment.newInstance()
             mapFragment!!.getMapAsync(this)
         }
+        sharedPref = SharedPref(context!!)
         localUser = CurrentUser.getLocalUser(activity!!)!!
         childFragmentManager.beginTransaction().replace(R.id.google_map, mapFragment!!).commit()
         sheetFragment = childFragmentManager.findFragmentById(R.id.fragment) as MeetingFragment
@@ -191,7 +193,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
                     } else {
                         val active = MeetingsSingleton.getActiveMeeting()
                         if ( active != null){
-                            if (MeetingUtils.reachedLocation(active, location)) {
+                            if (MeetingUtils.reachedLocation(active, location, sharedPref.getArrivedRadius())) {
                                 sheetFragment.arrived(active)
                             }
                         }

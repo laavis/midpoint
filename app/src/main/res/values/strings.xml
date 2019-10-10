@@ -33,7 +33,7 @@
     <string name="meeting_heading">%s</string>
     <string name="show_route">Show route</string>
     <string name="send_request">Send request</string>
-    <string name="log_out">Log out</string>
+    <string name="log_out">Sign out</string>
     <string name="avatar_content_description">avatar</string>
     <string name="status_icon_desc">status_icon</string>
     <string name="accept">Accept</string>
@@ -41,6 +41,12 @@
     <string name="cancel">Cancel</string>
     <string name="outgoing">SENT</string>
     <string name="incoming">RECEIVED</string>
+    <string name="error_server_connection">Failed to connect</string>
+    <string name="send_meeting_request">Send meeting request</string>
+    <string name="cafe_switch">Meet at a cafe?</string>
+    <string name="filter_friends">Filter friends</string>
+    <string name="meeting_request">meeting request</string>
+    <string name="new_title">New</string>
 
     // Friends
     <string name="deny">Deny</string>
@@ -54,12 +60,7 @@
     <string name="qr_friends_with">You are now friends with</string>
     <string name="qr_valid">This QR code is valid for adding one friend</string>
 
-    <string name="error_server_connection">Failed to connect</string>
-    <string name="send_meeting_request">Send meeting request</string>
-    <string name="cafe_switch">Meet at a cafe?</string>
-    <string name="filter_friends">Filter friends</string>
-    <string name="meeting_request">meeting request</string>
-    <string name="new_title">New</string>
+    <!--Content descriptions -->
     <string name="more_actions_description">more actions</string>
     <string name="add_new_friend">add new friend</string>
     <string name="create_a_friend_request">Create a Friend Request</string>
@@ -78,6 +79,9 @@
     <!-- Entry -->
     <string name="desc_show_login">Show log in form</string>
     <string name="desc_show_sign_up">Show sign up form</string>
+    <string name="dark_mode">Dark Mode</string>
+    <string name="arrival_hint">Arrival radius in meters</string>
+    <string name="places_hint">Places search radius</string>
 
     <!-- Login -->
 
