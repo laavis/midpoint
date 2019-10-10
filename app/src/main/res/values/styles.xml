@@ -67,7 +67,8 @@
         <item name="android:paddingStart">4dp</item>
         <item name="android:textColor">?attr/textColor</item>
         <item name="android:textColorHint">?attr/textColor</item>
-        <item name="android:colorPrimary">?attr/colorAccent</item>
+        <item name="hintTextColor">?attr/textColor</item>
+        <item name="boxStrokeColor">?attr/editTextColor</item>
     </style>
 
     <style name="Perkele" parent="Widget.MaterialComponents.BottomNavigationView">
