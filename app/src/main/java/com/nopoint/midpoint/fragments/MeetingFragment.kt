@@ -361,6 +361,7 @@ class MeetingFragment : Fragment(), MeetingRequestViewListener {
         val filterInput = dialogView.input_filter_friends
         sendBtn.isEnabled = false
         val friends = mutableListOf<Chip>()
+        dialog.friends_spinner.visibility = View.VISIBLE
         apiController.get(FRIENDS_LIST, localUser.token) { res ->
             try {
                 if (res == null) {
@@ -374,6 +375,7 @@ class MeetingFragment : Fragment(), MeetingRequestViewListener {
                         friends.add(chip)
                         chipGroup.addView(chip)
                     }
+                    dialog.friends_spinner.visibility = View.GONE
                 }
             } catch (e: IOException) {
                 Log.e("FRIENDS", "$e")
