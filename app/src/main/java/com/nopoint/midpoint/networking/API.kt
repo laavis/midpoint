@@ -3,9 +3,6 @@ package com.nopoint.midpoint.networking
 enum class API(val path: String) {
     PLACES("https://maps.googleapis.com/maps/api/place/nearbysearch/json"),
     DIRECTIONS("https://maps.googleapis.com/maps/api/directions/json"),
-    BASE("http://localhost:5000"),//TODO Set real API endpoint
-    TEST("https://postman-echo.com/"),
-    LOCAL_API("http://192.168.1.45:5000")
 }
 
 const val BASE_URL = "http://142.93.104.120:5000"
@@ -22,3 +19,4 @@ const val LOGIN = "/user/login"
 const val REGISTER = "/user/register"
 const val QR_CREATE = "/friends/qr/create"
 const val QR_REDEEM = "/friends/qr/redeem"
+const val DELETE_FRIEND = "/friends/delete"
