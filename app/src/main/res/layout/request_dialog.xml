@@ -4,6 +4,7 @@
     android:id="@+id/dialog_layout"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
+    android:background="?attr/bgColor"
     android:padding="16dp">
 
     <TextView
@@ -29,6 +30,7 @@
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/friends_filter_layout"
+        style="@style/InputEditText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/textView"
@@ -87,6 +89,7 @@
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="16dp"
         android:checked="false"
+        android:textColor="?attr/textColor"
         android:text="@string/cafe_switch" />
 
     <com.google.android.material.button.MaterialButton
@@ -96,6 +99,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/location_switch"
         android:layout_alignParentEnd="true"
+        android:backgroundTint="?attr/buttonColor"
         android:text="@string/send_meeting_request"
         app:cornerRadius="4dp" />
 
@@ -105,6 +109,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/location_switch"
+        android:textColor="?attr/colorAccent"
         android:layout_alignParentStart="true"
         android:layout_marginStart="0dp"
         android:text="@string/cancel"

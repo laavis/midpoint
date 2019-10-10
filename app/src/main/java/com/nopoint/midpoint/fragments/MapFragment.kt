@@ -1,5 +1,6 @@
 package com.nopoint.midpoint.fragments
 
+import android.content.Context
 import android.content.Intent
 import android.location.Location
 import android.net.Uri
@@ -29,6 +30,7 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import kotlinx.android.synthetic.main.bottom_sheet.view.*
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.nopoint.midpoint.SharedPref
 import com.nopoint.midpoint.map.MeetingUtils
 import com.nopoint.midpoint.map.MeetingsSingleton
 import com.nopoint.midpoint.models.CurrentUser
@@ -56,7 +58,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
     private lateinit var sheetFragment: MeetingFragment
     private lateinit var currentLocation: Location
     private lateinit var localUser: LocalUser
-
+    private lateinit var sharedPref: SharedPref
     private lateinit var fabMapIntent: FloatingActionButton
 
     lateinit var buttonOpenMaps: Button
@@ -72,6 +74,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
             mapFragment = SupportMapFragment.newInstance()
             mapFragment!!.getMapAsync(this)
         }
+        sharedPref = SharedPref(context!!)
         localUser = CurrentUser.getLocalUser(activity!!)!!
         childFragmentManager.beginTransaction().replace(R.id.google_map, mapFragment!!).commit()
         sheetFragment = childFragmentManager.findFragmentById(R.id.fragment) as MeetingFragment
@@ -126,8 +129,15 @@ class MapFragment : Fragment(), OnMapReadyCallback {
 
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
-        mMap.setMapStyle(
-            MapStyleOptions.loadRawResourceStyle(activity, R.raw.map_style))
+        val sharedPref = SharedPref(activity!!)
+
+        if (sharedPref.loadNightModeState() == true){
+            mMap.setMapStyle(
+                MapStyleOptions.loadRawResourceStyle(activity, R.raw.map_style_dark))
+        } else {
+            mMap.setMapStyle(
+                MapStyleOptions.loadRawResourceStyle(activity, R.raw.map_style))
+        }
         if (!requestingLocationUpdates) {
             mMap.isMyLocationEnabled = true
             // Starting location over Helsinki
@@ -183,7 +193,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
                     } else {
                         val active = MeetingsSingleton.getActiveMeeting()
                         if ( active != null){
-                            if (MeetingUtils.reachedLocation(active, location)) {
+                            if (MeetingUtils.reachedLocation(active, location, sharedPref.getArrivedRadius())) {
                                 sheetFragment.arrived(active)
                             }
                         }

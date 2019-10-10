@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="InitialTheme" parent="Theme.MaterialComponents">
+        <item name="android:windowDisablePreview">true</item>
+    </style>
+
+    <!-- Light Mode -->
+    <style name="LightTheme" parent="Theme.MaterialComponents.DayNight">
+        <item name="colorPrimary">@color/color_white</item>
+        <item name="colorPrimaryDark">@color/color_primary_dark</item>
+        <item name="colorAccent">@color/color_primary</item>
+        <item name="colorOnPrimary">@color/color_white</item>
+        <item name="android:textViewStyle">@font/pt_sans</item>
+        <item name="buttonColor">@color/button_states_light</item>
+        <item name="test">@color/color_white_accent</item>
+        <item name="windowNoTitle">true</item>
+        <item name="android:windowFullscreen">true</item>
+        <item name="bottomSheetBackgroundColor">@color/color_white</item>
+        <item name="bottomMenuBackgroundColor">@color/color_dark</item>
+        <item name="textColor">@color/color_dark</item>
+        <item name="bgColor">@color/color_white</item>
+        <item name="buttonTextColor">@color/color_white</item>
+        <item name="entryFooter">@color/color_white_accent</item>
+        <item name="editTextColor">@color/text_field_color_light</item>
+        <item name="imageButtonStyle">@color/color_dark_grey</item>
+        <item name="android:popupMenuStyle">@style/PopupMenu</item>
+    </style>
+
+    <!-- Dark Mode -->
+    <style name="DarkTheme" parent="Theme.MaterialComponents.DayNight">
+        <item name="colorPrimary">@color/color_primary</item>
+        <item name="colorPrimaryDark">@color/color_primary_dark</item>
+        <item name="colorAccent">@color/color_primary</item>
+        <item name="android:textViewStyle">@font/pt_sans</item>
+        <item name="android:textColor">@color/color_white_accent</item>
+        <item name="buttonColor">@color/button_states_dark</item>
+        <item name="test">@color/color_warning</item>
+        <item name="windowNoTitle">true</item>
+        <item name="android:windowFullscreen">true</item>
+        <item name="editTextColor">@color/text_field_color_dark</item>
+        <item name="imageButtonStyle">@color/color_light_grey</item>
+        <item name="android:popupMenuStyle">@style/PopupMenu</item>
+
+        <!-- ok -->
+        <item name="buttonTextColor">@color/color_white</item>
+        <item name="entryFooter">@color/midnight</item>
+        <item name="textColor">@color/color_white</item>
+        <item name="bgColor">@color/twilight</item>
+        <item name="bottomSheetBackgroundColor">@color/twilight</item>
+        <item name="bottomMenuBackgroundColor">@color/midnight</item>
+
+    </style>
+</resources>

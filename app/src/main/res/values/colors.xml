@@ -4,7 +4,6 @@
 
     <color name="trans">#00000000</color>
 
-    // New Colors
     <color name="color_primary">#F45905</color>
     <color name="color_primary_dark">#BE4809</color>
     <color name="color_dark">#1e1e1e</color>
@@ -18,7 +17,13 @@
     <color name="orange">#F45905</color>
     <color name="black">#000000</color>
 
-        <color name="viewfinder_mask">#70000000</color>
-        <color name="viewfinder_laser">#FF5722</color>
-        <color name="viewfinder_border">#FF5722</color>
+    <color name="viewfinder_mask">#70000000</color>
+    <color name="viewfinder_laser">#FF5722</color>
+    <color name="viewfinder_border">#FF5722</color>
+
+    <color name="test">#03A9F4</color>
+
+    <!-- Dark Theme -->
+    <color name="twilight">#121212</color>
+    <color name="midnight">#252525</color>
 </resources>

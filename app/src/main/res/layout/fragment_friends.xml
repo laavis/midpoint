@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="?attr/bgColor"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context="com.nopoint.midpoint.fragments.FriendsFragment">
 
@@ -10,7 +11,7 @@
         android:id="@+id/friends_add_sheet"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/color_white_accent"
+        android:background="?attr/bgColor"
         android:layout_gravity="bottom|end"
         android:visibility="invisible"
         android:elevation="1dp"

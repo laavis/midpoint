@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <declare-styleable name="ds">
+        <attr name="test" format="color"/>
+        <attr name="bgColor" format="color"/>
+        <attr name="textColor" format="color"/>
+        <attr name="buttonColor" format="color"/>
+        <attr name="buttonTextColor" format="color"/>
+        <attr name="bottomSheetBackgroundColor" format="color"/>
+        <attr name="bottomMenuBackgroundColor" format="color" />
+        <attr name="entryFooter" format="color"/>
+    </declare-styleable>
+
+</resources>

@@ -21,6 +21,13 @@ class QRScanActivity : AppCompatActivity(), ZXingScannerView.ResultHandler {
     private lateinit var qrScanner: ZXingScannerView
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        val sharedPref = SharedPref(this)
+
+        if (sharedPref.loadNightModeState() == true) {
+            setTheme(R.style.DarkTheme)
+        } else {
+            setTheme(R.style.LightTheme)
+        }
         super.onCreate(savedInstanceState)
         requestWindowFeature(Window.FEATURE_NO_TITLE)
         window.setFlags(

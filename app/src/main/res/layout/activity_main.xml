@@ -6,28 +6,38 @@
     android:layout_height="match_parent"
     tools:context="com.nopoint.midpoint.MainActivity">
 
-    <com.google.android.material.bottomnavigation.BottomNavigationView
-        android:id="@+id/bottom_navigation"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom"
-        android:background="@color/color_dark"
-        app:itemIconTint="@color/bottom_nav_color"
-        app:itemTextColor="@color/bottom_nav_color"
+    <RelativeLayout
+        android:id="@+id/bottom_nav_container"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:menu="@menu/bottom_nav_menu"
-        app:labelVisibilityMode="selected"
-        android:isScrollContainer="false"
-        tools:layout_editor_absoluteX="0dp" />
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_gravity="bottom"
+        android:layout_width="wrap_content"
+        android:background="?attr/bottomMenuBackgroundColor"
+        android:layout_height="wrap_content">
+
+        <com.google.android.material.bottomnavigation.BottomNavigationView
+            android:id="@+id/bottom_navigation"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:itemIconTint="@color/bottom_nav_color"
+            app:itemTextColor="@color/bottom_nav_color"
+            app:menu="@menu/bottom_nav_menu"
+            app:labelVisibilityMode="selected"
+            android:isScrollContainer="false"
+            app:elevation="0dp"
+            tools:layout_editor_absoluteX="0dp"
+            android:background="@color/trans"
+            />
+    </RelativeLayout>
+
 
     <FrameLayout
         android:id="@+id/container"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        app:layout_constraintBottom_toTopOf="@+id/bottom_navigation"
+        app:layout_constraintBottom_toTopOf="@+id/bottom_nav_container"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent">
-
     </FrameLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

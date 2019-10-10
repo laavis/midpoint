@@ -2,6 +2,7 @@ package com.nopoint.midpoint.fragments
 
 import android.app.AlertDialog
 import android.content.*
+import android.content.res.ColorStateList
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -48,12 +49,14 @@ class MeetingFragment : Fragment(), MeetingRequestViewListener {
     private val apiController = APIController(service)
     var currentLocation: LatLng? = null
     private lateinit var localUser: LocalUser
+    private lateinit var sharedPref: SharedPref
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_meeting, container, false)
+        sharedPref = SharedPref(context!!)
         // view.request_btn.setOnClickListener { sendRequest(view.friend_username.text.toString()) }
         view.new_request_btn.setOnClickListener { createDialog() }
         LocalBroadcastManager.getInstance(context!!.applicationContext)
@@ -90,7 +93,7 @@ class MeetingFragment : Fragment(), MeetingRequestViewListener {
                     body.put("response", 1) //TODO allow setting different response types
                     // Hardcoded for meeting at a cafe
                     if (meetingRequest.status == 3) {
-                        val placesUrl = PlacesUtils.buildUrl(midpointLatLng)
+                        val placesUrl = PlacesUtils.buildUrl(midpointLatLng, sharedPref.getPlacesRadius())
                         apiController.get(API.PLACES, placesUrl) { placesResponse ->
                             Log.d("PLACES", placesResponse.toString())
                             val places =
@@ -423,6 +426,7 @@ class MeetingFragment : Fragment(), MeetingRequestViewListener {
         val chip = Chip(activity)
         chip.setChipDrawable(drawable)
         chip.text = username
+        chip.setTextColor(activity!!.getColor(R.color.color_dark))
         chip.chipIcon = activity!!.getDrawable(R.drawable.ic_avatar_ph)
         chip.checkedIcon = activity!!.getDrawable(R.drawable.ic_avatar_ph)
         chip.chipBackgroundColor = activity!!.getColorStateList(R.color.chip_bg_color)
