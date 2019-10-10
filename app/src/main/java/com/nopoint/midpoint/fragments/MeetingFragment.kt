@@ -58,7 +58,6 @@ class MeetingFragment : Fragment(), MeetingRequestViewListener {
         val view = inflater.inflate(R.layout.fragment_meeting, container, false)
         sharedPref = SharedPref(context!!)
         // view.request_btn.setOnClickListener { sendRequest(view.friend_username.text.toString()) }
-        view.refresh_btn.setOnClickListener { getRequests() }
         view.new_request_btn.setOnClickListener { createDialog() }
         LocalBroadcastManager.getInstance(context!!.applicationContext)
             .registerReceiver(mLocalBroadcastReceiver, getLocalIntentFilter())

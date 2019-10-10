@@ -13,10 +13,10 @@ class NotificationActionReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
         when (intent.action) {
             ACCEPT_FRIEND_REQUEST -> {
-                Toast.makeText(context, "Accepted friend request", Toast.LENGTH_SHORT).show()
+                LocalBroadcastManager.getInstance(context).sendBroadcast(intent)
             }
             DECLINE_FRIEND_REQUEST -> {
-                Toast.makeText(context, "Declined friend request", Toast.LENGTH_SHORT).show()
+                LocalBroadcastManager.getInstance(context).sendBroadcast(intent)
             }
             ACCEPT_MEETING_REQUEST -> {
                 //Toast.makeText(context, "Accepted meeting request", Toast.LENGTH_SHORT).show()

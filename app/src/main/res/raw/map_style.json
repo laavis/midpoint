@@ -13,12 +13,22 @@
     "elementType": "labels.text.fill",
     "stylers": [
       {
-        "color": "#444444"
+        "color": "#f45905"
+      }
+    ]
+  },
+  {
+    "featureType": "administrative",
+    "elementType": "labels.text.stroke",
+    "stylers": [
+      {
+        "color": "#ffffff"
       }
     ]
   },
   {
     "featureType": "landscape",
+    "elementType": "all",
     "stylers": [
       {
         "color": "#f2f2f2"
@@ -30,21 +40,16 @@
     "elementType": "geometry.fill",
     "stylers": [
       {
-        "hue": "#ff0000"
-      }
-    ]
-  },
-  {
-    "featureType": "landscape.natural.landcover",
-    "elementType": "geometry.fill",
-    "stylers": [
+        "visibility": "on"
+      },
       {
-        "hue": "#ff0000"
+        "color": "#f2f2f2"
       }
     ]
   },
   {
     "featureType": "poi",
+    "elementType": "all",
     "stylers": [
       {
         "visibility": "simplified"
@@ -59,7 +64,7 @@
     "elementType": "geometry",
     "stylers": [
       {
-        "color": "#d9e5d9"
+        "color": "#b3b3b3"
       }
     ]
   },
@@ -69,15 +74,6 @@
     "stylers": [
       {
         "visibility": "on"
-      }
-    ]
-  },
-  {
-    "featureType": "poi",
-    "elementType": "labels.icon",
-    "stylers": [
-      {
-        "color": "#333333"
       }
     ]
   },
@@ -100,19 +96,101 @@
     ]
   },
   {
-    "featureType": "poi.medical",
-    "elementType": "geometry",
+    "featureType": "poi",
+    "elementType": "labels.icon",
     "stylers": [
       {
-        "color": "#f7eded"
+        "color": "#1e1e1e"
+      }
+    ]
+  },
+  {
+    "featureType": "poi.business",
+    "elementType": "geometry.fill",
+    "stylers": [
+      {
+        "color": "#d9d9d9"
+      }
+    ]
+  },
+  {
+    "featureType": "poi.government",
+    "elementType": "geometry.fill",
+    "stylers": [
+      {
+        "color": "#d9d9d9"
+      }
+    ]
+  },
+  {
+    "featureType": "poi.medical",
+    "elementType": "geometry.fill",
+    "stylers": [
+      {
+        "color": "#d9d9d9"
+      }
+    ]
+  },
+  {
+    "featureType": "poi.park",
+    "elementType": "geometry.fill",
+    "stylers": [
+      {
+        "color": "#d9d9d9"
+      }
+    ]
+  },
+  {
+    "featureType": "poi.place_of_worship",
+    "elementType": "geometry.fill",
+    "stylers": [
+      {
+        "color": "#d9d9d9"
+      }
+    ]
+  },
+  {
+    "featureType": "poi.school",
+    "elementType": "geometry.fill",
+    "stylers": [
+      {
+        "color": "#d9d9d9"
+      }
+    ]
+  },
+  {
+    "featureType": "poi.sports_complex",
+    "elementType": "geometry.fill",
+    "stylers": [
+      {
+        "color": "#d9d9d9"
       }
     ]
   },
   {
     "featureType": "road",
+    "elementType": "all",
     "stylers": [
       {
         "saturation": -100
+      }
+    ]
+  },
+  {
+    "featureType": "road.highway",
+    "elementType": "all",
+    "stylers": [
+      {
+        "visibility": "simplified"
+      }
+    ]
+  },
+  {
+    "featureType": "road.highway",
+    "elementType": "geometry.fill",
+    "stylers": [
+      {
+        "color": "#929292"
       }
     ]
   },
@@ -138,45 +216,20 @@
     ]
   },
   {
-    "featureType": "road.highway",
-    "stylers": [
-      {
-        "visibility": "simplified"
-      }
-    ]
-  },
-  {
-    "featureType": "road.highway",
-    "elementType": "geometry.fill",
-    "stylers": [
-      {
-        "color": "#b0b0b0"
-      }
-    ]
-  },
-  {
-    "featureType": "road.highway.controlled_access",
-    "elementType": "geometry.fill",
-    "stylers": [
-      {
-        "hue": "#ff0000"
-      }
-    ]
-  },
-  {
     "featureType": "road.local",
     "elementType": "geometry.fill",
     "stylers": [
       {
-        "hue": "#ff0000"
+        "saturation": 5
       },
       {
-        "saturation": 5
+        "color": "#ffffff"
       }
     ]
   },
   {
     "featureType": "transit",
+    "elementType": "all",
     "stylers": [
       {
         "visibility": "off"
@@ -185,6 +238,7 @@
   },
   {
     "featureType": "water",
+    "elementType": "all",
     "stylers": [
       {
         "color": "#7ba2b2"
@@ -199,7 +253,7 @@
     "elementType": "geometry",
     "stylers": [
       {
-        "color": "#5b6266"
+        "color": "#a2bdc8"
       }
     ]
   }

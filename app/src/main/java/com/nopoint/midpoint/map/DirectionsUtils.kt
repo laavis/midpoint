@@ -105,8 +105,6 @@ object DirectionsUtils {
     private fun calculateMidpointCoordinates(path: List<LatLng>, origin: LatLng, distance: Double): LatLng? {
         var midpointCoordinates: LatLng? = null
 
-        Log.d("CALCULATE", "GIVEN DISTANCE: $distance")
-
         // Check if given origin coordinates are found in the path's coordinates
         // withing five meters
         if (!PolyUtil.isLocationOnPath(origin, path, false, 1.0)) {
@@ -114,9 +112,7 @@ object DirectionsUtils {
         }
 
         var accDistance = 0.0
-        var foundStart = false
         val segment = ArrayList<LatLng>()
-
 
         // Loop through path list
         for (i in 0 until path.size - 1) {
@@ -127,36 +123,7 @@ object DirectionsUtils {
             segment.add(segmentStart)
             segment.add(segmentEnd)
 
-            var currentDistance: Double = 0.0
-
-            //todo determine if check needed, probably not but keeping this here for now
-            /*
-            if (!foundStart) {
-                Log.d("CALCULATE", " segment: $segment")
-
-                // Check if given origin lies on or near segment within five meters
-                if (PolyUtil.isLocationOnPath(origin, segment, false, 1.0)) {
-                    Log.d("CALCULATE", "foundStart: ${PolyUtil.isLocationOnPath(origin, segment, false, 1.0)}")
-
-                    foundStart = true
-
-
-                    currentDistance = SphericalUtil.computeDistanceBetween(origin, segmentEnd)
-                    Log.d("CALCULATE", " currentDistance: $currentDistance")
-
-                    // Fix offset if current distance is greater than given distance
-                    // which is full route's distance between start and end point divided by two
-                    if (currentDistance > distance) {
-                        Log.d("CALCULATE", "currentdist > dist")
-                        val heading: Double = SphericalUtil.computeHeading(origin, segmentEnd)
-                        midpointCoordinates = SphericalUtil.computeOffset(origin, distance - accDistance, heading)
-                        break
-                    }
-                }
-
-            // Start point found
-            } else {
-            */
+            var currentDistance: Double
 
             // Calculate length of a segment
             currentDistance = SphericalUtil.computeDistanceBetween(segmentStart, segmentEnd)
@@ -168,8 +135,6 @@ object DirectionsUtils {
                 midpointCoordinates = SphericalUtil.computeOffset(segmentStart, distance - accDistance, heading)
                 break
             }
-
-            //}
 
             accDistance += currentDistance
         }

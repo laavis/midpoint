@@ -1,16 +1,16 @@
 package com.nopoint.midpoint.fragments
 
 
+import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.os.Bundle
 import android.text.TextWatcher
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.nopoint.midpoint.MainActivity
-import com.nopoint.midpoint.R
 import kotlinx.android.synthetic.main.fragment_friends.*
 import java.util.TimerTask
 import java.util.Timer
@@ -20,12 +20,13 @@ import android.view.MenuItem
 import android.view.animation.AnimationUtils
 import android.view.inputmethod.InputMethodManager
 import android.widget.*
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.snackbar.Snackbar
 import com.google.gson.Gson
 import com.google.gson.annotations.SerializedName
-import com.nopoint.midpoint.QRActivity
+import com.nopoint.midpoint.*
 import com.nopoint.midpoint.adapters.FriendSearchAdapter
 import com.nopoint.midpoint.adapters.FriendsListAdapter
 import com.nopoint.midpoint.adapters.OnFriendListActionClickListener
@@ -57,8 +58,36 @@ class FriendsFragment :
     private lateinit var searchAdapter: FriendSearchAdapter
     private lateinit var friendListAdapter: FriendsListAdapter
 
+    private val localBR = object : BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
+            when(intent?.action) {
+                ACCEPT_FRIEND_REQUEST -> {
+                    val req = intent.getStringExtra(EXTRA_NOTIFICATION_ID)
+
+                    if (req != null) {
+                        val friendReq = Gson().fromJson(req, ReceivedFriendRequest::class.java)
+                        val id = friendReq._id
+                        respondToFriendRequest(null, id, 1, null)
+                    }
+                }
+                DECLINE_FRIEND_REQUEST -> {
+                    val req = intent.getStringExtra(EXTRA_NOTIFICATION_ID)
+                    if (req != null) {
+                        val friendReq = Gson().fromJson(req, ReceivedFriendRequest::class.java)
+                        val id = friendReq._id
+                        respondToFriendRequest(null, id, 2, null)
+                    }
+                }
+            }
+        }
+    }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val v = inflater.inflate(R.layout.fragment_friends, container, false)
+
+        LocalBroadcastManager.getInstance(context!!.applicationContext)
+            .registerReceiver(localBR, getLocalIntentFilter())
+
         searchInput = v.findViewById(R.id.search_input)
 
         return v
@@ -112,6 +141,12 @@ class FriendsFragment :
         }
 
         getFriends()
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        LocalBroadcastManager.getInstance(context!!.applicationContext)
+            .unregisterReceiver(localBR)
     }
 
     private fun hideSearchViewKeyboard() {
@@ -211,7 +246,7 @@ class FriendsFragment :
         }
 
         for (i in 0 until numSentFriendRequests) {
-            Log.d("FRIENDS", "${sentFriendRequestsList[i].req_username}")
+            Log.d("FRIENDS", sentFriendRequestsList[i].req_username)
             rows.add(FriendsListAdapter.SentFriendRequestRow(sentFriendRequestsList[i].req_username))
         }
 
@@ -249,16 +284,27 @@ class FriendsFragment :
         }
     }
 
+// here accept
 
 
-    private fun respondToFriendRequest(position: Int, status: Int, msg: String) {
+    private fun respondToFriendRequest(position: Int?, requestId: String?, status: Int, msg: String?) {
         val body = JSONObject()
-        receivedFriendRequestsList[position]._id
+
+        var id: String
+
+        Log.d("PAL", "pos: $position, id: $requestId")
+
+        if (requestId != null)
+            id = requestId
+        else
+            id = receivedFriendRequestsList[position!!]._id
+
         body.put("status", status)
-        body.put("request_id", receivedFriendRequestsList[position]._id)
+        body.put("request_id", id)
 
         apiController.post(FRIENDS_RESPOND, body, token) { res ->
             try {
+                Log.d("PAL", res.toString())
                 val respond = Gson().fromJson(res.toString(), FriendRequestRespond::class.java)
 
                 if (respond.success) {
@@ -277,14 +323,15 @@ class FriendsFragment :
 
     override fun onAcceptClicked(button: MaterialButton, position: Int) {
         val msg = "You and ${receivedFriendRequestsList[position].req_username} are now friends!"
-        respondToFriendRequest(position, 1, msg)
+        respondToFriendRequest(position, null,1, msg)
     }
 
     override fun onDenyClicked(button: MaterialButton, position: Int) {
         val msg = "You denied friend request from ${receivedFriendRequestsList[position].req_username}"
-        respondToFriendRequest(position, 2, msg)
+        respondToFriendRequest(position, null,2, msg)
     }
 
+    // Remove friend
     override fun onDeleteClicked(menuItem: MenuItem, position: Int) {
         deleteFriend(position)
     }
@@ -358,4 +405,10 @@ class FriendsFragment :
         friends_search_list.adapter = searchAdapter
     }
 
+    private fun getLocalIntentFilter(): IntentFilter {
+        val iFilter = IntentFilter()
+        iFilter.addAction(ACCEPT_FRIEND_REQUEST)
+        iFilter.addAction(DECLINE_FRIEND_REQUEST)
+        return iFilter
+    }
 }
