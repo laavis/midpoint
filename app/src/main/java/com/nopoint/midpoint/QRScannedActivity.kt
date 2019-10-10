@@ -36,6 +36,14 @@ class QRScannedActivity : AppCompatActivity() {
     private var reqUsername: String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        val sharedPref = SharedPref(this)
+
+        if (sharedPref.loadNightModeState() == true) {
+            setTheme(R.style.DarkTheme)
+        } else {
+            setTheme(R.style.LightTheme)
+        }
+
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_qr_scanned)
 

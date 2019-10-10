@@ -14,8 +14,6 @@
     <string name="hint_confirm_password">Confirm Password</string>
 
 
-    // Accessibility
-    <string name="access_logo">Logo</string>
 
     // Bottom navigation bar
     <string name="nav_home">Home</string>
@@ -61,5 +59,16 @@
     <string name="filter_friends">Filter friends</string>
     <string name="meeting_request">meeting request</string>
     <string name="new_title">New</string>
+
+
+    <!-- ACCESSIBILITY -->
+    <string name="access_logo">Logo</string>
+
+    <!-- Entry -->
+    <string name="desc_show_login">Show log in form</string>
+    <string name="desc_show_sign_up">Show sign up form</string>
+
+    <!-- Login -->
+
 
 </resources>

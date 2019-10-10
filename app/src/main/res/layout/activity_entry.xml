@@ -6,13 +6,14 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/color_white">
+    android:background="?attr/bgColor">
 
     <ImageView
         android:id="@+id/imageView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="-48dp"
+        android:tint="@color/midnight"
         app:srcCompat="@drawable/ic_img_road_map" />
 
     <LinearLayout
@@ -46,6 +47,7 @@
                 android:focusable="true"
                 android:fontFamily="@font/pt_sans"
                 android:text="@string/entry_log_in"
+                android:contentDescription="@string/desc_show_login"
                 android:textSize="16sp" />
 
             <TextView
@@ -56,6 +58,7 @@
                 android:clickable="true"
                 android:focusable="true"
                 android:textSize="16sp"
+                android:contentDescription="@string/desc_show_sign_up"
                 android:layout_alignParentEnd="true"
                 />
 
@@ -83,7 +86,7 @@
         android:layout_width="match_parent"
         android:layout_alignParentBottom="true"
         android:layout_height="57dp"
-        android:background="@color/color_white_accent">
+        android:background="?attr/entryFooter">
 
         <TextView
             android:layout_width="match_parent"
@@ -91,7 +94,6 @@
             android:layout_gravity="center"
             android:fontFamily="@font/pt_sans_bold"
             android:text="@string/app_name"
-            android:textColor="@color/color_dark"
             android:textAlignment="center" />
     </LinearLayout>
 

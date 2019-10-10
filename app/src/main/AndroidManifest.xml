@@ -17,18 +17,15 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme"
+        android:theme="@style/InitialTheme"
         android:usesCleartextTraffic="true"
         tools:ignore="GoogleAppIndexingWarning">
         <activity
             android:name=".MainActivity"
-            android:label="@string/app_name"
-            android:theme="@style/MidpointFullscreen"
-            android:windowSoftInputMode="adjustNothing"/>
+            android:label="@string/app_name"/>
         <activity
             android:name=".EntryActivity"
-            android:label="@string/app_name"
-            android:theme="@style/MidpointFullscreen">
+            android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -37,13 +34,13 @@
         </activity>
         <activity
             android:name=".QRActivity"
-            android:theme="@style/MidpointFullscreen"/>
+            />
         <activity
             android:name=".QRScanActivity"
-            android:theme="@style/MidpointFullscreen"/>
+            />
         <activity
             android:name=".QRScannedActivity"
-            android:theme="@style/MidpointFullscreen"/>
+            />
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/api_key" />

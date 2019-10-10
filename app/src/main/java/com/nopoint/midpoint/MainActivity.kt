@@ -4,6 +4,7 @@ import android.content.pm.PackageManager
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import androidx.appcompat.app.AppCompatDelegate
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.nopoint.midpoint.fragments.FriendsFragment
 import com.nopoint.midpoint.fragments.MapFragment
@@ -21,9 +22,20 @@ class MainActivity : AppCompatActivity() {
     val fm: FragmentManager = supportFragmentManager
     var active: Fragment = mapFragment
 
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
+        val sharedPref = SharedPref(this)
+
+        if (sharedPref.loadNightModeState() == true) {
+            setTheme(R.style.DarkTheme)
+        } else {
+            setTheme(R.style.LightTheme)
+        }
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+
         if (hasPermissions()) {
             initFragments()
         }

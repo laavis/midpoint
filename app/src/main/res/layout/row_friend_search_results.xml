@@ -20,7 +20,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
-            android:textColor="@color/color_dark"
+            android:textColor="?attr/textColor"
             android:textSize="16sp"
             android:text="Username"/>
 
@@ -29,7 +29,7 @@
         android:id="@+id/friends_button_send_friend_request"
         android:layout_alignParentEnd="true"
         android:src="@drawable/ic_add"
-        android:tint="@color/color_light_grey"/>
+        android:tint="@color/color_dark_grey"/>
 
     <ImageView
         style="@style/StatusIcon"

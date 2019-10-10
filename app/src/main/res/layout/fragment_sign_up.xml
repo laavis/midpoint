@@ -13,6 +13,7 @@
         android:orientation="vertical">
 
         <com.google.android.material.textfield.TextInputLayout
+            android:textColorHint="?attr/textColor"
             android:id="@+id/sign_up_input_layout_email"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -22,11 +23,11 @@
                 android:id="@+id/sign_up_input_email"
                 style="@style/InputEditText"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="a@a.com" />
+                android:layout_height="wrap_content"/>
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
+            android:textColorHint="?attr/textColor"
             android:id="@+id/sign_up_input_layout_username"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -34,13 +35,14 @@
             android:hint="@string/hint_username"
             app:errorEnabled="true">
             <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/sign_up_input_username"
                 style="@style/InputEditText"
+                android:id="@+id/sign_up_input_username"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"/>
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
+            android:textColorHint="?attr/textColor"
             android:id="@+id/sign_up_input_layout_password"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -56,6 +58,7 @@
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
+            android:textColorHint="?attr/textColor"
             android:id="@+id/sign_up_input_layout_confirm_password"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -76,5 +79,6 @@
         android:id="@+id/button_sign_up"
         android:layout_height="64dp"
         android:layout_alignParentBottom="true"
+        android:contentDescription="@string/entry_sign_up"
         android:text="@string/entry_sign_up"/>
 </RelativeLayout>

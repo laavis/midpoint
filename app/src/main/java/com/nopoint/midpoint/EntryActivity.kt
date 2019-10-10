@@ -11,6 +11,7 @@ import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
 import kotlinx.android.synthetic.main.activity_entry.*
 import android.widget.TextView
+import androidx.appcompat.app.AppCompatDelegate
 import com.nopoint.midpoint.fragments.LoginFragment
 import com.nopoint.midpoint.fragments.SignUpFragment
 import com.nopoint.midpoint.models.CurrentUser
@@ -25,8 +26,20 @@ class EntryActivity : AppCompatActivity() {
 
     private  var isLogin = false
 
+    private lateinit var sharedpref: SharedPref
+
     override fun onCreate(savedInstanceState: Bundle?) {
+
+        sharedpref = SharedPref(this)
+
+        if (sharedpref.loadNightModeState() == true) {
+            setTheme(R.style.DarkTheme)
+        } else {
+            setTheme(R.style.LightTheme)
+        }
+
         super.onCreate(savedInstanceState)
+
         setContentView(R.layout.activity_entry)
         val strokeParams = entry_stroke.layoutParams as RelativeLayout.LayoutParams
         if(checkValidSession()){

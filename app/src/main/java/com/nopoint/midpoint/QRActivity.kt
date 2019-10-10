@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
 import com.google.gson.Gson
 import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel
 import com.nopoint.midpoint.helpers.QRCodeHelper
@@ -25,9 +26,16 @@ class QRActivity : AppCompatActivity() {
     private lateinit var username: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        val sharedPref = SharedPref(this)
+
+        if (sharedPref.loadNightModeState() == true) {
+            setTheme(R.style.DarkTheme)
+        } else {
+            setTheme(R.style.LightTheme)
+        }
+
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_qr)
-
 
         authToken = CurrentUser.getLocalUser(this)!!.token
         createQRToken()
