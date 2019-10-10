@@ -55,17 +55,4 @@
         app:icon="@drawable/ic_plus"
         app:iconSize="16dp"
         app:iconTint="@color/color_white" />
-
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/refresh_btn"
-        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-        android:layout_width="40dp"
-        android:layout_height="wrap_content"
-        android:layout_alignTop="@+id/requests_view"
-        android:layout_alignEnd="@+id/peek_content"
-        app:icon="@drawable/ic_refresh"
-        app:iconGravity="textStart"
-        app:iconPadding="0dp" />
-
-
 </RelativeLayout>
