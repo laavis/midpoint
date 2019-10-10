@@ -14,7 +14,7 @@
         app:iconTint="@color/color_primary"
         app:iconPadding="0dp"
         app:cornerRadius="40dp"
-        app:rippleColor="@color/color_white_accent"
+        app:rippleColor="@color/color_primary_dark"
         android:layout_alignParentStart="true"
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
