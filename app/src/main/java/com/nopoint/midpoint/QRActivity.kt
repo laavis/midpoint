@@ -41,6 +41,7 @@ class QRActivity : AppCompatActivity() {
 
         qr_btn_close_activity.setOnClickListener {
             val intent = Intent(this, MainActivity::class.java)
+            intent.putExtra("fragmentToLoad", "friend")
             startActivity(intent)
             this.finish()
         }

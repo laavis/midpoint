@@ -10,6 +10,7 @@ import androidx.fragment.app.Fragment
 import com.nopoint.midpoint.MainActivity
 import com.nopoint.midpoint.QRScannedActivity
 import com.nopoint.midpoint.R
+import com.nopoint.midpoint.models.Friend
 import kotlinx.android.synthetic.main.fragment_qr_success.*
 
 class QRSuccessFragment: Fragment() {
@@ -23,12 +24,12 @@ class QRSuccessFragment: Fragment() {
 
         val reqUsername = arguments?.getString(REQUESTER_USERNAME)
 
-        Log.d("QR", "reqasfjalskfh: $reqUsername")
 
         qr_requester_username.text = reqUsername.toString()
 
         qr_scanned_btn_continue.setOnClickListener {
             val intent = Intent(context!!.applicationContext, MainActivity::class.java)
+            intent.putExtra("fragmentToLoad", "friend")
             startActivity(intent)
             (activity as QRScannedActivity).finish()
         }

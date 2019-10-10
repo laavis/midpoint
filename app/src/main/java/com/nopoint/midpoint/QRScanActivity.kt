@@ -34,11 +34,9 @@ class QRScanActivity : AppCompatActivity(), ZXingScannerView.ResultHandler {
 
     override fun onResume() {
         super.onResume()
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (checkSelfPermission(Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
-                ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.CAMERA), CAMERA_REQUEST_CODE)
-                return
-            }
+        if (checkSelfPermission(Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.CAMERA), CAMERA_REQUEST_CODE)
+            return
         }
 
         qrScanner.startCamera()
@@ -54,22 +52,16 @@ class QRScanActivity : AppCompatActivity(), ZXingScannerView.ResultHandler {
         qrScanner.setSquareViewFinder(true)
         if (Build.MANUFACTURER.equals(HUAWEI, ignoreCase = true))
             qrScanner.setAspectTolerance(0.5f)
-
     }
-
 
     private fun openCamera() {
         qrScanner.startCamera()
         qrScanner.setResultHandler(this)
     }
 
-    private fun resumeCamera() {
-
-    }
-
     private fun showCameraSnackbar() {
         if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.CAMERA)) {
-            Toast.makeText(this, "TWAT GIVE PERMISSION TO CAMERA", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "Camera permission is needed to read the QR code", Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -89,9 +81,7 @@ class QRScanActivity : AppCompatActivity(), ZXingScannerView.ResultHandler {
 
     override fun handleResult(p0: Result?) {
         if (p0 != null) {
-            Log.d("QR", "scan success")
             startActivity(QRScannedActivity.getScannedActivity(this, p0.text))
-            resumeCamera()
         }
     }
 
