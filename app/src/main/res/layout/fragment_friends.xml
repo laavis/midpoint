@@ -11,7 +11,7 @@
         android:id="@+id/friends_add_sheet"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/color_white_accent"
+        android:background="?attr/bgColor"
         android:layout_gravity="bottom|end"
         android:visibility="invisible"
         android:elevation="1dp"
@@ -26,32 +26,40 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:background="@color/orange"
-                >
+                android:background="@color/orange">
 
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
 
-                    <ImageButton
+                    <com.google.android.material.button.MaterialButton
+                        style="@style/RoundImageButton"
                         android:id="@+id/friends_add_return"
-                        style="@style/ButtonImage"
+                        app:icon="@drawable/ic_arrow_left"
+                        app:iconGravity="textStart"
+                        app:iconTint="@color/color_white_accent"
+                        app:iconPadding="0dp"
+                        app:cornerRadius="40dp"
+                        app:rippleColor="@color/color_primary_dark"
+                        android:layout_alignParentStart="true"
                         android:layout_marginStart="16dp"
                         android:layout_marginTop="16dp"
-                        android:background="@color/trans"
-                        android:contentDescription="@string/back"
-                        android:src="@drawable/ic_arrow_left" />
+                        />
 
-                    <ImageButton
+                    <com.google.android.material.button.MaterialButton
+                        style="@style/RoundImageButton"
                         android:id="@+id/friends_open_qr"
-                        style="@style/ButtonImage"
+                        app:icon="@drawable/ic_qr"
+                        app:iconGravity="textStart"
+                        app:iconTint="@color/color_white_accent"
+                        app:iconPadding="0dp"
+                        app:cornerRadius="40dp"
+                        app:rippleColor="@color/color_primary_dark"
                         android:layout_alignParentEnd="true"
-                        android:layout_marginTop="16dp"
                         android:layout_marginEnd="16dp"
-                        android:background="@color/trans"
-                        android:contentDescription="@string/show_qr_code"
-                        android:src="@drawable/ic_qr"
-                        android:tint="@color/color_white" />
+                        android:layout_marginTop="16dp"
+                        />
+
                 </RelativeLayout>
 
 
@@ -60,7 +68,8 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
                     android:layout_marginStart="24dp"
-                    android:text="@string/create_a_friend_request"
+                    android:fontFamily="@font/roboto"
+                    android:text="@string/friend_create"
                     android:textColor="@color/color_white"
                     android:textSize="28sp"
                     android:textStyle="bold" />
@@ -75,10 +84,9 @@
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/friends_search_list"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
                 android:layout_below="@id/friends_add_sheet_header"
-                android:contentDescription="@string/add_new_friend" />
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
 
         </RelativeLayout>
     </com.google.android.material.circularreveal.CircularRevealFrameLayout>
@@ -105,10 +113,10 @@
         android:layout_gravity="bottom|end"
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="16dp"
-        android:contentDescription="@string/add_new_friend"
-        app:backgroundTint="@color/orange"
-        app:maxImageSize="16dp"
+        app:tint="@color/color_white"
         app:srcCompat="@drawable/ic_plus"
-        app:tint="@color/color_white" />
+        app:maxImageSize="16dp"
+        app:backgroundTint="@color/orange"
+        />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

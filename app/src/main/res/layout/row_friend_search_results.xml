@@ -31,7 +31,7 @@
         android:layout_alignParentEnd="true"
         android:contentDescription="@string/send_friend_request"
         android:src="@drawable/ic_add"
-        android:tint="@color/color_dark_grey"/>
+        android:tint="?attr/imageButtonStyle"/>
 
     <ImageView
         style="@style/StatusIcon"

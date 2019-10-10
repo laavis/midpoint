@@ -13,6 +13,7 @@
         android:orientation="vertical">
 
         <com.google.android.material.textfield.TextInputLayout
+            style="@style/InputEditText"
             android:textColorHint="?attr/textColor"
             android:id="@+id/sign_up_input_layout_email"
             android:layout_width="match_parent"
@@ -27,6 +28,7 @@
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
+            style="@style/InputEditText"
             android:textColorHint="?attr/textColor"
             android:id="@+id/sign_up_input_layout_username"
             android:layout_width="match_parent"
@@ -42,6 +44,7 @@
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
+            style="@style/InputEditText"
             android:textColorHint="?attr/textColor"
             android:id="@+id/sign_up_input_layout_password"
             android:layout_width="match_parent"
@@ -58,6 +61,7 @@
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
+            style="@style/InputEditText"
             android:textColorHint="?attr/textColor"
             android:id="@+id/sign_up_input_layout_confirm_password"
             android:layout_width="match_parent"

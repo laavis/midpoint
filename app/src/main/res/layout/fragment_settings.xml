@@ -54,11 +54,11 @@
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/arrived_input_layout"
+            style="@style/InputEditText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/dark_mode_switch"
             android:hint="@string/arrival_hint"
-            android:textColorHint="?attr/textColor"
             app:errorEnabled="true">
 
             <com.google.android.material.textfield.TextInputEditText
@@ -72,11 +72,11 @@
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/place_radius_input_layout"
+            style="@style/InputEditText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/arrived_input_layout"
             android:hint="@string/places_hint"
-            android:textColorHint="?attr/textColor"
             app:errorEnabled="true">
 
             <com.google.android.material.textfield.TextInputEditText

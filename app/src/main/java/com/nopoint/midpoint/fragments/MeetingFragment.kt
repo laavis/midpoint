@@ -2,6 +2,7 @@ package com.nopoint.midpoint.fragments
 
 import android.app.AlertDialog
 import android.content.*
+import android.content.res.ColorStateList
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -103,6 +104,9 @@ class MeetingFragment : Fragment(), MeetingRequestViewListener {
                                 body.put("middleLat", best.geometry.location.lat)
                                 body.put("middleLng", best.geometry.location.lng)
                                 body.put("middlePointName", best.name)
+                            } else {
+                                body.put("middleLat", midpointLatLng.latitude)
+                                body.put("middleLng", midpointLatLng.longitude)
                             }
                             sendMeetingRequestResponse(body)
                         }
@@ -423,6 +427,7 @@ class MeetingFragment : Fragment(), MeetingRequestViewListener {
         val chip = Chip(activity)
         chip.setChipDrawable(drawable)
         chip.text = username
+        chip.setTextColor(activity!!.getColor(R.color.color_dark))
         chip.chipIcon = activity!!.getDrawable(R.drawable.ic_avatar_ph)
         chip.checkedIcon = activity!!.getDrawable(R.drawable.ic_avatar_ph)
         chip.chipBackgroundColor = activity!!.getColorStateList(R.color.chip_bg_color)

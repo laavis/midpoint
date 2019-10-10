@@ -58,12 +58,12 @@ class FriendSearchAdapter(
 
         fun bind(clickListener: OnSendFriendReqBtnClickListener) {
             buttonSendFriendRequest.setOnClickListener {
-                clickListener.onItemClicked(buttonSendFriendRequest, statusIcon, adapterPosition)
+                clickListener.onButtonClicked(buttonSendFriendRequest, statusIcon, adapterPosition)
             }
         }
     }
 }
 
 interface OnSendFriendReqBtnClickListener {
-    fun onItemClicked(button: ImageButton, statusIcon: ImageView, position: Int)
+    fun onButtonClicked(button: ImageButton, statusIcon: ImageView, position: Int)
 }

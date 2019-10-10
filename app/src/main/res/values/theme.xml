@@ -12,7 +12,7 @@
         <item name="colorAccent">@color/color_primary</item>
         <item name="colorOnPrimary">@color/color_white</item>
         <item name="android:textViewStyle">@font/pt_sans</item>
-        <item name="buttonColor">@color/test</item>
+        <item name="buttonColor">@color/button_states_light</item>
         <item name="test">@color/color_white_accent</item>
         <item name="windowNoTitle">true</item>
         <item name="android:windowFullscreen">true</item>
@@ -22,6 +22,9 @@
         <item name="bgColor">@color/color_white</item>
         <item name="buttonTextColor">@color/color_white</item>
         <item name="entryFooter">@color/color_white_accent</item>
+        <item name="editTextColor">@color/text_field_color_light</item>
+        <item name="imageButtonStyle">@color/color_dark_grey</item>
+        <item name="android:popupMenuStyle">@style/PopupMenu</item>
     </style>
 
     <!-- Dark Mode -->
@@ -31,10 +34,13 @@
         <item name="colorAccent">@color/color_primary</item>
         <item name="android:textViewStyle">@font/pt_sans</item>
         <item name="android:textColor">@color/color_white_accent</item>
-        <item name="buttonColor">@color/test</item>
+        <item name="buttonColor">@color/button_states_dark</item>
         <item name="test">@color/color_warning</item>
         <item name="windowNoTitle">true</item>
         <item name="android:windowFullscreen">true</item>
+        <item name="editTextColor">@color/text_field_color_dark</item>
+        <item name="imageButtonStyle">@color/color_light_grey</item>
+        <item name="android:popupMenuStyle">@style/PopupMenu</item>
 
         <!-- ok -->
         <item name="buttonTextColor">@color/color_white</item>

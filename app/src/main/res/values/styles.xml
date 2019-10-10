@@ -25,7 +25,7 @@
 
     // Primary Button
     <style name="ButtonPrimary" parent="Widget.MaterialComponents.Button">
-        <item name="android:background">?attr/buttonColor</item>
+        <item name="android:backgroundTint">?attr/buttonColor</item>
         <item name="android:textColor">?attr/textColor</item>
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
@@ -39,6 +39,16 @@
         <item name="android:padding">8dp</item>
         <item name="android:cropToPadding">true</item>
         <item name="android:background">@color/trans</item>
+        <item name="android:tint">?attr/imageButtonStyle</item>
+    </style>
+
+
+    <!-- Round Image Button -->
+    <style name="RoundImageButton" parent="Widget.MaterialComponents.Button.TextButton">
+        <item name="android:layout_width">40dp</item>
+        <item name="android:layout_height">40dp</item>
+        <item name="android:insetTop">0dp</item>
+        <item name="android:insetBottom">0dp</item>
     </style>
 
     <!-- Status Icon -->
@@ -56,6 +66,8 @@
         <item name="android:background">@android:color/transparent</item>
         <item name="android:paddingStart">4dp</item>
         <item name="android:textColor">?attr/textColor</item>
+        <item name="android:textColorHint">?attr/textColor</item>
+        <item name="android:colorPrimary">?attr/colorAccent</item>
     </style>
 
     <style name="Perkele" parent="Widget.MaterialComponents.BottomNavigationView">
@@ -67,12 +79,21 @@
     <style name="RoundedBottomSheet" parent="Widget.MaterialComponents.BottomSheet">
         <item name="shapeAppearanceOverlay">@style/CustomShapeAppearanceOverlay.MaterialComponents.BottomSheet</item>
         <item name="android:backgroundTint">?attr/bottomSheetBackgroundColor</item>
+        <item name="android:background">?attr/bottomMenuBackgroundColor</item>
     </style>
     <style name="CustomShapeAppearanceOverlay.MaterialComponents.BottomSheet" parent="">
         <item name="cornerFamily">rounded</item>
         <item name="cornerSize">16dp</item>
         <item name="cornerSizeBottomRight">0dp</item>
         <item name="cornerSizeBottomLeft">0dp</item>
+    </style>
+
+
+    <!-- The: background color for Action Bar overflow menu -->
+    <style name="PopupMenu" parent="@android:style/Widget.PopupMenu">
+        <item name="android:popupBackground">?attr/bgColor</item>
+        <item name="android:popupElevation">8dp</item>
+        <item name="android:actionMenuTextColor">@color/color_dark</item>
     </style>
 
 </resources>

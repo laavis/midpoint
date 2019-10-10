@@ -32,7 +32,6 @@
         android:layout_centerVertical="true"
         android:src="@drawable/ic_more_vertical"
         android:contentDescription="@string/more_actions_description"
-        android:tint="@color/color_dark_grey"
         android:textAppearance="?android:textAppearanceLarge"/>
 
 </RelativeLayout>
