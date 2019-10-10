@@ -15,8 +15,9 @@
                 android:layout_alignParentEnd="true"
                 android:layout_centerVertical="true"
                 android:layout_marginEnd="16dp"
+                android:background="@drawable/ic_search"
                 android:backgroundTint="@color/color_white"
-                android:background="@drawable/ic_search" />
+                android:contentDescription="@string/search" />
         </RelativeLayout>
 
         <RelativeLayout
@@ -34,8 +35,9 @@
                 android:layout_alignParentStart="true"
                 android:layout_centerVertical="true"
                 android:layout_marginStart="16dp"
+                android:background="@drawable/ic_search"
                 android:backgroundTint="@color/color_dark"
-                android:background="@drawable/ic_search" />
+                android:contentDescription="@string/execute_search" />
 
             <EditText
                 android:id="@+id/search_input"
@@ -44,7 +46,8 @@
                 android:layout_marginStart="16dp"
                 android:layout_marginEnd="16dp"
                 android:layout_toStartOf="@id/close_search_button"
-                android:layout_toEndOf="@id/execute_search_button" />
+                android:layout_toEndOf="@id/execute_search_button"
+                android:inputType="text" />
 
             <View
                 android:id="@+id/close_search_button"

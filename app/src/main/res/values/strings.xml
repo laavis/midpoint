@@ -40,10 +40,11 @@
     <string name="reject">Reject</string>
     <string name="cancel">Cancel</string>
     <string name="outgoing">SENT</string>
-    <string name="incoming">INCOMING</string>
+    <string name="incoming">RECEIVED</string>
 
     // Friends
     <string name="deny">Deny</string>
+    <string name="friend_req_sent">You sent a friend request</string>
 
     <!-- QR -->
     <string name="qr_scan">Scan QR code</string>
@@ -59,6 +60,16 @@
     <string name="filter_friends">Filter friends</string>
     <string name="meeting_request">meeting request</string>
     <string name="new_title">New</string>
+    <string name="more_actions_description">more actions</string>
+    <string name="add_new_friend">add new friend</string>
+    <string name="create_a_friend_request">Create a Friend Request</string>
+    <string name="show_qr_code">show qr code</string>
+    <string name="back">back</string>
+    <string name="send_friend_request">send friend request</string>
+    <string name="friend_request_status">friend request status</string>
+    <string name="search">search</string>
+    <string name="execute_search">execute search</string>
+    <string name="open_maps">open maps</string>
 
 
     <!-- ACCESSIBILITY -->

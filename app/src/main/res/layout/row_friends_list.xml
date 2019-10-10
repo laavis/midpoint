@@ -2,9 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/row_friends_item_container"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:paddingTop="8dp"
-    android:paddingBottom="8dp"
+    android:layout_height="56dp"
     android:paddingStart="16dp"
     android:paddingEnd="8dp">
 
@@ -13,6 +11,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="16dp"
+        android:layout_centerVertical="true"
+        android:contentDescription="@string/avatar_content_description"
         android:src="@drawable/ic_avatar_ph"/>
 
     <TextView
@@ -26,10 +26,12 @@
         android:text="Username"/>
 
     <ImageButton
-        style="@style/ButtonImage"
         android:id="@+id/friends_list_row_action"
+        style="@style/ButtonImage"
         android:layout_alignParentEnd="true"
+        android:layout_centerVertical="true"
         android:src="@drawable/ic_more_vertical"
+        android:contentDescription="@string/more_actions_description"
         android:tint="@color/color_dark_grey"
         android:textAppearance="?android:textAppearanceLarge"/>
 

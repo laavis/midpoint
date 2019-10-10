@@ -59,18 +59,10 @@ class QRScannedActivity : AppCompatActivity() {
             throw RuntimeException("No encrypted String found in intent")
         }
 
-
         friendToken = intent.getStringExtra(SCANNED_STRING)
 
 
         redeemQrToken()
-
-        /*qr_scanned_btn_ok.setOnClickListener {
-            Log.d("QR", "bacccc")
-            val intent = Intent(this, MainActivity::class.java)
-            startActivity(intent)
-            this.finish()
-        }*/
     }
 
     data class RedeemToken(
@@ -78,7 +70,6 @@ class QRScannedActivity : AppCompatActivity() {
         @SerializedName("requester_username")val requester_username: String?
     )
 
-    //
     private fun redeemQrToken() {
         val body = JSONObject()
         body.put("token", friendToken)
@@ -91,8 +82,6 @@ class QRScannedActivity : AppCompatActivity() {
 
                 val redeemRes = Gson().fromJson(res.toString(), RedeemToken::class.java)
 
-                Log.d("QR", "redeemres: $redeemRes")
-
 
                 if (redeemRes.error != null) {
                     errorMsg = redeemRes.run { error.toString() }
@@ -102,19 +91,17 @@ class QRScannedActivity : AppCompatActivity() {
                 } else {
                     reqUsername = redeemRes.requester_username.toString()
 
-                    Log.d("QR", "requsern $reqUsername")
                     val fragment = QRSuccessFragment.newInstance(reqUsername)
                     geSuccessFragment(fragment)
                 }
 
             } catch (e: Exception) {
-                Log.e("QR", "$e")
                 Toast.makeText(this, "${e.message}", Toast.LENGTH_SHORT).show()
             }
         }
     }
 
-    fun geSuccessFragment(f: QRSuccessFragment) {
+    private fun geSuccessFragment(f: QRSuccessFragment) {
         fTransaction = fManager
             .beginTransaction()
             .addToBackStack(null)
@@ -129,7 +116,6 @@ class QRScannedActivity : AppCompatActivity() {
         fTransaction.replace(R.id.qr_outcome_container, f)
         fTransaction.commit()
     }
-
 
     companion object {
         private const val SCANNED_STRING = "scanned_string"
