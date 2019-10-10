@@ -31,7 +31,8 @@ data class SentFriendReqRes(
 
 data class Friends(
     @SerializedName("friends")val friends: ArrayList<Friend>?,
-    @SerializedName("requests")val requests: ArrayList<FriendRequest>?
+    @SerializedName("received_requests")val received_requests: ArrayList<FriendRequest>?,
+    @SerializedName("sent_requests")val sent_requests: ArrayList<FriendRequest>?
 )
 
 data class Friend(

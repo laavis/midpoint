@@ -17,6 +17,7 @@ import java.util.Timer
 import android.text.Editable
 import android.util.Log
 import android.view.MenuItem
+import android.view.animation.AnimationUtils
 import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -32,7 +33,6 @@ import com.nopoint.midpoint.adapters.OnSendFriendReqBtnClickListener
 import com.nopoint.midpoint.models.*
 import com.nopoint.midpoint.networking.*
 import kotlinx.android.synthetic.main.row_friend_search_results.*
-import kotlinx.android.synthetic.main.view_search.view.*
 import org.json.JSONObject
 import java.io.IOException
 import java.lang.Exception
@@ -47,7 +47,8 @@ class FriendsFragment :
 
     private var isFriendRequestSuccess = false
     private var friendList = ArrayList<Friend>()
-    private val friendRequestsList = ArrayList<FriendRequest>()
+    private val sentFriendRequestsList = ArrayList<FriendRequest>()
+    private val receivedFriendRequestsList = ArrayList<FriendRequest>()
     private var searchResults = ArrayList<UserSearchResponseUser>()
 
     private lateinit var token: String
@@ -123,21 +124,23 @@ class FriendsFragment :
     private fun getFriends() {
         refreshLayout.isRefreshing = true
         friendList.clear()
-        friendRequestsList.clear()
+        receivedFriendRequestsList.clear()
         apiController.get(FRIENDS_LIST, token) { res ->
             try {
                 val friendsRes = Gson().fromJson(res.toString(), Friends::class.java) ?: throw Exception("Failed to connect")
 
-                // If user has friends
-                if(friendsRes.friends != null) {
+                Log.d("FRIENDS", "$friendsRes")
+
+                // If user has friends (I don't)
+                if (friendsRes.friends != null) {
                     friendsRes.friends.forEach {
                         friendList.add(Friend(it._id, it.username))
                     }
                 }
 
-                if(friendsRes.requests != null) {
-                    friendsRes.requests.forEach {
-                        friendRequestsList.add(FriendRequest(
+                if (friendsRes.received_requests != null) {
+                    friendsRes.received_requests.forEach {
+                        receivedFriendRequestsList.add(FriendRequest(
                             it._id,
                             it.requester,
                             it.receiver,
@@ -146,9 +149,26 @@ class FriendsFragment :
                         ))
                     }
                 }
+
+                if (friendsRes.sent_requests != null) {
+                    friendsRes.sent_requests.forEach {
+                        sentFriendRequestsList.add(FriendRequest(
+                            it._id,
+                            it.requester,
+                            it.receiver,
+                            it.status,
+                            it.req_username
+                        ))
+                    }
+                }
+
                 refreshLayout.isRefreshing = false
 
-                val rows = calculateRowCount(friendsRes.friends!!.size, friendsRes.requests!!.size)
+                val friendListAnimation = AnimationUtils.loadLayoutAnimation(context, R.anim.layout_animation)
+
+                friends_list.layoutAnimation = friendListAnimation
+
+                val rows = calculateRowCount(friendsRes.friends!!.size, friendsRes.received_requests!!.size)
 
                 initFLRecyclerView(rows)
 
@@ -159,12 +179,12 @@ class FriendsFragment :
         }
     }
 
-
+    // Calculate total row count for recycler view
     private fun calculateRowCount(numFriends: Int, numFriendRequests: Int): ArrayList<FriendsListAdapter.IRowFriend> {
         val rows = ArrayList<FriendsListAdapter.IRowFriend>()
 
         for (i in 0 until numFriendRequests) {
-            rows.add(FriendsListAdapter.FriendRequestRow(friendRequestsList[i].req_username))
+            rows.add(FriendsListAdapter.FriendRequestRow(receivedFriendRequestsList[i].req_username))
         }
 
         for (i in 0 until numFriends) {
@@ -204,9 +224,9 @@ class FriendsFragment :
 
     private fun respondToFriendRequest(position: Int, status: Int, msg: String) {
         val body = JSONObject()
-        friendRequestsList[position]._id
+        receivedFriendRequestsList[position]._id
         body.put("status", status)
-        body.put("request_id", friendRequestsList[position]._id)
+        body.put("request_id", receivedFriendRequestsList[position]._id)
 
         apiController.post(FRIENDS_RESPOND, body, token) { res ->
             try {
@@ -228,19 +248,18 @@ class FriendsFragment :
     }
 
     override fun onAcceptClicked(button: MaterialButton, position: Int) {
-        val msg = "You and ${friendRequestsList[position].req_username} are now friends!"
+        val msg = "You and ${receivedFriendRequestsList[position].req_username} are now friends!"
         respondToFriendRequest(position, 1, msg)
     }
 
     override fun onDenyClicked(button: MaterialButton, position: Int) {
-        val msg = "You denied friend request from ${friendRequestsList[position].req_username}"
+        val msg = "You denied friend request from ${receivedFriendRequestsList[position].req_username}"
         respondToFriendRequest(position, 2, msg)
     }
 
     override fun onDeleteClicked(menuItem: MenuItem, position: Int) {
         deleteFriend(position)
     }
-
 
     // Send friend request
     override fun onItemClicked(button: ImageButton, statusIcon: ImageView, position: Int) {
@@ -265,7 +284,6 @@ class FriendsFragment :
             }
         }
     }
-
 
 
     private fun getSearchResults() {

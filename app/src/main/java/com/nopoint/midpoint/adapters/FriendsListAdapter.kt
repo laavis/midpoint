@@ -1,7 +1,6 @@
 package com.nopoint.midpoint.adapters
 
 import android.content.Context
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
@@ -11,9 +10,7 @@ import android.widget.PopupMenu
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.button.MaterialButton
-import com.nopoint.midpoint.MainActivity
 import com.nopoint.midpoint.R
-import com.nopoint.midpoint.fragments.FriendsFragment
 import kotlinx.android.synthetic.main.row_friend_request.view.*
 import kotlinx.android.synthetic.main.row_friends_list.view.*
 
@@ -51,8 +48,6 @@ class FriendsListAdapter(
                     false
                 }
             }
-
-
         }
     }
 
@@ -64,11 +59,11 @@ class FriendsListAdapter(
         fun bind(clickListener: OnRespondFriendRequestClickListener) {
             buttonAccept.setOnClickListener {
                 clickListener.onAcceptClicked(buttonAccept, adapterPosition)
-                removeItem(this, adapterPosition)
+                removeItem(adapterPosition)
             }
             buttonDeny.setOnClickListener {
                 clickListener.onDenyClicked(buttonDeny, adapterPosition)
-                removeItem(this, adapterPosition)
+                removeItem(adapterPosition)
             }
         }
     }
@@ -90,7 +85,6 @@ class FriendsListAdapter(
         else -> throw IllegalArgumentException()
     }
 
-
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) =
         when (holder.itemViewType) {
             TYPE_FRIEND -> {
@@ -100,6 +94,7 @@ class FriendsListAdapter(
                 onBindFriendRequest(holder, rows[position] as FriendRequestRow)
             }
             else -> throw IllegalArgumentException()
+
         }
 
     private fun onBindFriend(holder: RecyclerView.ViewHolder, row: FriendRow) {
@@ -114,7 +109,7 @@ class FriendsListAdapter(
         friendRequestRow.username.text = row.username
     }
 
-    private fun removeItem(holder: RecyclerView.ViewHolder, position: Int) {
+    private fun removeItem(position: Int) {
         rows.removeAt(position)
         notifyDataSetChanged()
     }

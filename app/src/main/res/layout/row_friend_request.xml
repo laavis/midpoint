@@ -45,15 +45,14 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
         android:layout_centerVertical="true"
-        android:layout_toStartOf="@id/row_friend_request_btn_accept"
+        android:layout_toStartOf="@id/row_friend_sent_status"
         android:text="@string/deny"/>
 
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/row_friend_request_btn_accept"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+    <ImageView
+        style="@style/StatusIcon"
+        android:id="@+id/row_friend_sent_status"
         android:layout_alignParentEnd="true"
-        android:layout_centerVertical="true"
-        android:text="@string/accept"/>
+        android:src="@drawable/ic_pending"
+        android:visibility="gone"/>
 
 </RelativeLayout>
