@@ -18,6 +18,11 @@ import com.nopoint.midpoint.networking.APIController
 import com.nopoint.midpoint.networking.ServiceVolley
 import org.json.JSONObject
 import java.util.*
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import androidx.core.content.ContextCompat.getSystemService
+import android.icu.lang.UCharacter.GraphemeClusterBreak.T
+
+
 
 const val ACCEPT_FRIEND_REQUEST = "1005"
 const val DECLINE_FRIEND_REQUEST = "1006"
@@ -25,6 +30,7 @@ const val ACCEPT_MEETING_REQUEST = "1007"
 const val DECLINE_MEETING_REQUEST = "1008"
 const val EXTRA_NOTIFICATION_ID = "12345"
 const val LAUNCHED_FROM_NOTIFICATION_ID = "09876"
+const val UPDATE_MEETING_REQUESTS = "1009"
 
 class NotificationsService : FirebaseMessagingService() {
     private val service = ServiceVolley()
@@ -51,6 +57,10 @@ class NotificationsService : FirebaseMessagingService() {
             val body = it.body
             val title = it.title
             val meetingRequest = remoteMessage.data["meetingRequest"]
+            if (meetingRequest != null) {
+                val update = Intent(UPDATE_MEETING_REQUESTS)
+                LocalBroadcastManager.getInstance(applicationContext).sendBroadcast(update)
+            }
             val friendRequest = remoteMessage.data["friendRequest"]
             sendNotification(body!!, title!!, meetingRequest, friendRequest)
         }
