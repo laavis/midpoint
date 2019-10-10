@@ -46,6 +46,7 @@
 
     // Friends
     <string name="deny">Deny</string>
+    <string name="friend_req_sent">You sent a friend request</string>
 
     <!-- QR -->
     <string name="qr_scan">Scan QR code</string>

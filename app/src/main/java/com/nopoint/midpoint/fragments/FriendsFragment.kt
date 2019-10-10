@@ -28,11 +28,12 @@ import com.google.gson.annotations.SerializedName
 import com.nopoint.midpoint.QRActivity
 import com.nopoint.midpoint.adapters.FriendSearchAdapter
 import com.nopoint.midpoint.adapters.FriendsListAdapter
-import com.nopoint.midpoint.adapters.OnRespondFriendRequestClickListener
+import com.nopoint.midpoint.adapters.OnFriendListActionClickListener
 import com.nopoint.midpoint.adapters.OnSendFriendReqBtnClickListener
 import com.nopoint.midpoint.models.*
 import com.nopoint.midpoint.networking.*
 import kotlinx.android.synthetic.main.row_friend_search_results.*
+import org.jetbrains.anko.padding
 import org.json.JSONObject
 import java.io.IOException
 import java.lang.Exception
@@ -40,7 +41,7 @@ import java.lang.Exception
 class FriendsFragment :
     Fragment(),
     OnSendFriendReqBtnClickListener,
-    OnRespondFriendRequestClickListener {
+    OnFriendListActionClickListener {
 
     private val service = ServiceVolley()
     private val apiController = APIController(service)
@@ -131,11 +132,17 @@ class FriendsFragment :
 
                 Log.d("FRIENDS", "$friendsRes")
 
+                var friendCount = 0
+                var sentReqCount = 0
+                var receivedReqCount = 0
+
                 // If user has friends (I don't)
                 if (friendsRes.friends != null) {
                     friendsRes.friends.forEach {
                         friendList.add(Friend(it._id, it.username))
                     }
+
+                    friendCount = friendsRes.friends.size
                 }
 
                 if (friendsRes.received_requests != null) {
@@ -148,9 +155,12 @@ class FriendsFragment :
                             it.req_username
                         ))
                     }
+
+                    receivedReqCount = friendsRes.received_requests.size
                 }
 
                 if (friendsRes.sent_requests != null) {
+                    Log.d("FRIEND", "${friendsRes.sent_requests}")
                     friendsRes.sent_requests.forEach {
                         sentFriendRequestsList.add(FriendRequest(
                             it._id,
@@ -160,36 +170,63 @@ class FriendsFragment :
                             it.req_username
                         ))
                     }
+
+                    sentReqCount = friendsRes.sent_requests.size
+                }
+
+                if (sentReqCount < 0 || receivedReqCount < 0) {
+                    val dp = 8
+                    val scale = resources.displayMetrics.density
+                    val padding = (dp * scale + 0.5f).toInt()
+                    Log.d("FRIENDS", "pad: $padding")
+                    friends_list.setPadding(0, padding, 0, 0)
                 }
 
                 refreshLayout.isRefreshing = false
 
                 val friendListAnimation = AnimationUtils.loadLayoutAnimation(context, R.anim.layout_animation)
 
+
                 friends_list.layoutAnimation = friendListAnimation
 
-                val rows = calculateRowCount(friendsRes.friends!!.size, friendsRes.received_requests!!.size)
+                Log.d("FRIENDS", "friends: $friendCount")
+                Log.d("FRIENDS", "received: $receivedReqCount")
+                Log.d("FRIENDS", "sent: $sentReqCount")
+
+
+
+                val rows = calculateRowCount(
+                    friendCount,
+                    receivedReqCount,
+                    sentReqCount)
+
+
 
                 initFLRecyclerView(rows)
 
             } catch (e: Exception) {
                 refreshLayout.isRefreshing = false
-                Log.e("FRIENDS", "$e")
+                Log.e("FRIENDS", "getFriends: $e")
             }
         }
     }
 
     // Calculate total row count for recycler view
-    private fun calculateRowCount(numFriends: Int, numFriendRequests: Int): ArrayList<FriendsListAdapter.IRowFriend> {
+    private fun calculateRowCount(numFriends: Int, numReceivedFriendRequests: Int, numSentFriendRequests: Int): ArrayList<FriendsListAdapter.IRowFriend> {
         val rows = ArrayList<FriendsListAdapter.IRowFriend>()
 
-        for (i in 0 until numFriendRequests) {
-            rows.add(FriendsListAdapter.FriendRequestRow(receivedFriendRequestsList[i].req_username))
+        for (i in 0 until numReceivedFriendRequests) {
+            rows.add(FriendsListAdapter.ReceivedFriendRequestRow(receivedFriendRequestsList[i].req_username))
+        }
+
+        for (i in 0 until numSentFriendRequests) {
+            rows.add(FriendsListAdapter.SentFriendRequestRow(sentFriendRequestsList[i].req_username))
         }
 
         for (i in 0 until numFriends) {
             rows.add(FriendsListAdapter.FriendRow(friendList[i].username))
         }
+
         return rows
     }
 
