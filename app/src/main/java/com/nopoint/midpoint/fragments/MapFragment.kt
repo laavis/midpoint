@@ -29,6 +29,7 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import kotlinx.android.synthetic.main.bottom_sheet.view.*
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.nopoint.midpoint.SharedPref
 import com.nopoint.midpoint.map.MeetingUtils
 import com.nopoint.midpoint.map.MeetingsSingleton
 import com.nopoint.midpoint.models.CurrentUser
@@ -126,8 +127,15 @@ class MapFragment : Fragment(), OnMapReadyCallback {
 
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
-        mMap.setMapStyle(
-            MapStyleOptions.loadRawResourceStyle(activity, R.raw.map_style))
+        val sharedPref = SharedPref(activity!!)
+
+        if (sharedPref.loadNightModeState() == true){
+            mMap.setMapStyle(
+                MapStyleOptions.loadRawResourceStyle(activity, R.raw.map_style_dark))
+        } else {
+            mMap.setMapStyle(
+                MapStyleOptions.loadRawResourceStyle(activity, R.raw.map_style))
+        }
         if (!requestingLocationUpdates) {
             mMap.isMyLocationEnabled = true
             // Starting location over Helsinki
