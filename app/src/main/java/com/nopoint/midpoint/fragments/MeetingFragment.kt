@@ -330,6 +330,9 @@ class MeetingFragment : Fragment(), MeetingRequestViewListener {
                         }
                     }
                 }
+                UPDATE_MEETING_REQUESTS -> {
+                    getRequests()
+                }
             }
         }
     }
@@ -338,6 +341,7 @@ class MeetingFragment : Fragment(), MeetingRequestViewListener {
         val iFilter = IntentFilter()
         iFilter.addAction(ACCEPT_MEETING_REQUEST)
         iFilter.addAction(DECLINE_MEETING_REQUEST)
+        iFilter.addAction(UPDATE_MEETING_REQUESTS)
         return iFilter
     }
 
