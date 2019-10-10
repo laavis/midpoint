@@ -7,8 +7,6 @@ data class FriendToken(
     @SerializedName("token")val token: String
 )
 
-
-
 data class ReceivedFriendRequest(
     @SerializedName("_id") val _id: String,
     @SerializedName("requester") val requester: String,
@@ -26,7 +24,8 @@ data class SentFriendRequest(
 )
 
 
-data class FriendRequestRespond(
+data class
+FriendRequestRespond(
     @SerializedName("success") val success: Boolean
 )
 
