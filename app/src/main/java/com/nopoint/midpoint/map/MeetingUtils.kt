@@ -45,7 +45,7 @@ object MeetingUtils {
     private fun getHeaderTitle(req: MeetingRequest, currentUser: User): MeetingType {
         return when {
             req.status == 2 -> MeetingType.REJECTED
-            req.status != 0 -> MeetingType.ACTIVE
+            req.status == 1 -> MeetingType.ACTIVE
             req.receiver == currentUser.id -> MeetingType.INCOMING
             req.requester == currentUser.id -> MeetingType.OUTGOING
             else -> MeetingType.ACTIVE
