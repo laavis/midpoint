@@ -57,6 +57,7 @@ class MeetingFragment : Fragment(), MeetingRequestViewListener {
     var currentLocation: LatLng? = null
     private lateinit var localUser: LocalUser
     private lateinit var sharedPref: SharedPref
+    private var openDialog = false
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
@@ -456,16 +457,20 @@ class MeetingFragment : Fragment(), MeetingRequestViewListener {
     fun arrived(meetingRequest: MeetingRequest) {
         val username =
             if (meetingRequest.requester == localUser.user.id) meetingRequest.receiverUsername else meetingRequest.requesterUsername
-        MaterialAlertDialogBuilder(context)
-            .setTitle("You arrived!")
-            .setMessage("Send notification to ${username}?")
-            .setPositiveButton("Yes", sendArrivedListener(meetingRequest))
-            .setNegativeButton("No", sendArrivedListener(meetingRequest))
-            .show()
+        if (activity != null && !openDialog) {
+            openDialog = true
+            MaterialAlertDialogBuilder(activity)
+                .setTitle("You arrived!")
+                .setMessage("Send notification to ${username}?")
+                .setPositiveButton("Yes", sendArrivedListener(meetingRequest))
+                .setNegativeButton("No", sendArrivedListener(meetingRequest))
+                .show()
+        }
     }
 
     private fun sendArrivedListener(meetingRequest: MeetingRequest): DialogInterface.OnClickListener {
         return DialogInterface.OnClickListener { p0, p1 ->
+            openDialog = false
             val sendNotification = if (p1 == -1) 1 else 0
             sendArrived(meetingRequest.id, sendNotification)
         }
