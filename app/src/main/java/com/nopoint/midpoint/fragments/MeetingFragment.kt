@@ -149,6 +149,7 @@ class MeetingFragment : Fragment(), MeetingRequestViewListener {
         }
     }
 
+    // Checks if user has an active request and if so deletes it and replaces it with a new one
     override fun acceptRequest(meetingRequest: MeetingRequest) {
         val active = MeetingsSingleton.getActiveMeeting()
         if (active != null) {
@@ -166,6 +167,7 @@ class MeetingFragment : Fragment(), MeetingRequestViewListener {
         }
     }
 
+    // Shows route on map fragment with either the name in meeting request object or the address
     override fun showOnMap(meetingRequest: MeetingRequest) {
         val midpointURL = DirectionsUtils.buildUrlFromLatLng(
             LatLng(currentLocation!!.latitude, currentLocation!!.longitude),
@@ -192,10 +194,10 @@ class MeetingFragment : Fragment(), MeetingRequestViewListener {
         }*/
     }
 
+    // fetches from server all relevant meeting requests
     private fun getRequests() {
         apiController.get(MEETING_REQUEST_LIST, localUser.token) { response ->
             try {
-                // todo handle empty response
                 if (response == null) {
                     throw Exception("Response is empty")
                 }
@@ -234,6 +236,7 @@ class MeetingFragment : Fragment(), MeetingRequestViewListener {
         itemTouchHelper.attachToRecyclerView(view!!.requests_view)
     }
 
+    // Send new meeting request to user with current location
     private fun sendRequest(username: String, status: Int) {
         val body = JSONObject()
         body.put("receiver", username)
@@ -261,6 +264,7 @@ class MeetingFragment : Fragment(), MeetingRequestViewListener {
         }
     }
 
+    // Deletes meeting request & updates recycler view
     override fun deleteRequest(meetingRequest: MeetingRequest) {
         val body = JSONObject()
         body.put("requestId", meetingRequest.id)
@@ -291,6 +295,7 @@ class MeetingFragment : Fragment(), MeetingRequestViewListener {
         }
     }
 
+    // Declines meeting request & updates recycler view
     override fun declineRequest(meetingRequest: MeetingRequest) {
         val body = JSONObject()
         body.put("requestId", meetingRequest.id)
@@ -315,6 +320,7 @@ class MeetingFragment : Fragment(), MeetingRequestViewListener {
         }
     }
 
+    // Listener for broadcasts coming from notification service
     private val mLocalBroadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
             when (intent?.action) {
@@ -363,6 +369,7 @@ class MeetingFragment : Fragment(), MeetingRequestViewListener {
             .unregisterReceiver(mLocalBroadcastReceiver)
     }
 
+    // Creates dialog for new meeting request
     private fun createDialog() {
         val dialogView = layoutInflater.inflate(R.layout.request_dialog, null)
         var selectedUser = ""
@@ -470,17 +477,18 @@ class MeetingFragment : Fragment(), MeetingRequestViewListener {
 
     private fun sendArrivedListener(meetingRequest: MeetingRequest): DialogInterface.OnClickListener {
         return DialogInterface.OnClickListener { p0, p1 ->
-            openDialog = false
             val sendNotification = if (p1 == -1) 1 else 0
             sendArrived(meetingRequest.id, sendNotification)
         }
     }
 
+    // Sets arrived status in API for current user
     private fun sendArrived(id: String, notify: Int) {
         val body = JSONObject()
         body.put("requestId", id)
         body.put("notify", notify)
         apiController.post(MEETING_ARRIVED, body, localUser.token) { resp ->
+            openDialog = false
             if (!resp?.getString("msg").isNullOrEmpty()) {
                 if (notify == 1) {
                     Snackbar.make(

@@ -2,7 +2,9 @@ package com.nopoint.midpoint.map
 
 import com.nopoint.midpoint.models.MeetingRequest
 import com.nopoint.midpoint.models.MeetingRequestRow
-
+/**
+ * Singleton to hold meeting requests
+ */
 object MeetingsSingleton {
     val meetingRequests: MutableList<MeetingRequest> = mutableListOf()
     val meetingRequestRows: MutableList<MeetingRequestRow> = mutableListOf()

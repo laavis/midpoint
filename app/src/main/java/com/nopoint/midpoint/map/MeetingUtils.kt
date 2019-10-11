@@ -7,6 +7,13 @@ import com.nopoint.midpoint.models.*
 
 object MeetingUtils {
 
+    /**
+     * Sorts requests into the correct order by meeting request status
+     * Active first, then received and finally sent requests
+     * @param unsortedRequests list of meeting requests
+     * @param currentUser to determine meeting request type
+     * @return List of meeting request row objects in correct order
+     */
     fun sortRequests(unsortedRequests: List<MeetingRequest>,currentUser: User): MutableList<MeetingRequestRow> {
         val map = HashMap<MeetingType, ArrayList<MeetingRequest>>()
         for (req in unsortedRequests) {
@@ -36,6 +43,14 @@ object MeetingUtils {
         return requests
     }
 
+    /**
+     * Sorts requests into the correct order by meeting request status
+     * Active first, then received and finally sent requests
+     * @param meetingRequest current active meeting request
+     * @param currentLocation current location of the user
+     * @param radius the set arrival radius
+     * @return boolean to determine if user has arrived
+     */
     fun reachedLocation(meetingRequest: MeetingRequest, currentLocation: Location, radius: Double): Boolean{
         val midpoint = Location("")
         midpoint.latitude = meetingRequest.meetingPointLatitude!!
