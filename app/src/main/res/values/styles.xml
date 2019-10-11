@@ -13,6 +13,12 @@
         <item name="android:layout_height">wrap_content</item>
     </style>
 
+    <style name="AlertDialogStyle" parent="Theme.AppCompat.DayNight.Dialog">
+        <item name="android:colorAccent">@color/twilight</item>
+        <item name="android:textColor">@color/orange</item>
+        <item name="android:textColorPrimary">#f3f3f3</item>
+    </style>
+
 
     <!-- Image Button -->
     <style name="ButtonImage">

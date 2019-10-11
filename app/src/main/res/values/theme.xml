@@ -36,6 +36,7 @@
         <item name="meetingRowDividerColor">@color/color_white_accent</item>
         <item name="menuIconUnchecked">@color/color_primary_dark</item>
         <item name="altBgColor">@color/color_primary</item>
+        <item name="qrIconBtnColor">@color/color_dark</item>
 
     </style>
 
@@ -75,6 +76,7 @@
         <item name="meetingRowDividerColor">@color/midnight</item>
         <item name="menuIconUnchecked">@color/color_dark_grey</item>
         <item name="altBgColor">@color/twilight</item>
+        <item name="qrIconBtnColor">@color/color_white</item>
 
     </style>
 

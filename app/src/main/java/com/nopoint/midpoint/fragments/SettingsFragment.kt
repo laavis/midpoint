@@ -23,7 +23,7 @@ import org.jetbrains.anko.sdk27.coroutines.textChangedListener
 
 
 class SettingsFragment : Fragment() {
-    private lateinit var currentUser: LocalUser
+    private var currentUser: LocalUser? = null
     private lateinit var sharedPref: SharedPref
     private lateinit var darkModeSwitch: SwitchMaterial
 
@@ -36,8 +36,12 @@ class SettingsFragment : Fragment() {
         sharedPref = SharedPref(context!!)
         (activity as MainActivity).supportActionBar?.title = "Settings"
         val view = inflater.inflate(R.layout.fragment_settings, container, false)
-        currentUser = CurrentUser.getLocalUser(activity as MainActivity)!!
-        view.current_username_txt.text = currentUser.user.username
+
+
+        currentUser = CurrentUser.getLocalUser(activity as MainActivity)
+
+        if (currentUser != null) view.current_username_txt.text = currentUser!!.user.username
+
         val arrivedRadius = sharedPref.getArrivedRadius().toString()
         val placesRadius = sharedPref.getPlacesRadius()
         view.arrived_input.setText(arrivedRadius)

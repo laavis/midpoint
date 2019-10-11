@@ -22,6 +22,7 @@
         <attr name="meetingRowBgColor" format="color"/>
         <attr name="meetingRowDividerColor" format="color"/>
         <attr name="menuIconUnchecked" format="color"/>
+        <attr name="qrIconBtnColor" format="color"/>
     </declare-styleable>
 
 </resources>

@@ -153,7 +153,7 @@ class MeetingFragment : Fragment(), MeetingRequestViewListener {
     override fun acceptRequest(meetingRequest: MeetingRequest) {
         val active = MeetingsSingleton.getActiveMeeting()
         if (active != null) {
-            MaterialAlertDialogBuilder(activity)
+            MaterialAlertDialogBuilder(activity, R.style.AlertDialogStyle)
                 .setTitle("Warning")
                 .setMessage("You already have an active meeting, want to delete it?")
                 .setPositiveButton("Delete") { _, _ ->

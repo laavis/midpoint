@@ -12,7 +12,7 @@
         android:id="@+id/qr_btn_close_activity"
         app:icon="@drawable/ic_arrow_left"
         app:iconGravity="textStart"
-        app:iconTint="@color/color_primary"
+        app:iconTint="?attr/qrIconBtnColor"
         app:iconPadding="0dp"
         app:cornerRadius="40dp"
         app:rippleColor="@color/color_primary_dark"

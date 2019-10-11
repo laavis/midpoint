@@ -15,10 +15,7 @@ class SplashActivity : AppCompatActivity() {
         val currentUser = CurrentUser.getCurrentUser(this)
         handler.postDelayed(object : Runnable {
             override fun run() {
-                if (currentUser != null)
                     startActivity(Intent(this@SplashActivity, EntryActivity::class.java))
-                else
-                    startActivity(Intent(this@SplashActivity, MainActivity::class.java))
                 finish()
                 handler.removeCallbacks(this)
             }
