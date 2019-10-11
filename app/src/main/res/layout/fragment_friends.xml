@@ -26,7 +26,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:background="@color/orange">
+                android:background="?attr/surfaceArea">
 
                 <RelativeLayout
                     android:layout_width="match_parent"
@@ -62,7 +62,6 @@
 
                 </RelativeLayout>
 
-
                 <TextView
                     android:layout_width="260dp"
                     android:layout_height="wrap_content"
@@ -70,7 +69,7 @@
                     android:layout_marginStart="24dp"
                     android:fontFamily="@font/roboto"
                     android:text="@string/friend_create"
-                    android:textColor="@color/color_white"
+                    android:textColor="?attr/textOnColorSurface"
                     android:textSize="28sp"
                     android:textStyle="bold" />
 
@@ -85,9 +84,11 @@
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/friends_search_list"
                 android:layout_below="@id/friends_add_sheet_header"
+                android:paddingTop="8dp"
+                android:scrollbarStyle="outsideOverlay"
+                android:background="?attr/friendSearchResultsBgColor"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"/>
-
         </RelativeLayout>
     </com.google.android.material.circularreveal.CircularRevealFrameLayout>
 

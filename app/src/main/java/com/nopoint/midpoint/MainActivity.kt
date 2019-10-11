@@ -21,9 +21,7 @@ class MainActivity : AppCompatActivity() {
     private val friendsFragment = FriendsFragment()
     private val settingsFragment = SettingsFragment()
     private val fm: FragmentManager = supportFragmentManager
-    var active: Fragment = mapFragment
-
-
+    private var active: Fragment = mapFragment
 
     override fun onCreate(savedInstanceState: Bundle?) {
         val sharedPref = SharedPref(this)

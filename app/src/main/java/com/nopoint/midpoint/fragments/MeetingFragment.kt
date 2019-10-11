@@ -3,6 +3,8 @@ package com.nopoint.midpoint.fragments
 import android.app.AlertDialog
 import android.content.*
 import android.content.res.ColorStateList
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -11,11 +13,13 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.RelativeLayout
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.gms.maps.model.LatLng
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.button.MaterialButton
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipDrawable
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -34,9 +38,12 @@ import com.nopoint.midpoint.networking.API
 import com.nopoint.midpoint.networking.APIController
 import com.nopoint.midpoint.networking.ServiceVolley
 import com.nopoint.midpoint.networking.*
+import kotlinx.android.synthetic.main.bottom_sheet.*
 import kotlinx.android.synthetic.main.fragment_meeting.view.*
 import kotlinx.android.synthetic.main.request_dialog.*
 import kotlinx.android.synthetic.main.request_dialog.view.*
+import org.jetbrains.anko.find
+import org.jetbrains.anko.windowManager
 import org.json.JSONObject
 import java.io.IOException
 import java.lang.Exception
@@ -51,13 +58,11 @@ class MeetingFragment : Fragment(), MeetingRequestViewListener {
     private lateinit var localUser: LocalUser
     private lateinit var sharedPref: SharedPref
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
-    ): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_meeting, container, false)
         sharedPref = SharedPref(context!!)
-        // view.request_btn.setOnClickListener { sendRequest(view.friend_username.text.toString()) }
+
         view.new_request_btn.setOnClickListener { createDialog() }
         LocalBroadcastManager.getInstance(context!!.applicationContext)
             .registerReceiver(mLocalBroadcastReceiver, getLocalIntentFilter())
@@ -296,13 +301,14 @@ class MeetingFragment : Fragment(), MeetingRequestViewListener {
                     if (response?.optString("msg").isNullOrEmpty()) {
                         response?.getString("errors")
                     } else response?.getString("msg")
-                Snackbar.make(
-                    activity!!.findViewById(android.R.id.content),
-                    msg!!,
-                    Snackbar.LENGTH_LONG
-                ).show()
+
+                if (msg.isNullOrEmpty()) {
+                    throw Exception("Something went wrong")
+                }
+                Snackbar.make(activity!!.findViewById(android.R.id.content),msg,Snackbar.LENGTH_LONG).show()
                 getRequests()
             } catch (e: IOException) {
+                Snackbar.make(activity!!.findViewById(android.R.id.content),"${e.message}",Snackbar.LENGTH_LONG).show()
                 Log.e("MEETING", "$e")
             }
         }
@@ -361,26 +367,39 @@ class MeetingFragment : Fragment(), MeetingRequestViewListener {
         var selectedUser = ""
         val dialog = AlertDialog.Builder(activity)
             .setView(dialogView).show()
+
+        dialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         val chipGroup = dialog.chip_group
         val sendBtn = dialogView.send_btn
         val filterInput = dialogView.input_filter_friends
         sendBtn.isEnabled = false
         val friends = mutableListOf<Chip>()
+
         dialog.friends_spinner.visibility = View.VISIBLE
         apiController.get(FRIENDS_LIST, localUser.token) { res ->
             try {
                 if (res == null) {
                     throw Exception("Failed to connect")
                 }
+                val meetingCont = dialogView.findViewById<RelativeLayout>(R.id.meeting_req_container)
+                val sendButton = dialogView.findViewById<MaterialButton>(R.id.send_btn)
+
                 val friendsRes = Gson().fromJson(res.toString(), Friends::class.java)
                 Log.d("HMM", friendsRes.toString())
-                if (friendsRes.friends != null) {
+                if (!friendsRes.friends.isNullOrEmpty()) {
+                    Log.d("FIX", "${friendsRes.friends}")
+                    meetingCont.visibility = View.VISIBLE
                     friendsRes.friends.forEach {
                         val chip = createChip(it.username)
                         friends.add(chip)
                         chipGroup.addView(chip)
                     }
                     dialog.friends_spinner.visibility = View.GONE
+                } else {
+                    val noFriendCont = dialogView.findViewById<RelativeLayout>(R.id.meeting_no_friends_container)
+                    sendBtn.isEnabled = false
+                    meetingCont.visibility = View.GONE
+                    noFriendCont.visibility = View.VISIBLE
                 }
             } catch (e: IOException) {
                 Log.e("FRIENDS", "$e")

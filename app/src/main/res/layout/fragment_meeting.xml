@@ -24,6 +24,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:fontFamily="@font/pt_sans_bold"
+            android:textColor="?attr/textColor"
             android:paddingTop="8dp"
             android:paddingBottom="8dp"
             android:text="@string/meet_a_friend"

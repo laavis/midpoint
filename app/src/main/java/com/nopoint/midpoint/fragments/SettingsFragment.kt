@@ -98,6 +98,7 @@ class SettingsFragment : Fragment() {
 
     private fun applyThemeChanges() {
         val intent = Intent(context!!.applicationContext, MainActivity::class.java)
+        intent.putExtra("fragmentToLoad", "settings")
         startActivity(intent)
         (activity as MainActivity).finish()
     }

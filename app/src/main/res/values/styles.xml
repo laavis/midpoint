@@ -1,29 +1,11 @@
 <resources>
 
-
     <style name="MidpointFullscreen" parent="InitialTheme">
         <item name="windowNoTitle">true</item>
         <item name="android:windowFullscreen">true</item>
     </style>
 
-
-
-    <!-- DIALOG
-    <style name="DialogFriendRequest" parent="ThemeOverlay.MaterialComponents.MaterialAlertDialog">
-        <item name="buttonBarPositiveButtonStyle">@style/PositiveButtonStyle</item>
-        <item name="colorAccent">@color/color_warning</item>
-        <item name="android:titleTextStyle">@font/pt_sans_bold</item>
-    </style>
-
-    <style name="PositiveButtonStyle" parent="Widget.MaterialComponents.Button.TextButton.Dialog">
-        <item name="android:backgroundTint">@color/orange</item>
-        <item name="android:textColor">@color/color_white</item>
-    </style> -->
-
-
-
-
-    // Primary Button
+    <!-- Primary Button -->
     <style name="ButtonPrimary" parent="Widget.MaterialComponents.Button">
         <item name="android:backgroundTint">?attr/buttonColor</item>
         <item name="android:textColor">?attr/textColor</item>
@@ -32,7 +14,7 @@
     </style>
 
 
-    // Image Button
+    <!-- Image Button -->
     <style name="ButtonImage">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
@@ -59,9 +41,12 @@
         <item name="android:cropToPadding">true</item>
     </style>
 
+    <style name="MyDialogTheme" parent="Theme.AppCompat.Light.Dialog.Alert">
+        <item name="android:background">@drawable/bg_dialog</item>
+    </style>
 
 
-    // Input EditText
+    <!-- Input Edit Text -->
     <style name="InputEditText" parent="Widget.MaterialComponents.TextInputLayout.FilledBox">
         <item name="android:background">@android:color/transparent</item>
         <item name="android:paddingStart">4dp</item>
@@ -71,16 +56,9 @@
         <item name="boxStrokeColor">?attr/editTextColor</item>
     </style>
 
-    <style name="Perkele" parent="Widget.MaterialComponents.BottomNavigationView">
-        <item name="android:background">?attr/bottomMenuBackgroundColor</item>
-    </style>
-
-
     <!-- BottomSheet -->
-    <style name="RoundedBottomSheet" parent="Widget.MaterialComponents.BottomSheet">
-        <item name="shapeAppearanceOverlay">@style/CustomShapeAppearanceOverlay.MaterialComponents.BottomSheet</item>
-        <item name="android:backgroundTint">?attr/bottomSheetBackgroundColor</item>
-        <item name="android:background">?attr/bottomMenuBackgroundColor</item>
+    <style name="RoundedBottomSheet" parent="Widget.Design.BottomSheet.Modal">
+        <item name="android:background">@drawable/bg_bottomsheet</item>
     </style>
     <style name="CustomShapeAppearanceOverlay.MaterialComponents.BottomSheet" parent="">
         <item name="cornerFamily">rounded</item>
@@ -88,7 +66,6 @@
         <item name="cornerSizeBottomRight">0dp</item>
         <item name="cornerSizeBottomLeft">0dp</item>
     </style>
-
 
     <!-- The: background color for Action Bar overflow menu -->
     <style name="PopupMenu" parent="@android:style/Widget.PopupMenu">

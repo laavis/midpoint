@@ -11,7 +11,7 @@
         android:id="@+id/avatar_layout"
         android:layout_width="match_parent"
         android:layout_height="250dp"
-        android:background="@color/color_primary"
+        android:background="?attr/surfaceArea"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -35,7 +35,7 @@
             android:layout_marginTop="16dp"
             android:fontFamily="@font/pt_sans_bold"
             android:text="@string/hint_username"
-            android:textColor="@color/color_white"
+            android:textColor="?attr/textOnColorSurface"
             android:textSize="24sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
@@ -57,6 +57,8 @@
             style="@style/InputEditText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:paddingStart="0dp"
+            android:paddingEnd="0dp"
             android:layout_below="@+id/dark_mode_switch"
             android:hint="@string/arrival_hint"
             app:errorEnabled="true">
@@ -64,7 +66,7 @@
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/arrived_input"
                 style="@style/InputEditText"
-                android:layout_width="match_parent"
+                android:layout_width="160dp"
                 android:layout_height="wrap_content"
                 android:digits="0123456789."
                 android:inputType="number" />
@@ -73,8 +75,10 @@
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/place_radius_input_layout"
             style="@style/InputEditText"
-            android:layout_width="match_parent"
+            android:layout_width="160dp"
             android:layout_height="wrap_content"
+            android:paddingStart="0dp"
+            android:paddingEnd="0dp"
             android:layout_below="@+id/arrived_input_layout"
             android:hint="@string/places_hint"
             app:errorEnabled="true">
@@ -92,7 +96,6 @@
             android:id="@+id/dark_mode_switch"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
             android:layout_marginEnd="16dp"
             android:layout_marginBottom="16dp"
             android:checked="false"

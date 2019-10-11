@@ -39,13 +39,15 @@
     <string name="accept">Accept</string>
     <string name="reject">Reject</string>
     <string name="cancel">Cancel</string>
+    <string name="retract">Retract</string>
     <string name="outgoing">SENT</string>
     <string name="incoming">RECEIVED</string>
     <string name="error_server_connection">Failed to connect</string>
-    <string name="send_meeting_request">Send meeting request</string>
+    <string name="send_meeting_request">Send</string>
+    <string name="meeting_no_friend">Please add a friend to send a meeting request</string>
     <string name="cafe_switch">Meet at a cafe?</string>
     <string name="filter_friends">Filter friends</string>
-    <string name="meeting_request">meeting request</string>
+    <string name="meeting_request">Meeting Request</string>
     <string name="new_title">New</string>
 
     // Friends

@@ -13,11 +13,10 @@
         <item name="colorOnPrimary">@color/color_white</item>
         <item name="android:textViewStyle">@font/pt_sans</item>
         <item name="buttonColor">@color/button_states_light</item>
-        <item name="test">@color/color_white_accent</item>
         <item name="windowNoTitle">true</item>
         <item name="android:windowFullscreen">true</item>
         <item name="bottomSheetBackgroundColor">@color/color_white</item>
-        <item name="bottomMenuBackgroundColor">@color/color_dark</item>
+        <item name="bottomMenuBackgroundColor">@color/color_primary</item>
         <item name="textColor">@color/color_dark</item>
         <item name="bgColor">@color/color_white</item>
         <item name="buttonTextColor">@color/color_white</item>
@@ -25,6 +24,19 @@
         <item name="editTextColor">@color/text_field_color_light</item>
         <item name="imageButtonStyle">@color/color_dark_grey</item>
         <item name="android:popupMenuStyle">@style/PopupMenu</item>
+        <item name="surfaceArea">@color/color_primary</item>
+        <item name="textOnColorSurface">@color/color_white</item>
+        <item name="searchViewBgColor">@color/color_white</item>
+        <item name="listIconButtonColor">@color/color_dark_grey</item>
+        <item name="friendSearchResultsBgColor">@color/color_white_accent</item>
+        <item name="meetingDialogBgColor">@color/color_white</item>
+        <item name="qrScannedButtonColor">@color/color_dark</item>
+        <item name="meetingRowRippleColor">@color/color_white_accent</item>
+        <item name="meetingRowBgColor">@color/color_white</item>
+        <item name="meetingRowDividerColor">@color/color_white_accent</item>
+        <item name="menuIconUnchecked">@color/color_primary_dark</item>
+        <item name="altBgColor">@color/color_primary</item>
+
     </style>
 
     <!-- Dark Mode -->
@@ -41,6 +53,9 @@
         <item name="editTextColor">@color/text_field_color_dark</item>
         <item name="imageButtonStyle">@color/color_light_grey</item>
         <item name="android:popupMenuStyle">@style/PopupMenu</item>
+        <item name="meetingDialogBgColor">@color/midnight</item>
+
+
 
         <!-- ok -->
         <item name="buttonTextColor">@color/color_white</item>
@@ -49,6 +64,22 @@
         <item name="bgColor">@color/twilight</item>
         <item name="bottomSheetBackgroundColor">@color/twilight</item>
         <item name="bottomMenuBackgroundColor">@color/midnight</item>
+        <item name="surfaceArea">@color/midnight</item>
+        <item name="textOnColorSurface">@color/color_primary</item>
+        <item name="searchViewBgColor">@color/color_primary_dark</item>
+        <item name="listIconButtonColor">@color/color_dark_grey</item>
+        <item name="friendSearchResultsBgColor">@color/twilight</item>
+        <item name="qrScannedButtonColor">@color/orange</item>
+        <item name="meetingRowRippleColor">@color/midnight</item>
+        <item name="meetingRowBgColor">@color/twilight</item>
+        <item name="meetingRowDividerColor">@color/midnight</item>
+        <item name="menuIconUnchecked">@color/color_dark_grey</item>
+        <item name="altBgColor">@color/twilight</item>
 
+    </style>
+
+
+    <style name="SplashTheme" parent="Theme.AppCompat.NoActionBar">
+        <item name="android:windowBackground">@drawable/splash_bg</item>
     </style>
 </resources>

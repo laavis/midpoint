@@ -1,6 +1,9 @@
 package com.nopoint.midpoint.adapters
 
 import android.content.Context
+import android.content.res.ColorStateList
+import android.graphics.Color
+import android.graphics.drawable.Drawable
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -10,11 +13,13 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.graphics.drawable.DrawableCompat
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.card.MaterialCardView
 import com.nopoint.midpoint.R
+import com.nopoint.midpoint.SharedPref
 import com.nopoint.midpoint.map.MeetingsSingleton
 import com.nopoint.midpoint.models.*
 import kotlinx.android.synthetic.main.request_header.view.*
@@ -27,6 +32,8 @@ class MeetingRequestsAdapter(
     private val listener: MeetingRequestViewListener
 ) : RecyclerView.Adapter<ViewHolder>() {
     override fun getItemCount(): Int = MeetingsSingleton.meetingRequestRows.size
+
+    private val isNightMode = SharedPref(context).loadNightModeState() == true
 
     // Inflates the item views
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -98,7 +105,7 @@ class MeetingRequestsAdapter(
                         request.meetingRequest?.requesterUsername
                     )
                 }
-                holder.card?.setCardBackgroundColor(context.getColor(R.color.color_primary))
+                holder.card?.backgroundTintList = ColorStateList.valueOf(context.resources.getColor(R.color.color_primary))
                 holder.userName.setTextColor(context.getColor(R.color.color_white))
                 holder.timestamp!!.setTextColor(context.getColor(R.color.color_white_accent))
             }
@@ -117,7 +124,7 @@ class MeetingRequestsAdapter(
                     request.meetingRequest!!.receiverUsername
                 )
                 holder.icon?.visibility = View.VISIBLE
-                holder.primaryButton?.text = context.getString(R.string.cancel)
+                holder.primaryButton?.text = context.getString(R.string.retract)
                 holder.primaryButton?.backgroundColor = context.getColor(R.color.color_warning)
                 holder.primaryButton?.setOnClickListener { listener.deleteRequest(request.meetingRequest) }
             }
@@ -125,7 +132,9 @@ class MeetingRequestsAdapter(
         holder.timestamp!!.text = android.text.format.DateUtils.getRelativeTimeSpanString(
             request.meetingRequest?.timestamp?.time ?: 0
         )
+
         if (request.expanded) {
+            // if (isNightMode) holder.card?.backgroundTintList = ColorStateList.valueOf(Color.BLACK)
             holder.expandedLayout?.visibility = View.VISIBLE
             holder.card?.elevation = 8.0f
         } else {

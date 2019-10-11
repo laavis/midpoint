@@ -4,12 +4,24 @@
     <declare-styleable name="ds">
         <attr name="test" format="color"/>
         <attr name="bgColor" format="color"/>
+        <attr name="altBgColor" format="color"/>
         <attr name="textColor" format="color"/>
         <attr name="buttonColor" format="color"/>
         <attr name="buttonTextColor" format="color"/>
         <attr name="bottomSheetBackgroundColor" format="color"/>
         <attr name="bottomMenuBackgroundColor" format="color" />
         <attr name="entryFooter" format="color"/>
+        <attr name="surfaceArea" format="color"/>
+        <attr name="textOnColorSurface" format="color"/>
+        <attr name="searchViewBgColor" format="color"/>
+        <attr name="listIconButtonColor" format="color"/>
+        <attr name="friendSearchResultsBgColor" format="color"/>
+        <attr name="meetingDialogBgColor" format="color"/>
+        <attr name="qrScannedButtonColor" format="color"/>
+        <attr name="meetingRowRippleColor" format="color"/>
+        <attr name="meetingRowBgColor" format="color"/>
+        <attr name="meetingRowDividerColor" format="color"/>
+        <attr name="menuIconUnchecked" format="color"/>
     </declare-styleable>
 
 </resources>
