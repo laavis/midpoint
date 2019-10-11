@@ -39,6 +39,7 @@ import com.nopoint.midpoint.networking.APIController
 import com.nopoint.midpoint.networking.ServiceVolley
 import com.nopoint.midpoint.networking.*
 import kotlinx.android.synthetic.main.bottom_sheet.*
+import kotlinx.android.synthetic.main.fragment_meeting.*
 import kotlinx.android.synthetic.main.fragment_meeting.view.*
 import kotlinx.android.synthetic.main.request_dialog.*
 import kotlinx.android.synthetic.main.request_dialog.view.*
@@ -65,6 +66,8 @@ class MeetingFragment : Fragment(), MeetingRequestViewListener {
         sharedPref = SharedPref(context!!)
 
         view.new_request_btn.setOnClickListener { createDialog() }
+
+        view.meeting_button_refresh.setOnClickListener { getRequests() }
         LocalBroadcastManager.getInstance(context!!.applicationContext)
             .registerReceiver(mLocalBroadcastReceiver, getLocalIntentFilter())
         return view
@@ -464,7 +467,7 @@ class MeetingFragment : Fragment(), MeetingRequestViewListener {
     fun arrived(meetingRequest: MeetingRequest) {
         val username =
             if (meetingRequest.requester == localUser.user.id) meetingRequest.receiverUsername else meetingRequest.requesterUsername
-        if (activity != null && !openDialog) {
+        if (activity != null ) {
             openDialog = true
             MaterialAlertDialogBuilder(activity)
                 .setTitle("You arrived!")

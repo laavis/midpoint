@@ -83,7 +83,8 @@ class MapFragment : Fragment(), OnMapReadyCallback {
 
         view.btn.setOnClickListener {
             val active = MeetingsSingleton.getActiveMeeting()
-            sheetFragment.arrived(active!!)
+            if (active != null ) sheetFragment.arrived(active!!)
+
         }
         fabMapIntent = view.findViewById(R.id.fab_map_intent)
 
