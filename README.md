@@ -1,6 +1,13 @@
 # Midpoint
 Midpoint is an application to help friends find each other by suggesting a meeting point that is an equal distance from both people.
 
+# Build instructions
+ - Add google-services.json file to app/ directory
+ - Add GoogleApiKey="YOUR_API_KEY_HERE" to local.properties file
+ 
+# Installing apk
+- Install .apk from releases
+
 # Links
  - [Backend repository](https://github.com/laavis/midpoint-api)
  - [Figma (UI)](https://www.figma.com/file/sbeJ202H5Q036pCBGqmYYp/mp?node-id=0%3A1)
