@@ -5,7 +5,7 @@ enum class API(val path: String) {
     DIRECTIONS("https://maps.googleapis.com/maps/api/directions/json"),
 }
 
-const val BASE_URL = "http://142.93.104.120:5000"
+const val BASE_URL = "http://corgo.hopto.org/api/midpoint"
 const val MEETING_REQUEST_URL = "/meeting-request/request"
 const val MEETING_RESPOND_URL = "/meeting-request/respond"
 const val FRIEND_SEND_REQUEST_URL = "/friends/request"
